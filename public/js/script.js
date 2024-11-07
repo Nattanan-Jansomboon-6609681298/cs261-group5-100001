@@ -43,6 +43,7 @@ function submitLogin() {
         } else {
             document.getElementById('message').innerText = data.message || 'การยืนยันไม่สำเร็จ กรุณาลองใหม่'; 
         }
+        submitForm(data);
     })
     .catch(error => {
         console.error('Error:', error);

@@ -10,7 +10,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.20.0",
-    "frontend": "file:"
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "frontend": "file:",
+    "mysql2": "^3.11.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
   }
 }
