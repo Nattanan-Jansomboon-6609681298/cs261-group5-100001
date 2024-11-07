@@ -21,7 +21,7 @@
         </div>
         <div class="show_form"id = "show_form">
             <div class="select_text">จดทะเบียน/เพิ่มถอน</div>
-            <form>
+            <form id="submitRequestForm">
                 <label for="fname">ชื่อ</label>
                 <input type="text" id="fname" name="fname">
                 <label for="lname">นามสกุล</label>
@@ -64,10 +64,12 @@
                 <input type="text" id="sign_name" name="sign_name" >
                 <label for="date">วันที่</label>
                 <input type="text" id="date" name="date" >
-
-
+                <p id="message"></p>
+                <button type="submit" value="submit_Re">Login</button>
+            </form>
         </div>
     </div>
     <script src="js/student.js"></script>
+    <script src="js/submitForm.js"></script>
 </body>
 </html>
