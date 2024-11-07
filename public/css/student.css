@@ -1,0 +1,86 @@
+.container{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+}
+.head_text{
+    margin-top: 7.5vh;
+    font-size: 32px;
+    text-align: center;
+}
+.A4{
+    margin-top: 7.5vh;
+    width: 496px;
+    height: 701px;
+    background-color: black;
+    display: flex;
+}
+.select_text{
+    margin-top: 7.5vh;
+    margin-bottom: 7.5vh;
+    font-size: 32px;
+    text-align: center;
+}
+.main_box{
+    display: none;
+}
+.select_choice{
+    display: flex;
+    margin-bottom: 7.5vh;
+}
+.choice{
+    margin-right: 10px;
+    background-color: #5866FF;
+    color: white;
+    padding: 20px 30px 20px 30px;
+    border-radius: 7px;
+}
+
+label{
+    margin-right: 10px;
+}
+
+.none{
+    display: none;
+}
+.active{
+    display: flex;
+}
+.show_form{
+    margin-bottom: 7.5vh;
+}
+#fname,#lname,#id{
+    width: 150px;
+}
+input{
+    margin: 10px 10px 10px 0 ;
+}
+#year{
+    width: 50px;
+}
+#address_number{
+    width: 100px;
+}
+#district,#country{
+    width: 202px;
+}
+#province,#phone_number{
+    width: 217px;
+}
+
+#phone_parent{
+    width: 250px;
+}
+#teacher{
+    width: 412px;
+}
+#course_section,#course_code{
+    width: 75px;
+}
+
+textarea{
+    margin: 20px 0 10px 0;
+    width: 440px;
+}
+
