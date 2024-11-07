@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student</title>
+    <link rel="stylesheet" href="css/student.css">
+</head>
+<body>
+    <div class="container">
+        <div class="head_text">ตัวอย่างแบบฟอร์มคำร้อง</div>
+        <div class="A4"></div>
+        <div class="main_box"id = "main_box">
+            <div class="select_text">คำร้องเรียนอะไร</div>
+            <div class="select_choice">
+                <div class="choice"id = "regist/add">จดทะเบียน/เพิ่มถอน</div>
+                <div class="choice"id = "remove">ขอถอนวิชา/ถอนรายวิชา</div>
+                <div class="choice"id = "request">ขอจดทะเบียนรายวิชาศึกษานอกหลักสูตร</div>
+                <div class="choice"id = "resign">ลาออก</div>
+            </div>
+        </div>
+        <div class="show_form"id = "show_form">
+            <div class="select_text">จดทะเบียน/เพิ่มถอน</div>
+            <form>
+                <label for="fname">ชื่อ</label>
+                <input type="text" id="fname" name="fname">
+                <label for="lname">นามสกุล</label>
+                <input type="text" id="lname" name="lname">
+                <label for="id">เลขทะเบียน</label>
+                <input type="text" id="id" name="id">
+                <label for="year">ชั้นปี</label>
+                <input type="text" id="year" name="year"><br>
+
+                <label for="address_number">ที่อยู่เลขที่</label>
+                <input type="text" id="address_number" name="address_number">
+                <label for="district">แขวง/ตำบล</label>
+                <input type="text" id="district" name="district">
+                <label for="country">เขต/อำเภอ</label>
+                <input type="text" id="country" name="country"><br>
+
+                <label for="province">จังหวัด</label>
+                <input type="text" id="province" name="province" >
+                <label for="phone_number">เบอร์ติดต่อ</label>
+                <input type="text" id="phone_number" name="phone_number" >
+                <label for="phone_parent">เบอร์โทรศัพย์ติดต่อผู้ปกครอง</label><br>
+
+                <input type="text" id="phone_parent" name="phone_parent" >
+                <label for="teacher">อาจารย์ที่ปรึกษา</label>
+                <input type="text" id="teacher" name="teacher" ><br>
+
+                <label for="course_section">ภาคที่เรียน</label>
+                <input type="text" id="course_section" name="course_section" >
+                <label for="course_code">รหัสวิชา</label>
+                <input type="text" id="course_code" name="course_code" >
+                <label for="course_name">ชื่อวิชา</label>
+                <input type="text" id="course_name" name="course_name">
+                <label for="section">section</label>
+                <input type="text" id="section" name="section"><br>
+
+                <label for="reason">เหตุผลที่ยื่นคำร้อง</label><br>
+                <textarea type="text" id="reason" name="reason" rows="10"></textarea><br>
+
+                <label for="sign_name">ลงชื่อ</label>
+                <input type="text" id="sign_name" name="sign_name" >
+                <label for="date">วันที่</label>
+                <input type="text" id="date" name="date" >
+
+
+        </div>
+    </div>
+    <script src="js/student.js"></script>
+</body>
+</html>
