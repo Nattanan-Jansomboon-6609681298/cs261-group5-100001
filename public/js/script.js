@@ -13,7 +13,7 @@ function submitLogin() {
     const password = document.getElementById('password').value;
 
     if(username === "test" && password === "test") {
-        window.location.href = 'employee.html'; 
+        window.location.href = `request.html?searchKey=test&type=employee`;
     }
     // ตรวจสอบกรอกข้อมูล
     if (!username || !password) {
@@ -76,10 +76,9 @@ function submitLogin() {
     })
     .then(data => {
         if (data.status) {
-            account = data;
             userEmail = data.email; // เก็บอีเมลของuser
             if (data.type === 'student') {
-                window.location.href = 'student.html';
+                window.location.href = `student.html?studentID=${data.username}&type=student`;
             }
         } else {
             document.getElementById('message').innerText = data.message || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';

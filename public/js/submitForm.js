@@ -1,5 +1,9 @@
 const BASE_URL = 'http://localhost:3000';
-
+const params = new URLSearchParams(window.location.search);
+const studentID = params.get('studentID'); 
+const type = params.get('type');
+console.log(studentID)
+console.log(type)
 document.getElementById('submitRequestForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const subject = document.getElementById('subject').innerText;
@@ -60,5 +64,5 @@ document.getElementById('submitRequestForm').addEventListener('submit', async (e
 });
 
 document.getElementById('redirectBtn').addEventListener('click', function() {
-    window.location.href = 'forms.html'; 
+    window.location.href = `request.html?searchKey=${studentID}&type=${type}`; 
 });
