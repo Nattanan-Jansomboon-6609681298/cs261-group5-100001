@@ -19,8 +19,10 @@
                 <div class="choice"id = "resign">ลาออก</div>
             </div>
         </div>
+
+        <div id="test">abs</div>
         <div class="show_form"id = "show_form">
-            <div class="select_text">จดทะเบียน/เพิ่มถอน</div>
+            <div class="select_text"id = "select_text"></div>
             <form>
                 <label for="fname">ชื่อ</label>
                 <input type="text" id="fname" name="fname">
@@ -57,6 +59,21 @@
                 <label for="section">section</label>
                 <input type="text" id="section" name="section"><br>
 
+                <div class="show_more_form"id = "show_more_form">
+                
+                        <label for="academic_semester">ตั้งแต่ภาคเรียนการศึกษา</label>
+                        <input type="text" id="academic_semester" name="academic_semester">
+                        <label for="semester_year">ปีการศึกษา</label>
+                        <input type="text" id="semester_year" name="semester_year"><br>
+                        <label for="้dont_have_debt">ไม่มีภาระหนี้สินคงค้าง</label>
+                        <input type="checkbox" id="้dont_have_debt" name="้dont_have_debt">
+                        <label for="have_debt">มีภาระหนี้สินคงค้าง</label>
+                        <input type="checkbox" id="have_debt" name="have_debt">
+                        <label for="amount">จำนวน</label>
+                        <input type="text" id="amount" name="amount">
+                    
+                </div>
+
                 <label for="reason">เหตุผลที่ยื่นคำร้อง</label><br>
                 <textarea type="text" id="reason" name="reason" rows="10"></textarea><br>
 
@@ -65,8 +82,14 @@
                 <label for="date">วันที่</label>
                 <input type="text" id="date" name="date" >
 
-
+            </form>
+            <div class="end_move">
+                <div class="submit_block">
+                    <div class="submit"id = "submit">ยื่นคำร้อง</div>
+                </div>
+            </div>
         </div>
+        
     </div>
     <script src="js/student.js"></script>
 </body>

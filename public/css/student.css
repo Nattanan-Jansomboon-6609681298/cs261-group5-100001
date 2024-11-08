@@ -13,7 +13,8 @@
     margin-top: 7.5vh;
     width: 496px;
     height: 701px;
-    background-color: black;
+    background-image: url('../img/report.png');
+    background-size: cover;
     display: flex;
 }
 .select_text{
@@ -22,9 +23,7 @@
     font-size: 32px;
     text-align: center;
 }
-.main_box{
-    display: none;
-}
+
 .select_choice{
     display: flex;
     margin-bottom: 7.5vh;
@@ -41,14 +40,9 @@ label{
     margin-right: 10px;
 }
 
-.none{
-    display: none;
-}
-.active{
-    display: flex;
-}
 .show_form{
     margin-bottom: 7.5vh;
+    display: none;
 }
 #fname,#lname,#id{
     width: 150px;
@@ -75,7 +69,7 @@ input{
 #teacher{
     width: 412px;
 }
-#course_section,#course_code{
+#course_section,#course_code,#semester_year,#academic_semester{
     width: 75px;
 }
 
@@ -84,3 +78,35 @@ textarea{
     width: 440px;
 }
 
+#test{
+    display: none;
+}
+.show_more_form{
+    display: none;
+}
+.end_move{
+    width: 100%;
+    display: flex;
+    align-items: end;
+    justify-content: end;
+}
+.submit_block{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 7.5vh;
+    background-color: #5866FF;
+    
+    border-radius: 7px;
+    width: 150px;
+    height: 50px;
+}
+.submit{
+    color: white;
+}
+.active{
+    display: block;
+}
+.none{
+    display: none;
+}
