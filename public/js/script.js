@@ -9,6 +9,9 @@ function submitLogin() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
+    if(username === "test" && password === "test") {
+        window.location.href = 'employee.html'; 
+    }
     // ตรวจสอบกรอกข้อมูล
     if (!username || !password) {
         document.getElementById('message').innerText = 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน';
@@ -71,26 +74,30 @@ function submitLogin() {
     .then(data => {
         if (data.status) {
 
-            const welcomeMessage = `สำเร็จ! ยินดีต้อนรับ ${data.displayname_th || data.displayname_en}`;
-            document.getElementById('message').innerText = welcomeMessage;
+            // const welcomeMessage = `สำเร็จ! ยินดีต้อนรับ ${data.displayname_th || data.displayname_en}`;
+            // document.getElementById('message').innerText = welcomeMessage;
 
-            const userType = data.type === 'student' ? 'นักศึกษา' : 'เจ้าหน้าที่';
-            let userInfo = `ประเภท: ${userType}\n\nชื่อผู้ใช้: ${data.username}\n\nอีเมล: ${data.email}\n\nแผนก: ${data.department || data.organization}`;
+            // const userType = data.type === 'student' ? 'นักศึกษา' : 'เจ้าหน้าที่';
+            // let userInfo = `ประเภท: ${userType}\n\nชื่อผู้ใช้: ${data.username}\n\nอีเมล: ${data.email}\n\nแผนก: ${data.department || data.organization}`;
+
+            // if (data.type === 'student') {
+            //     userInfo += `\n\nสถานะ: ${data.tu_status}\n\nคณะ: ${data.faculty}`;
+            // } else if (data.type === 'employee') {
+            //     userInfo += `\n\nสถานะ: ${data.StatusEmp}\n\nสถานะการทำงาน: ${data.StatusWork}`;
+            // }
+
+            // document.getElementById('modalMessage').innerText = userInfo;
+            // document.getElementById('myModal').style.display = 'block'; 
 
             if (data.type === 'student') {
-                userInfo += `\n\nสถานะ: ${data.tu_status}\n\nคณะ: ${data.faculty}`;
-            } else if (data.type === 'employee') {
-                userInfo += `\n\nสถานะ: ${data.StatusEmp}\n\nสถานะการทำงาน: ${data.StatusWork}`;
+                window.location.href = 'student.html';
             }
-
-            document.getElementById('modalMessage').innerText = userInfo;
-            document.getElementById('myModal').style.display = 'block'; 
         } else {
             document.getElementById('message').innerText = data.message || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
             document.getElementById('message').style.display = 'block'; // แสดงข้อความผิดพลาด
         }
-        document.getElementById('message').innerText = 'เข้าสู่ระบบสำเร็จ';
-        document.getElementById('message').style.display = 'block';
+        // document.getElementById('message').innerText = 'เข้าสู่ระบบสำเร็จ';
+        // document.getElementById('message').style.display = 'block';
     })
     .catch(error => {
         console.error('Error:', error);

@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
 // Create a new instance of Sequelize directly within the model file
-const sequelize = new Sequelize('myDB', 'root', 'root', {
+const sequelize = new Sequelize('mydb', 'root', 'root', {
     host: 'localhost',
     dialect: 'mysql',
     port: 3306, 
@@ -55,19 +55,19 @@ const RequestModel = sequelize.define('Request', {
     },
     courseSection: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     courseCode: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     courseName: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     section: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     reason: {
         type: DataTypes.TEXT,

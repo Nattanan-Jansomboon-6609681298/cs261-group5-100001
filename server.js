@@ -46,10 +46,10 @@ const connectMySQL = async () => {
 
   //คืนค่าแบบคําร้องใน database ที่มี id = parameter ที่ส่งมา
   //return type: array ของ object
-app.get('/forms/:id', async (req, res) => {
+app.get('/forms/:studentID', async (req, res) => {
   try {
-    const id = req.params.id;
-    const result = await conn.query('SELECT * FROM forms WHERE id = ?', id);
+    const studentID = req.params.studentID;
+    const result = await conn.query('SELECT * FROM forms WHERE studentID = ?', studentID);
     if(result[0].length > 0) {
       res.json(result[0]);
     }
@@ -57,12 +57,19 @@ app.get('/forms/:id', async (req, res) => {
       throw new Error("Not Found");
     }
   } 
-  catch(error) {
-    console.error('error message:', error.message)
-    res.status(500).json({
-      message : "something went wrong!",
-      errorMessage : error.message
-    });
+  catch (error) {
+    if(error.message === "Not Found") {
+      res.status(404).json( {
+        status : 404,
+        ErrorMessage : error.message
+      });
+    }
+    else {
+      res.status(500).json( {
+        status : 500,
+        ErrorMessage : error.message
+      });
+    }
   }
   });
 
@@ -72,20 +79,33 @@ app.get('/forms/:id', async (req, res) => {
 app.get('/forms', async (req, res) => {
   try {
     const result = await conn.query('SELECT * FROM forms');
-    res.json(result[0]);
+    if(result[0].length > 0) {
+      res.json(result[0]);
+    }
+    else {
+      throw new Error("Not Found");
+    }
   } catch (error) {
-    console.log(error.message);
-    res.status(500).json( {
-      status : 500,
-      ErrorMessage : error.message
-    });
+    if(error.message === "Not Found") {
+      console.log(error.message);
+      res.status(404).json( {
+        status : 404,
+        ErrorMessage : error.message
+      });
+    }
+    else {
+      res.status(500).json( {
+        status : 500,
+        ErrorMessage : error.message
+      });
+    }
   }
 });
 
   //ไว้ให้อาจารย์กดอนุมัติ
   //return คําร้องที่มีชื่ออาจารย์ที่ปรึกษา = parameter "name"
   //return type: array ของ object
-  app.get('/forms/advisor/:name', async (req, res) => {
+app.get('/forms/advisor/:name', async (req, res) => {
     try {
         const name = req.params.name;
         const [rows] = await conn.query('SELECT * FROM forms WHERE advisor = ?', name);
@@ -109,7 +129,7 @@ app.get('/forms', async (req, res) => {
 
 
   //insert คําร้องลง database
-app.post('/forms/submit', async (req, res) => {
+app.post('/forms', async (req, res) => {
   try {
     let forms = req.body;
     await conn.query('INSERT INTO forms SET ?', forms);
@@ -128,20 +148,53 @@ app.post('/forms/submit', async (req, res) => {
 });
 
 
-//ลบทุก rows ออกจาก database
-app.delete('/forms/deleteAll', async (req, res) => {
+//ลบคําร้องที่มี่ id = parameter ออกจาก database
+app.delete('/forms/:id', async (req, res) => {
   try {
-    const [result] = await conn.query('DELETE FROM forms');
+    const [result] = await conn.query('DELETE FROM forms WHERE id = ?', [req.params.id]);
     
+    if (result.affectedRows === 0) {
+        return res.status(404).json({
+        message: "Delete Failed: Record not found",
+        status : 404
+      });
+    }
     res.json({
-      message: "All records have been deleted successfully.",
+      message: "Record deleted successfully.",
       affectedRows: result.affectedRows
     });
   } catch (error) {
-    console.error('Error deleting records:', error.message);
+    console.error('Error deleting record:', error.message);
     res.status(500).json({
-      message: "Failed to delete records.",
+      message: "Failed to delete record.",
       errorMessage: error.message
+    });
+  }
+});
+
+//แก้ไขสถานะคําร้องให้เป็น อนมัติ หรือ ไม่อนุมัติ
+app.patch('/forms/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const status = req.body.approved;
+    const [result] = await conn.query('UPDATE forms SET approved = ? WHERE id = ?', [status, id]);
+
+    if (result.affectedRows === 0) {
+        return res.status(404).json({
+        message: "Update Failed: Record not found" ,
+        status : 404
+      });
+    }
+    
+    res.json({
+      message: "Update Success",
+      affectedRows: result.affectedRows
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({
+      message: "Update Failed",
+      errorMessage: error.message,
     });
   }
 });
