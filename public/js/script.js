@@ -1,6 +1,9 @@
 let info = document.getElementById('user_info_container');
 let login = document.getElementById('login');
 let account;
+let userEmail;
+
+
 login.addEventListener("click", function () {
     info.classList.toggle('active');
 });
@@ -74,6 +77,7 @@ function submitLogin() {
     .then(data => {
         if (data.status) {
             account = data;
+            userEmail = data.email; // เก็บอีเมลของuser
             if (data.type === 'student') {
                 window.location.href = 'student.html';
             }
@@ -88,5 +92,6 @@ function submitLogin() {
         document.getElementById('message').style.display = 'block';
     });
 }
+
 
 
