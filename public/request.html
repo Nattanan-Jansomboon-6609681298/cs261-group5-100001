@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Student Request</title>
+</head>
+<body>
+    <h1>Review Student Request</h1>
+
+    <div>
+        <h2>Request Details</h2>
+        <div id="submitRequestForm">Loading...</div>
+    </div>
+
+    <label for="comments">Comments:</label>
+    <textarea id="comments" rows="5"></textarea>
+    <button id="approveButton" onclick="confirmApprove('REQUEST_ID')">Approve Request</button>
+    <button id="rejectButton" onclick="confirmReject('REQUEST_ID')">Reject Request</button>
+
+    <div id="message"></div>
+
+    <!-- Modal Confirmation Dialog -->
+    <div id="confirmationDialog" style="display:none;">
+        <p>Are you sure you want to approve or reject the request?</p>
+        <button onclick="finalizeApproval()">Yes</button>
+        <button onclick="cancelConfirmation()">No</button>
+    </div>
+
+    <script src="request.js"></script>
+</body>
+</html>
+
+
