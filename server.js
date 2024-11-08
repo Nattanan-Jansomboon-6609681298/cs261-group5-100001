@@ -5,11 +5,10 @@ const bodyparser = require('body-parser');
 const mysql = require('mysql2/promise');
 const cors = require('cors') 
 const app = express();
+const nodemailer = require('nodemailer');
 app.use(bodyparser.json());
 app.use(cors());
 let conn = null;
-
-
 
 //set port ไปที่ localhost:3000
 app.listen(PORT, async () => {
@@ -42,14 +41,20 @@ const connectMySQL = async () => {
   }
 };
 
-
+const transporter = nodemailer.createTransport({
+  service: 'gmail', // เปลี่ยนเป็นผู้ให้บริการอีเมลที่ใช้
+  auth: {
+      user: 'andasecondary@gmail.com', // อีเมลต้นทาง
+      pass: 'wjpx rizq ltac thsa'   // รหัสผ่านอีเมล
+  }
+});
 
   //คืนค่าแบบคําร้องใน database ที่มี id = parameter ที่ส่งมา
   //return type: array ของ object
-app.get('/forms/:id', async (req, res) => {
+app.get('/forms/:studentID', async (req, res) => {
   try {
-    const id = req.params.id;
-    const result = await conn.query('SELECT * FROM forms WHERE id = ?', id);
+    const studentID = req.params.studentID;
+    const result = await conn.query('SELECT * FROM forms WHERE studentID = ?', studentID);
     if(result[0].length > 0) {
       res.json(result[0]);
     }
@@ -57,12 +62,19 @@ app.get('/forms/:id', async (req, res) => {
       throw new Error("Not Found");
     }
   } 
-  catch(error) {
-    console.error('error message:', error.message)
-    res.status(500).json({
-      message : "something went wrong!",
-      errorMessage : error.message
-    });
+  catch (error) {
+    if(error.message === "Not Found") {
+      res.status(404).json( {
+        status : 404,
+        ErrorMessage : error.message
+      });
+    }
+    else {
+      res.status(500).json( {
+        status : 500,
+        ErrorMessage : error.message
+      });
+    }
   }
   });
 
@@ -72,20 +84,33 @@ app.get('/forms/:id', async (req, res) => {
 app.get('/forms', async (req, res) => {
   try {
     const result = await conn.query('SELECT * FROM forms');
-    res.json(result[0]);
+    if(result[0].length > 0) {
+      res.json(result[0]);
+    }
+    else {
+      throw new Error("Not Found");
+    }
   } catch (error) {
-    console.log(error.message);
-    res.status(500).json( {
-      status : 500,
-      ErrorMessage : error.message
-    });
+    if(error.message === "Not Found") {
+      console.log(error.message);
+      res.status(404).json( {
+        status : 404,
+        ErrorMessage : error.message
+      });
+    }
+    else {
+      res.status(500).json( {
+        status : 500,
+        ErrorMessage : error.message
+      });
+    }
   }
 });
 
   //ไว้ให้อาจารย์กดอนุมัติ
   //return คําร้องที่มีชื่ออาจารย์ที่ปรึกษา = parameter "name"
   //return type: array ของ object
-  app.get('/forms/advisor/:name', async (req, res) => {
+app.get('/forms/advisor/:name', async (req, res) => {
     try {
         const name = req.params.name;
         const [rows] = await conn.query('SELECT * FROM forms WHERE advisor = ?', name);
@@ -109,40 +134,113 @@ app.get('/forms', async (req, res) => {
 
 
   //insert คําร้องลง database
-app.post('/forms/submit', async (req, res) => {
-  try {
-    let forms = req.body;
-    await conn.query('INSERT INTO forms SET ?', forms);
+  app.post('/forms', async (req, res) => {
+    try {
+      let forms = req.body;
+      await conn.query('INSERT INTO forms SET ?', forms);
+  
+      res.status(200).json({  
+        message: 'Insert Success', 
+        status: 200
+      });
+    }
+    catch(error) {
+      res.status(500).json({  
+        errorMessage: error.message,
+        status: 500
+      });
+    }
+  });
 
+
+//ลบคําร้องที่มี่ id = parameter ออกจาก database
+app.delete('/forms/:id', async (req, res) => {
+  try {
+    const [result] = await conn.query('DELETE FROM forms WHERE id = ?', [req.params.id]);
+    
+    if (result.affectedRows === 0) {
+        return res.status(404).json({
+        message: "Delete Failed: Record not found",
+        status : 404
+      });
+    }
     res.json({
-      message : 'Insert Success', 
-      status : 200
+      message: "Record deleted successfully.",
+      affectedRows: result.affectedRows
+    });
+  } catch (error) {
+    console.error('Error deleting record:', error.message);
+    res.status(500).json({
+      message: "Failed to delete record.",
+      errorMessage: error.message
     });
   }
-  catch(error) {
+});
+
+//แก้ไขสถานะคําร้องให้เป็น อนมัติ หรือ ไม่อนุมัติ
+app.put('/forms/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const status = req.body.approved;
+    const comments = req.body.comments;
+    const [result] = await conn.query('UPDATE forms SET approved = ? , comments = ? WHERE id = ?', [status, comments, id]);
+
+    if (result.affectedRows === 0) {
+        return res.status(404).json({
+        message: "Update Failed: Record not found" ,
+        status : 404
+      });
+    }
+    
     res.json({
-      errorMessage : error.message,
-      status : 500
-    })
+      message: "Update Success",
+      affectedRows: result.affectedRows
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({
+      message: "Update Failed",
+      errorMessage: error.message,
+    });
   }
 });
 
 
-//ลบทุก rows ออกจาก database
-app.delete('/forms/deleteAll', async (req, res) => {
+app.post('/api/requests/:requestId/:action', async (req, res) => {
+  const requestId = req.params.requestId;  // รหัสคำร้อง
+  const action = req.params.action;  // action คือ approve หรือ reject
+  const { comments, email } = req.body;  // คอมเมนต์และอีเมลที่ส่งมา
+
   try {
-    const [result] = await conn.query('DELETE FROM forms');
-    
-    res.json({
-      message: "All records have been deleted successfully.",
-      affectedRows: result.affectedRows
-    });
+      // 1. อัพเดทสถานะคำร้องในฐานข้อมูล (approved หรือ rejected)
+      const [result] = await conn.query('UPDATE forms SET approved = ?, comments = ? WHERE id = ?', [action === 'approve' ? 1 : 0, comments, requestId]);
+
+      if (result.affectedRows === 0) {
+          return res.status(404).json({ message: 'Request not found' });
+      }
+
+      // 2. ส่งอีเมลแจ้งผลการอนุมัติหรือปฏิเสธ
+      const emailStatus = action === 'approve' ? 'approved' : 'rejected';
+      const mailOptions = {
+          from: 'andasecondary@gmail.com',
+          to: email,
+          subject: `Your request has been ${emailStatus}`,
+          text: `Dear user,\n\nYour request has been ${emailStatus}. Comments: ${comments}\n\nBest regards,\nYour Team`
+      };
+
+      // 3. ส่งอีเมลด้วย nodemailer
+      transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+              console.log('Error sending email:', error);
+              return res.status(500).json({ message: 'Failed to send email', error: error.message });
+          } else {
+              console.log('Email sent:', info.response);
+              return res.status(200).json({ message: 'Request processed and email sent' });
+          }
+      });
   } catch (error) {
-    console.error('Error deleting records:', error.message);
-    res.status(500).json({
-      message: "Failed to delete records.",
-      errorMessage: error.message
-    });
+      console.log('Error:', error.message);
+      res.status(500).json({ message: 'Error processing request', error: error.message });
   }
 });
 

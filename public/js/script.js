@@ -1,5 +1,8 @@
 let info = document.getElementById('user_info_container');
 let login = document.getElementById('login');
+let account;
+let userEmail;
+
 
 login.addEventListener("click", function () {
     info.classList.toggle('active');
@@ -9,6 +12,9 @@ function submitLogin() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
+    if(username === "test" && password === "test") {
+        window.location.href = `request.html?searchKey=test&type=employee`;
+    }
     // ตรวจสอบกรอกข้อมูล
     if (!username || !password) {
         document.getElementById('message').innerText = 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน';
@@ -70,27 +76,14 @@ function submitLogin() {
     })
     .then(data => {
         if (data.status) {
-
-            const welcomeMessage = `สำเร็จ! ยินดีต้อนรับ ${data.displayname_th || data.displayname_en}`;
-            document.getElementById('message').innerText = welcomeMessage;
-
-            const userType = data.type === 'student' ? 'นักศึกษา' : 'เจ้าหน้าที่';
-            let userInfo = `ประเภท: ${userType}\n\nชื่อผู้ใช้: ${data.username}\n\nอีเมล: ${data.email}\n\nแผนก: ${data.department || data.organization}`;
-
+            userEmail = data.email; // เก็บอีเมลของuser
             if (data.type === 'student') {
-                userInfo += `\n\nสถานะ: ${data.tu_status}\n\nคณะ: ${data.faculty}`;
-            } else if (data.type === 'employee') {
-                userInfo += `\n\nสถานะ: ${data.StatusEmp}\n\nสถานะการทำงาน: ${data.StatusWork}`;
+                window.location.href = `student.html?studentID=${data.username}&type=student`;
             }
-
-            document.getElementById('modalMessage').innerText = userInfo;
-            document.getElementById('myModal').style.display = 'block'; 
         } else {
             document.getElementById('message').innerText = data.message || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
             document.getElementById('message').style.display = 'block'; // แสดงข้อความผิดพลาด
         }
-        document.getElementById('message').innerText = 'เข้าสู่ระบบสำเร็จ';
-        document.getElementById('message').style.display = 'block';
     })
     .catch(error => {
         console.error('Error:', error);
@@ -101,21 +94,3 @@ function submitLogin() {
 
 
 
-
-/*function call_REST_API_Hello() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-
-    const url = (
-        'http://localhost:8081/services/hello?' +
-        new URLSearchParams({ myName: username, lastName: password}).toString()
-      );
-    
-    fetch(url)
-    .then(response => response.text())
-    .then(text => {
-        console.log("Text return from rest API: "+text);
-        document.getElementById('message').innerText = text;
-    })
-    .catch(error => console.error('Error:', error));
-}*/

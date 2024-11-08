@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/student.css">
 </head>
 <body>
+    <button id="redirectBtn">ดูผลการยื่นคําร้อง</button>
     <div class="container">
         <div class="head_text">ตัวอย่างแบบฟอร์มคำร้อง</div>
         <div class="A4"></div>
@@ -22,8 +23,13 @@
 
         <div id="test">abs</div>
         <div class="show_form"id = "show_form">
+<<<<<<< HEAD
             <div class="select_text"id = "select_text"></div>
             <form>
+=======
+            <div class="select_text" id="subject">จดทะเบียน/เพิ่มถอน</div>
+            <form id="submitRequestForm">
+>>>>>>> 23488f6924dc43a949d5b17db286ddd869ada957
                 <label for="fname">ชื่อ</label>
                 <input type="text" id="fname" name="fname">
                 <label for="lname">นามสกุล</label>
@@ -79,6 +85,7 @@
 
                 <label for="sign_name">ลงชื่อ</label>
                 <input type="text" id="sign_name" name="sign_name" >
+<<<<<<< HEAD
                 <label for="date">วันที่</label>
                 <input type="text" id="date" name="date" >
 
@@ -88,9 +95,16 @@
                     <div class="submit"id = "submit">ยื่นคำร้อง</div>
                 </div>
             </div>
+=======
+                <p id="message"></p>
+                <button type="submit" value="submit_Re">ส่งคําร้อง</button>
+            </form>
+>>>>>>> 23488f6924dc43a949d5b17db286ddd869ada957
         </div>
         
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
     <script src="js/student.js"></script>
+    <script src="js/submitForm.js"></script>
 </body>
 </html>

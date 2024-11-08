@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Student Request</title>
+    <link rel="stylesheet" href="css/request.css"> <!-- Link to external CSS -->
+</head>
+<body>
+    <div class="container">
+        <h1>Review Student Request</h1>
+
+        <div class="request-details">
+            <h2>Request Details</h2>
+            <div id="requestDetails">Loading...</div>
+        </div>
+
+        <label for="comments">Comments:</label>
+        <textarea id="comments" rows="5" placeholder="Enter your comments here..."></textarea>
+
+        <div class="buttons-container">
+            <button id="approveButton" onclick="confirmApprove('REQUEST_ID')">Approve</button>
+            <button id="rejectButton" onclick="confirmReject('REQUEST_ID')">Reject</button>
+        </div>
+
+        <div id="message" class="message"></div>
+
+        <!-- Modal Confirmation Dialog -->
+        <div id="confirmationDialog" class="modal" style="display:none;">
+            <div class="modal-content">
+                <p>Are you sure you want to <span id="actionType"></span> this request?</p>
+                <button onclick="finalizeApproval()">Yes</button>
+                <button onclick="cancelConfirmation()">No</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+    <script src="js/request.js"></script> <!-- Link to external JS -->
+</body>
+</html>
