@@ -177,7 +177,8 @@ app.patch('/forms/:id', async (req, res) => {
   try {
     const id = req.params.id;
     const status = req.body.approved;
-    const [result] = await conn.query('UPDATE forms SET approved = ? WHERE id = ?', [status, id]);
+    const comments = req.body.comments;
+    const [result] = await conn.query('UPDATE forms SET approved = ? , comments = ? WHERE id = ?', [status, comments, id]);
 
     if (result.affectedRows === 0) {
         return res.status(404).json({
