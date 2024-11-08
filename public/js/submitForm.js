@@ -1,7 +1,8 @@
-document.getElementById('submitRequestForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
+const BASE_URL = 'http://localhost:3000';
 
-    // Collect form data
+document.getElementById('submitRequestForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const subject = document.getElementById('subject').innerText;
     const fname = document.getElementById('fname').value;
     const lname = document.getElementById('lname').value;
     const id = document.getElementById('id').value;
@@ -18,55 +19,46 @@ document.getElementById('submitRequestForm').addEventListener('submit', async fu
     const courseName = document.getElementById('course_name').value;
     const section = document.getElementById('section').value;
     const reason = document.getElementById('reason').value;
-    const signName = document.getElementById('sign_name').value;
-    const date = document.getElementById('date').value;
 
-    // Create request data object
-    const requestData = {
-        fname,
-        lname,
-        id,
-        year,
-        addressNumber,
-        district,
-        country,
-        province,
-        phoneNumber,
-        phoneParent,
-        teacher,
-        courseSection,
-        courseCode,
-        courseName,
-        section,
-        reason,
-        signName,
-        date,
-        status: 'Pending'
+
+    const formData = {
+        studentID : id,
+        subject: subject,
+        firstName : fname,
+        lastName : lname,
+        year : year,
+        addressNumber : addressNumber,
+        contactNumber : phoneNumber,
+        parentContactNumber : phoneParent,
+        purpose : reason,
+        advisor : teacher,
+        semester : courseSection,
+        courseCode : courseCode,
+        courseName : courseName,
+        section : section,
+        subdistrict : district,
+        district : country,
+        province : province
     };
 
     try {
-        // Send POST request to API endpoint
-        const response = await fetch('/api/requests', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestData)
-        });
-
-        // Parse and handle the response
-        const result = await response.json();
-
-        if (response.ok) {
+        let res = await axios.post( `${BASE_URL}/forms`, formData);
+        console.log(res);
+    
+        if (res.status === 200 && res.data.status === 200) { 
             document.getElementById('message').textContent = 'Request submitted successfully!';
             document.getElementById('message').style.color = 'green';
             document.getElementById('submitRequestForm').reset();
         } else {
-            document.getElementById('message').textContent = result.message || 'Error submitting request.';
-            document.getElementById('message').style.color = 'red';
+            throw res.data.message;
         }
+    
     } catch (error) {
+        console.log(error.message)
         document.getElementById('message').textContent = 'An error occurred. Please try again later.';
-        document.getElementById('message').style.color = 'red';
     }
+});
+
+document.getElementById('redirectBtn').addEventListener('click', function() {
+    window.location.href = 'forms.html'; 
 });

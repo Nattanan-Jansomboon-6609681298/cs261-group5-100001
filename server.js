@@ -129,23 +129,23 @@ app.get('/forms/advisor/:name', async (req, res) => {
 
 
   //insert คําร้องลง database
-app.post('/forms', async (req, res) => {
-  try {
-    let forms = req.body;
-    await conn.query('INSERT INTO forms SET ?', forms);
-
-    res.json({
-      message : 'Insert Success', 
-      status : 200
-    });
-  }
-  catch(error) {
-    res.json({
-      errorMessage : error.message,
-      status : 500
-    })
-  }
-});
+  app.post('/forms', async (req, res) => {
+    try {
+      let forms = req.body;
+      await conn.query('INSERT INTO forms SET ?', forms);
+  
+      res.status(200).json({  
+        message: 'Insert Success', 
+        status: 200
+      });
+    }
+    catch(error) {
+      res.status(500).json({  
+        errorMessage: error.message,
+        status: 500
+      });
+    }
+  });
 
 
 //ลบคําร้องที่มี่ id = parameter ออกจาก database
@@ -173,7 +173,7 @@ app.delete('/forms/:id', async (req, res) => {
 });
 
 //แก้ไขสถานะคําร้องให้เป็น อนมัติ หรือ ไม่อนุมัติ
-app.patch('/forms/:id', async (req, res) => {
+app.put('/forms/:id', async (req, res) => {
   try {
     const id = req.params.id;
     const status = req.body.approved;
