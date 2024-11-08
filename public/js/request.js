@@ -1,97 +1,91 @@
-async function requestFormOutput(requestId) {
-    try {
-        const response = await fetch(`/api/requests/${requestId}`);
-        const request = await response.json();
+const BASE_URL = 'http://localhost:3000';
 
-        if (response.ok) {
-            document.getElementById('requestFormOutput').innerHTML = `
-        <h3>Request Form Output</h3>
-        <p>ชื่อ: <span>${data.fname}</span></p>
-        <p>นามสกุล: <span>${data.lname}</span></p>
-        <p>รหัสนักศึกษา: <span>${data.id}</span></p>
-        <p>ชั้นปี: <span>${data.year}</span></p>
-        <p>บ้านเลขที่: <span>${data.addressNumber}</span></p>
-        <p>ตำบล: <span>${data.district}</span></p>
-        <p>ประเทศ: <span>${data.country}</span></p>
-        <p>จังหวัด: <span>${data.province}</span></p>
-        <p>เบอร์โทรศัพท์: <span>${data.phoneNumber}</span></p>
-        <p>เบอร์โทรผู้ปกครอง: <span>${data.phoneParent}</span></p>
-        <p>อาจารย์ที่ปรึกษา: <span>${data.teacher}</span></p>
-        <p>หมวดวิชา: <span>${data.courseSection}</span></p>
-        <p>รหัสวิชา: <span>${data.courseCode}</span></p>
-        <p>ชื่อวิชา: <span>${data.courseName}</span></p>
-        <p>หมวดวิชา: <span>${data.section}</span></p>
-        <p>เหตุผล: <span>${data.reason}</span></p>
-        <p>ลงชื่อ: <span>${data.signName}</span></p>
-        <p>วันที่: <span>${data.date}</span></p>
-        <p>สถานะ: <span>${data.status}</span></p>
+// Display data from database
+async function loadRequestDetails(requestId) {
+    try {
+        const response = await axios.get(`${BASE_URL}/forms/${requestId}`);
+        const data = response.data[0];
+
+        if (response.status === 200) {
+            document.getElementById('requestDetails').innerHTML = `
+                <p><strong>ชื่อ:</strong> ${data.firstName}</p>
+                <p><strong>นามสกุล:</strong> ${data.lastName}</p>
+                <p><strong>รหัสนักศึกษา:</strong> ${data.studentID}</p>
+                <p><strong>ปีการศึกษา:</strong> ${data.year}</p>
+                <p><strong>เลขที่:</strong> ${data.addressNumber}</p>
+                <p><strong>ตำบล:</strong> ${data.subdistrict}</p>
+                <p><strong>อำเภอ:</strong> ${data.district}</p>
+                <p><strong>จังหวัด:</strong> ${data.province}</p>
+                <p><strong>เบอร์ติดต่อ:</strong> ${data.contactNumber}</p>
+                <p><strong>เบอร์ผู้ปกครอง:</strong> ${data.parentContactNumber}</p>
+                <p><strong>อาจารย์ที่ปรึกษา:</strong> ${data.advisor}</p>
+                <p><strong>ภาคการศึกษา:</strong> ${data.semester}</p>
+                <p><strong>รหัสวิชา:</strong> ${data.courseCode}</p>
+                <p><strong>ชื่อวิชา:</strong> ${data.courseName}</p>
+                <p><strong>หมู่เรียน:</strong> ${data.section}</p>
+                <p><strong>เหตุผล:</strong> ${data.purpose}</p>
+                <p><strong>สถานะ:</strong> ${data.status}</p>
             `;
         } else {
-            document.getElementById('requestFormOutput').textContent = 'Unable to load request details';
+            document.getElementById('requestDetails').textContent = 'ไม่สามารถโหลดรายละเอียดคำร้องได้';
         }
     } catch (error) {
-        document.getElementById('requestFormOutput').textContent = 'Error loading request';
+        document.getElementById('requestDetails').textContent = 'เกิดข้อผิดพลาดในการโหลดรายละเอียดคำร้อง';
+        console.error(error);
     }
 }
 
-// Load request details when the page is loaded
+// โหลดรายละเอียดคำร้องเมื่อหน้าเว็บโหลดเสร็จ
 document.addEventListener('DOMContentLoaded', () => {
-    loadRequestDetails('REQUEST_ID');  // Replace 'REQUEST_ID' with actual ID
+    const requestId = 'studentID';
+    loadRequestDetails(requestId);
 });
 
-// Show the confirmation dialog
+// แสดงกล่องยืนยันการอนุมัติ
 function confirmApprove(requestId) {
     document.getElementById('confirmationDialog').style.display = 'block';
-    document.getElementById('approveButton').setAttribute('disabled', true);  // Disable the approve button during confirmation
-    document.getElementById('rejectButton').setAttribute('disabled', true);   // Disable the reject button during confirmation
+    document.getElementById('actionType').textContent = 'approve';
     window.selectedRequestId = requestId;
     window.selectedAction = 'approve';
 }
 
 function confirmReject(requestId) {
     document.getElementById('confirmationDialog').style.display = 'block';
-    document.getElementById('approveButton').setAttribute('disabled', true);  // Disable the approve button during confirmation
-    document.getElementById('rejectButton').setAttribute('disabled', true);   // Disable the reject button during confirmation
+    document.getElementById('actionType').textContent = 'reject';
     window.selectedRequestId = requestId;
     window.selectedAction = 'reject';
 }
 
-// Finalize the approval or rejection after confirmation
+// ดำเนินการอนุมัติหรือปฏิเสธหลังจากยืนยัน
 async function finalizeApproval() {
     const comments = document.getElementById('comments').value;
     const requestId = window.selectedRequestId;
     const action = window.selectedAction;
 
     try {
-        const endpoint = `/api/requests/${requestId}/${action}`;
-        const response = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ comments })
+        const response = await axios.put(`${BASE_URL}/forms/${requestId}`, {
+            approved: action === 'approve',
+            comments: comments
         });
 
-        if (response.ok) {
-            document.getElementById('message').textContent = `Request ${action}d successfully!`;
+        if (response.status === 200) {
+            document.getElementById('message').textContent = `คำร้องถูก${action}สำเร็จ!`;
             document.getElementById('message').style.color = 'green';
+            loadRequestDetails(requestId); // รีเฟรชรายละเอียดคำร้อง
         } else {
-            document.getElementById('message').textContent = `Failed to ${action} request`;
+            document.getElementById('message').textContent = `ไม่สามารถ${action}คำร้องได้`;
             document.getElementById('message').style.color = 'red';
         }
     } catch (error) {
-        document.getElementById('message').textContent = `Error ${action}ing request`;
+        document.getElementById('message').textContent = `เกิดข้อผิดพลาดในการ${action}คำร้อง`;
         document.getElementById('message').style.color = 'red';
     }
 
-    // Refresh the page after action is completed
-    setTimeout(function() {
-        location.reload();  // Refresh the page to update the request status
-    }, 1000); // Add delay before page refresh
-
-    // Hide confirmation dialog and enable buttons
+    // ปิดกล่องยืนยันและเปิดใช้งานปุ่มใหม่
     cancelConfirmation();
 }
 
-// Cancel the confirmation and close the dialog
+// ยกเลิกการยืนยันและปิดกล่อง
 function cancelConfirmation() {
     document.getElementById('confirmationDialog').style.display = 'none';
     document.getElementById('approveButton').removeAttribute('disabled');
