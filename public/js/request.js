@@ -67,7 +67,10 @@ async function finalizeApproval() {
         const response = await fetch(endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ comments })
+            body: JSON.stringify({ 
+                comments,
+                email: userEmail // ส่งอีเมลของผู้ใช้ไปด้วย
+             })
         });
 
         if (response.ok) {
@@ -81,6 +84,7 @@ async function finalizeApproval() {
         document.getElementById('message').textContent = `Error ${action}ing request`;
         document.getElementById('message').style.color = 'red';
     }
+
 
     // Refresh the page after action is completed
     setTimeout(function() {
