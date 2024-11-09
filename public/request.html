@@ -7,10 +7,9 @@
     <link rel="stylesheet" href="./css/request.css">
 </head>
 <body>
-
     <div class="body_container">
         <div class="container">
-            <div class="main_box"id = "main_box">
+            <div class="main_box" id="main_box">
                 <div class="tu_logo">
                     <img src="./img/tu-logo.png" alt="">
                     <div class="text_logo">
@@ -21,34 +20,27 @@
                 <div class="intro">คำร้องจากนักศึกษา</div>
 
                 <div class="select_choice">
-                    <div id="requestsList">
-                        <!-- Request items will be inserted here -->
+                    <div id="requestDetails">
+                        <!-- รายละเอียดคำร้องจะถูกแทรกเข้ามาที่นี่ -->
                     </div>
-            
+
                     <div class="form-group">
                         <label for="comments">Comments</label>
                         <textarea id="comments" rows="5" placeholder="Enter your comments here..."></textarea>
                     </div>
-            
+
                     <div class="buttons-container">
-                        <button id="approveButton" onclick="confirmApprove('REQUEST_ID')">อนุมัติคำร้อง</button>
-                        <button id="rejectButton" onclick="confirmReject('REQUEST_ID')">ปฎิเสธคำร้อง</button>
+                        <button id="approveButton" onclick="handleRequest('approve')">อนุมัติคำร้อง</button>
+                        <button id="rejectButton" onclick="handleRequest('reject')">ปฏิเสธคำร้อง</button>
                     </div>
                 </div>
-                </div>
-                
             </div>
         </div>
-        <div id="confirmationDialog" class="modal" style="display:none;">
-            <div class="modal-content">
-                <p>Are you sure you want to <span id="actionType"></span> this request?</p>
-                <button onclick="finalizeApproval()">Yes</button>
-                <button onclick="cancelConfirmation()">No</button>
-            </div>
-        </div>
-    </div>
 
-    <script src="./js/request.js"></script>
+        <div id="message"></div>
+    </div>
     
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+    <script src="./js/request.js"></script>
 </body>
 </html>
