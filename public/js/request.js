@@ -9,6 +9,7 @@ async function loadRequestDetails() {
         const response = await axios.get(`${BASE_URL}/forms/edit/${searchKey}`);
         const data = response.data[0];
         userEmail = data.email;
+        console.log(userEmail)
         let status = data.approved;
         if(status) {
             if(status === '0' ) {
@@ -61,14 +62,14 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // แสดงกล่องยืนยันการอนุมัติ
-function confirmApprove(requestId) {
+function confirmApprove() {
     document.getElementById('confirmationDialog').style.display = 'block';
     document.getElementById('actionType').textContent = 'approve';
     window.selectedRequestId = searchKey;
     window.selectedAction = 'approve';
 }
 
-function confirmReject(requestId) {
+function confirmReject() {
     document.getElementById('confirmationDialog').style.display = 'block';
     document.getElementById('actionType').textContent = 'reject';
     window.selectedRequestId = searchKey;
