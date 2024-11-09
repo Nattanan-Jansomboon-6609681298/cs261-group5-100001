@@ -4,28 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Review Student Request</title>
-    <link rel="stylesheet" href="css/request.css"> <!-- Link to external CSS -->
+    <link rel="stylesheet" href="./css/request.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Review Student Request</h1>
 
-        <div class="request-details">
-            <h2>Request Details</h2>
-            <div id="requestDetails">Loading...</div>
+    <div class="body_container">
+        <div class="container">
+            <div class="main_box"id = "main_box">
+                <div class="tu_logo">
+                    <img src="./img/tu-logo.png" alt="">
+                    <div class="text_logo">
+                        <b>มหาวิทยาลัยธรรมศาสตร์</b>
+                        <p>คณะวิทยาศาสตร์และเทคโนโลยี</p>
+                    </div>
+                </div>
+                <div class="intro">คำร้องจากนักศึกษา</div>
+
+                <div class="select_choice">
+                    <div id="requestsList">
+                        <!-- Request items will be inserted here -->
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="comments">Comments</label>
+                        <textarea id="comments" rows="5" placeholder="Enter your comments here..."></textarea>
+                    </div>
+            
+                    <div class="buttons-container">
+                        <button id="approveButton" onclick="confirmApprove('REQUEST_ID')">อนุมัติคำร้อง</button>
+                        <button id="rejectButton" onclick="confirmReject('REQUEST_ID')">ปฎิเสธคำร้อง</button>
+                    </div>
+                </div>
+                </div>
+                
+            </div>
         </div>
-
-        <label for="comments">Comments:</label>
-        <textarea id="comments" rows="5" placeholder="Enter your comments here..." required></textarea>
-
-        <div class="buttons-container">
-            <button id="approveButton" onclick="confirmApprove('REQUEST_ID')">Approve</button>
-            <button id="rejectButton" onclick="confirmReject('REQUEST_ID')">Reject</button>
-        </div>
-
-        <div id="message" class="message"></div>
-
-        <!-- Modal Confirmation Dialog -->
         <div id="confirmationDialog" class="modal" style="display:none;">
             <div class="modal-content">
                 <p>Are you sure you want to <span id="actionType"></span> this request?</p>
@@ -34,7 +47,8 @@
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
-    <script src="js/request.js"></script> <!-- Link to external JS -->
+
+    <script src="./js/request.js"></script>
+    
 </body>
 </html>
