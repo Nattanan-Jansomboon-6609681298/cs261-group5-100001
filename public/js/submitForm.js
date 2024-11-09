@@ -92,3 +92,6 @@ document.getElementById('submit').addEventListener('click', () => {
     alert("คุณได้ส่งคำร้องเรียบร้อยแล้ว");
     window.location.href = `forms.html?searchKey=${studentID}&type=${type}`; 
 });
+document.getElementById('redirectBtn').addEventListener('click',function(){
+    window.location.href = `forms.html?searchKey=${studentID}&type=${type}`; 
+});

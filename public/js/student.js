@@ -18,27 +18,36 @@ bottonChoice.addEventListener("click",function(){
 
 
 registOradd.addEventListener("click",function(){
-    document.getElementById('subject').innerHTML = "จดทะเบียน/เพิ่มถอน";
+    document.getElementById('subject').innerHTML = "เรื่อง<b>จดทะเบียน/เพิ่มถอน<b>";
     showForm.classList.toggle('active');
+    reMove.classList.toggle('none');
+    reQuest.classList.toggle('none');
+    reSign.classList.toggle('none');
 });
 
 reMove.addEventListener("click",function(){
-    document.getElementById('subject').innerHTML = "ขอถอนวิชา/ถอนรายวิชา";
-    mainBox.classList.toggle('none');
+    document.getElementById('subject').innerHTML = "เรื่อง<b>ขอถอนวิชา/ถอนรายวิชา<b>";
     showForm.classList.toggle('active');
+    registOradd.classList.toggle('none');
+    reQuest.classList.toggle('none');
+    reSign.classList.toggle('none');
 });
 
 reQuest.addEventListener("click",function(){
-    document.getElementById('subject').innerHTML = "ขอจดทะเบียนรายวิชาศึกษานอกหลักสูตร";
-    mainBox.classList.toggle('none');
+    document.getElementById('subject').innerHTML = "เรื่อง<b>ขอจดทะเบียนรายวิชาศึกษานอกหลักสูตร</b>";
     showForm.classList.toggle('active');
+    registOradd.classList.toggle('none');
+    reMove.classList.toggle('none');
+    reSign.classList.toggle('none');
 });
 
 reSign.addEventListener("click",function(){
-    document.getElementById('subject').innerHTML = "ลาออก";
-    mainBox.classList.toggle('none');
+    document.getElementById('subject').innerHTML = "เรื่อง<b>ลาออก</b>";
     showForm.classList.toggle('active');
     showMoreForm.classList.toggle('active');
+    registOradd.classList.toggle('none');
+    reMove.classList.toggle('none');
+    reQuest.classList.toggle('none');
 });
 
 /*submitButton.addEventListener("click",function(){
