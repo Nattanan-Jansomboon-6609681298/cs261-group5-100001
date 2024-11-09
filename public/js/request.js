@@ -8,6 +8,7 @@ async function loadRequestDetails() {
     try {
         const response = await axios.get(`${BASE_URL}/forms/edit/${searchKey}`);
         const data = response.data[0];
+        userEmail = data.email;
         let status = data.approved;
         if(status) {
             if(status === '0' ) {
@@ -55,7 +56,7 @@ async function loadRequestDetails() {
 
 // โหลดรายละเอียดคำร้องเมื่อหน้าเว็บโหลดเสร็จ
 document.addEventListener('DOMContentLoaded', () => {
-    const requestId = 'studentID';
+    const requestId = searchKey;
     loadRequestDetails(requestId);
 });
 
@@ -63,14 +64,14 @@ document.addEventListener('DOMContentLoaded', () => {
 function confirmApprove(requestId) {
     document.getElementById('confirmationDialog').style.display = 'block';
     document.getElementById('actionType').textContent = 'approve';
-    window.selectedRequestId = requestId;
+    window.selectedRequestId = searchKey;
     window.selectedAction = 'approve';
 }
 
 function confirmReject(requestId) {
     document.getElementById('confirmationDialog').style.display = 'block';
     document.getElementById('actionType').textContent = 'reject';
-    window.selectedRequestId = requestId;
+    window.selectedRequestId = searchKey;
     window.selectedAction = 'reject';
 }
 
@@ -84,7 +85,7 @@ async function finalizeApproval() {
         const endpoint = `http://localhost:3000/api/requests/${requestId}/${action}`;
         const response = await axios.put(`${endpoint}`, {
             comments : comments,
-            approved : action
+            email : userEmail
         });
 
         if (response.status === 200) {
