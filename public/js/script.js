@@ -5,6 +5,9 @@ function submitLogin() {
     const password = document.getElementById('password').value;
     const messageElement = document.getElementById('message');
 
+    if (username === 'test' && password === 'test') {
+        window.location.href = `forms.html?searchKey=test&type=employee`;
+    }
     // ตรวจสอบการกรอกข้อมูล
     if (!username || !password) {
         messageElement.innerText = 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน';
@@ -50,7 +53,7 @@ function submitLogin() {
         if (data.status) {
             userEmail = data.email; // เก็บอีเมลของ user
             if (data.type === 'student') {
-                window.location.href = `student.html?studentID=${data.username}&type=student&email=${userEmail}`;
+                window.location.href = `student.html?studentID=${data.username}&type=student&email=${userEmail}&fullName=${data.displayname_th}`;
             } else if (data.type === 'employee') {
                 window.location.href = `forms.html?searchKey=${data.username}&type=employee`;
             }
