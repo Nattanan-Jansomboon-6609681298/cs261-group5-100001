@@ -34,9 +34,9 @@ reSign.addEventListener("click",function(){
     showMoreForm.classList.toggle('active');
 });
 
-submitButton.addEventListener("click",function(){
+/*submitButton.addEventListener("click",function(){
     mainBox.classList.toggle('none');
     showForm.classList.toggle('none');
     showMoreForm.classList.toggle('none');
     alert("คุณได้ยื่นคำร้องเรียบร้อยแล้ว");
-});
+});*/
