@@ -10,25 +10,25 @@ let submitButton = document.getElementById('submit');
 
 
 registOradd.addEventListener("click",function(){
-    document.getElementById('select_text').innerHTML = "จดทะเบียน/เพิ่มถอน";
+    document.getElementById('subject').innerHTML = "จดทะเบียน/เพิ่มถอน";
     mainBox.classList.toggle('none');
     showForm.classList.toggle('active');
 });
 
 reMove.addEventListener("click",function(){
-    document.getElementById('select_text').innerHTML = "ขอถอนวิชา/ถอนรายวิชา";
+    document.getElementById('subject').innerHTML = "ขอถอนวิชา/ถอนรายวิชา";
     mainBox.classList.toggle('none');
     showForm.classList.toggle('active');
 });
 
 reQuest.addEventListener("click",function(){
-    document.getElementById('select_text').innerHTML = "ขอจดทะเบียนรายวิชาศึกษานอกหลักสูตร";
+    document.getElementById('subject').innerHTML = "ขอจดทะเบียนรายวิชาศึกษานอกหลักสูตร";
     mainBox.classList.toggle('none');
     showForm.classList.toggle('active');
 });
 
 reSign.addEventListener("click",function(){
-    document.getElementById('select_text').innerHTML = "ลาออก";
+    document.getElementById('subject').innerHTML = "ลาออก";
     mainBox.classList.toggle('none');
     showForm.classList.toggle('active');
     showMoreForm.classList.toggle('active');
