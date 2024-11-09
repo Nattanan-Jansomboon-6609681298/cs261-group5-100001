@@ -26,7 +26,7 @@ async function loadRequestDetails() {
 
             // แสดงรายละเอียดคำร้อง
             document.getElementById('requestDetails').innerHTML = `
-                <div>
+                <div class = "form">
                     <p><strong>เรื่อง:</strong> ${data.subject}</p>
                     <p><strong>ชื่อ:</strong> ${data.firstName}</p>
                     <p><strong>นามสกุล:</strong> ${data.lastName}</p>
