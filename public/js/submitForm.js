@@ -3,6 +3,11 @@ const params = new URLSearchParams(window.location.search);
 const studentID = params.get('studentID');
 const type = params.get('type');
 const userEmail = params.get('email');
+const fullName = params.get('fullName');
+
+window.onload = () => {
+    autoFill()
+}
 
 document.getElementById('submit').addEventListener('click', async (e) => {
     const subject = document.getElementById('subject').innerText;
@@ -91,3 +96,13 @@ document.getElementById('submit').addEventListener('click', () => {
     alert("คุณได้ส่งคำร้องเรียบร้อยแล้ว");
     window.location.href = `forms.html?searchKey=${studentID}&type=${type}`; 
 });
+
+const autoFill = () => {
+    const nameArray = fullName.split(" ");
+    const fistName = nameArray[0];
+    const lastName = nameArray[1]; 
+
+    document.getElementById('fname').value = fistName;
+    document.getElementById('lname').value = lastName;
+    document.getElementById('id').value = studentID;
+}
