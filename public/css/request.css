@@ -224,3 +224,29 @@ textarea {
     margin-left: 20px;
     margin-bottom: 20px;
 }
+
+
+/* Show detail from database */
+.detail{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.request-item {
+    padding: 10px;
+    /* background-color: #f9f9f9; */
+    border-radius: 4px;
+    /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+}
+
+.request-item {
+    margin-bottom: 10px;
+}
+
+.request-item strong {
+    display: inline-block;
+    width: 120px;
+    font-weight: bold;
+    color: #333;
+}

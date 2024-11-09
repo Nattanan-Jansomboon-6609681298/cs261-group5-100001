@@ -26,15 +26,16 @@ async function loadRequestDetails() {
 
             // แสดงรายละเอียดคำร้อง
             document.getElementById('requestDetails').innerHTML = `
-                <div class = "form">
-                    <p><strong>เรื่อง:</strong> ${data.subject}</p>
-                    <p><strong>ชื่อ:</strong> ${data.firstName}</p>
-                    <p><strong>นามสกุล:</strong> ${data.lastName}</p>
-                    <p><strong>รหัสนักศึกษา:</strong> ${data.studentID}</p>
-                    <p><strong>ปีการศึกษา:</strong> ${data.year}</p>
-                    <p><strong>อีเมล:</strong> ${data.email}</p>
-                    <p><strong>เหตุผล:</strong> ${data.purpose}</p>
-                    <p><strong>สถานะ:</strong> ${status}</p>
+                <div class="detail">
+                    <div class="request-item" style="font-size: 20px;"><strong>เรื่อง:</strong> ${data.subject}</div>
+                    <div></div>
+                    <div class="request-item"><strong>ชื่อ:</strong> ${data.firstName}</div>
+                    <div class="request-item"><strong>นามสกุล:</strong> ${data.lastName}</div>
+                    <div class="request-item"><strong>รหัสนักศึกษา:</strong> ${data.studentID}</div>
+                    <div class="request-item"><strong>ปีการศึกษา:</strong> ${data.year}</div>
+                    <div class="request-item"><strong>อีเมล:</strong> ${data.email}</div>
+                    <div class="request-item"><strong>สถานะ:</strong> ${status}</div>
+                    <div class="request-item"><strong>เหตุผล:</strong> ${data.purpose}</div>
                 </div>
             `;
 
