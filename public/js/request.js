@@ -2,20 +2,33 @@ const BASE_URL = 'http://localhost:3000';
 const params = new URLSearchParams(window.location.search);
 const searchKey = params.get('searchKey'); 
 const type = params.get('type');
-console.log(searchKey)
-console.log(type)
+let userEmail;
 
 async function loadRequestDetails() {
-    if(type === 'employee') {
-        try {
-            const response = await axios.get(`${BASE_URL}/forms/advisor/${searchKey}`);
-            const data = response.data[0];
-            if(response.status === 200) {
-                document.getElementById('requestDetails').innerHTML = `
+    try {
+        const response = await axios.get(`${BASE_URL}/forms/edit/${searchKey}`);
+        const data = response.data[0];
+        let status = data.approved;
+        if(status) {
+            if(status === '0' ) {
+                status = 'ไม่อนุมัติ';
+            }
+            else {
+                status = 'อนุมัติ';
+            }
+
+        }else {
+            status = 'รอการอนุมัติ';
+        }
+
+        if (response.status === 200) {
+            document.getElementById('requestDetails').innerHTML = `
+                <p><strong>เรื่อง:</strong> ${data.subject}</p>
                 <p><strong>ชื่อ:</strong> ${data.firstName}</p>
                 <p><strong>นามสกุล:</strong> ${data.lastName}</p>
                 <p><strong>รหัสนักศึกษา:</strong> ${data.studentID}</p>
                 <p><strong>ปีการศึกษา:</strong> ${data.year}</p>
+                <p><strong>อีเมล:</strong> ${data.email}</p>
                 <p><strong>เลขที่:</strong> ${data.addressNumber}</p>
                 <p><strong>ตำบล:</strong> ${data.subdistrict}</p>
                 <p><strong>อำเภอ:</strong> ${data.district}</p>
@@ -28,48 +41,14 @@ async function loadRequestDetails() {
                 <p><strong>ชื่อวิชา:</strong> ${data.courseName  || '-'}</p>
                 <p><strong>หมู่เรียน:</strong> ${data.section  || '-'}</p>
                 <p><strong>เหตุผล:</strong> ${data.purpose}</p>
-                <p><strong>สถานะ:</strong> ${data.approved || 'รอการอนุมัติ'}</p>
+                <p><strong>สถานะ:</strong> ${status}</p>
             `;
-            } else {
-                document.getElementById('requestDetails').textContent = 'ไม่สามารถโหลดรายละเอียดคำร้องได้';
-            }
-        } catch (error) {
-            document.getElementById('requestDetails').textContent = 'เกิดข้อผิดพลาดในการโหลดรายละเอียดคำร้อง';
-            console.error(error);
+        } else {
+            document.getElementById('requestDetails').textContent = 'ไม่สามารถโหลดรายละเอียดคำร้องได้';
         }
-    }
-    else if (type === 'student') {
-        try {
-            const response = await axios.get(`${BASE_URL}/forms/${searchKey}`);
-            const data = response.data[0];
-
-            if (response.status === 200) {
-                document.getElementById('requestDetails').innerHTML = `
-                    <p><strong>ชื่อ:</strong> ${data.firstName}</p>
-                    <p><strong>นามสกุล:</strong> ${data.lastName}</p>
-                    <p><strong>รหัสนักศึกษา:</strong> ${data.studentID}</p>
-                    <p><strong>ปีการศึกษา:</strong> ${data.year}</p>
-                    <p><strong>เลขที่:</strong> ${data.addressNumber}</p>
-                    <p><strong>ตำบล:</strong> ${data.subdistrict}</p>
-                    <p><strong>อำเภอ:</strong> ${data.district}</p>
-                    <p><strong>จังหวัด:</strong> ${data.province}</p>
-                    <p><strong>เบอร์ติดต่อ:</strong> ${data.contactNumber}</p>
-                    <p><strong>เบอร์ผู้ปกครอง:</strong> ${data.parentContactNumber}</p>
-                    <p><strong>อาจารย์ที่ปรึกษา:</strong> ${data.advisor}</p>
-                    <p><strong>ภาคการศึกษา:</strong> ${data.semester}</p>
-                    <p><strong>รหัสวิชา:</strong> ${data.courseCode  || '-'}</p>
-                    <p><strong>ชื่อวิชา:</strong> ${data.courseName  || '-'}</p>
-                    <p><strong>หมู่เรียน:</strong> ${data.section  || '-'}</p>
-                    <p><strong>เหตุผล:</strong> ${data.purpose}</p>
-                    <p><strong>สถานะ:</strong> ${data.approved}</p>
-                `;
-            } else {
-                document.getElementById('requestDetails').textContent = 'ไม่สามารถโหลดรายละเอียดคำร้องได้';
-            }
-        } catch (error) {
-            document.getElementById('requestDetails').textContent = 'เกิดข้อผิดพลาดในการโหลดรายละเอียดคำร้อง';
-            console.error(error);
-        }
+    } catch (error) {
+        document.getElementById('requestDetails').textContent = 'เกิดข้อผิดพลาดในการโหลดรายละเอียดคำร้อง';
+        console.error(error);
     }
 
 }
@@ -102,14 +81,10 @@ async function finalizeApproval() {
     const action = window.selectedAction;
 
     try {
-        const endpoint = `/api/requests/${requestId}/${action}`;
-        const response = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                comments,
-                email: userEmail // ส่งอีเมลของผู้ใช้ไปด้วย
-             })
+        const endpoint = `http://localhost:3000/api/requests/${requestId}/${action}`;
+        const response = await axios.put(`${endpoint}`, {
+            comments : comments,
+            approved : action
         });
 
         if (response.status === 200) {
@@ -127,9 +102,9 @@ async function finalizeApproval() {
 
 
     // Refresh the page after action is completed
-    setTimeout(function() {
-        location.reload();  // Refresh the page to update the request status
-    }, 1000); // Add delay before page refresh
+    // setTimeout(function() {
+    //     location.reload();  // Refresh the page to update the request status
+    // }, 1000); // Add delay before page refresh
 
     // Hide confirmation dialog and enable buttons
     cancelConfirmation();
