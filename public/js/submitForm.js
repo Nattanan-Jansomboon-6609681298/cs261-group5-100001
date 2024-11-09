@@ -2,8 +2,7 @@ const BASE_URL = 'http://localhost:3000';
 const params = new URLSearchParams(window.location.search);
 const studentID = params.get('studentID'); 
 const type = params.get('type');
-console.log(studentID)
-console.log(type)
+const userEmail = params.get('email');
 document.getElementById('submitRequestForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const subject = document.getElementById('subject').innerText;
@@ -42,7 +41,8 @@ document.getElementById('submitRequestForm').addEventListener('submit', async (e
         section : section,
         subdistrict : district,
         district : country,
-        province : province
+        province : province,
+        email : userEmail
     };
 
     try {
@@ -63,6 +63,6 @@ document.getElementById('submitRequestForm').addEventListener('submit', async (e
     }
 });
 
-document.getElementById('redirectBtn').addEventListener('click', function() {
-    window.location.href = `request.html?searchKey=${studentID}&type=${type}`; 
+document.getElementById('redirectBtn').addEventListener('click', () => {
+    window.location.href = `forms.html?searchKey=${studentID}&type=${type}`; 
 });

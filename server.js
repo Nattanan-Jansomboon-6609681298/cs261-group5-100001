@@ -51,10 +51,10 @@ const transporter = nodemailer.createTransport({
 
   //คืนค่าแบบคําร้องใน database ที่มี id = parameter ที่ส่งมา
   //return type: array ของ object
-app.get('/forms/:studentID', async (req, res) => {
+app.get('/forms/edit/:id', async (req, res) => {
   try {
-    const studentID = req.params.studentID;
-    const result = await conn.query('SELECT * FROM forms WHERE studentID = ?', studentID);
+    const id = req.params.id;
+    const result = await conn.query('SELECT * FROM forms WHERE id = ?', id);
     if(result[0].length > 0) {
       res.json(result[0]);
     }
@@ -77,6 +77,33 @@ app.get('/forms/:studentID', async (req, res) => {
     }
   }
   });
+
+  app.get('/forms/:studentID', async (req, res) => {
+    try {
+      const id = req.params.studentID;
+      const result = await conn.query('SELECT * FROM forms WHERE studentID = ?', id);
+      if(result[0].length > 0) {
+        res.json(result[0]);
+      }
+      else {
+        throw new Error("Not Found");
+      }
+    } 
+    catch (error) {
+      if(error.message === "Not Found") {
+        res.status(404).json( {
+          status : 404,
+          ErrorMessage : error.message
+        });
+      }
+      else {
+        res.status(500).json( {
+          status : 500,
+          ErrorMessage : error.message
+        });
+      }
+    }
+    });
 
 
   //return ค่าทั้งหมดที่อยู่ใน database 
@@ -178,35 +205,35 @@ app.delete('/forms/:id', async (req, res) => {
 });
 
 //แก้ไขสถานะคําร้องให้เป็น อนมัติ หรือ ไม่อนุมัติ
-app.put('/forms/:id', async (req, res) => {
-  try {
-    const id = req.params.id;
-    const status = req.body.approved;
-    const comments = req.body.comments;
-    const [result] = await conn.query('UPDATE forms SET approved = ? , comments = ? WHERE id = ?', [status, comments, id]);
+// app.put('/forms/:id', async (req, res) => {
+//   try {
+//     const id = req.params.id;
+//     const status = req.body.approved;
+//     const comments = req.body.comments;
+//     const [result] = await conn.query('UPDATE forms SET approved = ? , comments = ? WHERE id = ?', [status, comments, id]);
 
-    if (result.affectedRows === 0) {
-        return res.status(404).json({
-        message: "Update Failed: Record not found" ,
-        status : 404
-      });
-    }
+//     if (result.affectedRows === 0) {
+//         return res.status(404).json({
+//         message: "Update Failed: Record not found" ,
+//         status : 404
+//       });
+//     }
     
-    res.json({
-      message: "Update Success",
-      affectedRows: result.affectedRows
-    });
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).json({
-      message: "Update Failed",
-      errorMessage: error.message,
-    });
-  }
-});
+//     res.json({
+//       message: "Update Success",
+//       affectedRows: result.affectedRows
+//     });
+//   } catch (error) {
+//     console.log(error.message);
+//     res.status(500).json({
+//       message: "Update Failed",
+//       errorMessage: error.message,
+//     });
+//   }
+// });
 
 
-app.post('/api/requests/:requestId/:action', async (req, res) => {
+app.put('/api/requests/:requestId/:action', async (req, res) => {
   const requestId = req.params.requestId;  // รหัสคำร้อง
   const action = req.params.action;  // action คือ approve หรือ reject
   const { comments, email } = req.body;  // คอมเมนต์และอีเมลที่ส่งมา
