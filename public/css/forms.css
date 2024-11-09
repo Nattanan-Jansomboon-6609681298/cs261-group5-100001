@@ -19,6 +19,7 @@ body{
 }
 
 .form {
+    border: 1px solid #D9D9D9;
     width: 100%;
     padding: 45px 30px 45px 30px;
 }
