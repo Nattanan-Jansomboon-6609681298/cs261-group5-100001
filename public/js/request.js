@@ -121,3 +121,131 @@ function cancelConfirmation() {
     document.getElementById('approveButton').removeAttribute('disabled');
     document.getElementById('rejectButton').removeAttribute('disabled');
 }
+
+//use for testing can improve and edit or use it to implement with the using one
+// Simulated data from database
+//อันนี้ผมใช้ทดสอบว่าตอนคลิกเลือกเพื่อยืนยันสามารถทำได้ไหม เอาขึ้นมาให้ก่อนเผื่อมีอะไรครับ
+/*
+const requests = [
+    {
+        id: 1,
+        studentName: "นายตัวอย่าง นามสกุล",
+        studentId: "6009610426",
+        faculty: "วิทยาศาสตร์และเทคโนโลยี",
+        major: "วิทยาการคอมพิวเตอร์",
+        year: "3",
+        requestType: "คำร้องทั่วไป",
+        details: "ขอเพิ่มรายวิชา CS240"
+    },
+    {
+        id: 2,
+        studentName: "นางสาวทดสอบ ระบบ",
+        studentId: "6009610427",
+        faculty: "วิทยาศาสตร์และเทคโนโลยี",
+        major: "วิทยาการคอมพิวเตอร์",
+        year: "2",
+        requestType: "คำร้องลาพักการศึกษา",
+        details: "ขอลาพักการศึกษา 1 ภาคการศึกษา เนื่องจากปัญหาสุขภาพ"
+    }
+];
+
+function createRequestElement(request) {
+    const previewDiv = document.createElement('div');
+    previewDiv.className = 'request-preview';
+    previewDiv.innerHTML = `
+        <div>
+            <strong>${request.studentName}</strong> - ${request.requestType}
+        </div>
+    `;
+
+const detailsDiv = document.createElement('div');
+detailsDiv.className = 'request-details';
+detailsDiv.innerHTML = `
+    <div class="form-group">
+        <label>ชื่อ-นามสกุล</label>
+        <input type="text" class="form-control" value="${request.studentName}" readonly>
+    </div>
+    <div class="form-group">
+        <label>รหัสนักศึกษา</label>
+        <input type="text" class="form-control" value="${request.studentId}" readonly>
+    </div>
+    <div class="form-group">
+        <label>คณะ</label>
+        <input type="text" class="form-control" value="${request.faculty}" readonly>
+    </div>
+    <div class="form-group">
+        <label>สาขา</label>
+        <input type="text" class="form-control" value="${request.major}" readonly>
+    </div>
+    <div class="form-group">
+        <label>ชั้นปี</label>
+        <input type="text" class="form-control" value="${request.year}" readonly>
+    </div>
+    <div class="form-group">
+        <label>ประเภทคำร้อง</label>
+        <input type="text" class="form-control" value="${request.requestType}" readonly>
+    </div>
+    <div class="form-group">
+        <label>รายละเอียด</label>
+        <textarea class="form-control" readonly>${request.details}</textarea>
+    </div>
+    `;
+
+    previewDiv.addEventListener('click', () => {
+        const wasActive = previewDiv.classList.contains('active');
+                
+                // Reset all previews
+                document.querySelectorAll('.request-preview').forEach(preview => {
+                    preview.classList.remove('active');
+                    preview.nextElementSibling.style.display = 'none';
+                });
+
+                if (!wasActive) {
+                    previewDiv.classList.add('active');
+                    detailsDiv.style.display = 'block';
+                }
+            });
+
+            const wrapper = document.createElement('div');
+            wrapper.appendChild(previewDiv);
+            wrapper.appendChild(detailsDiv);
+            return wrapper;
+        }
+
+        function populateRequests() {
+            const requestsList = document.getElementById('requestsList');
+            requests.forEach(request => {
+                requestsList.appendChild(createRequestElement(request));
+            });
+        }
+
+        function handleApproval(action) {
+            const activeRequest = document.querySelector('.request-preview.active');
+            if (!activeRequest) {
+                alert('กรุณาเลือกคำร้องที่ต้องการ ' + (action === 'approve' ? 'อนุมัติ' : 'ปฏิเสธ'));
+                return;
+            }
+
+            const comments = document.getElementById('comments').value;
+            if (action === 'reject' && !comments.trim()) {
+                alert('กรุณากรอกความคิดเห็นสำหรับการปฏิเสธคำร้อง');
+                return;
+            }
+
+            // Here you would typically send this data to your server
+            console.log('Action:', action);
+            console.log('Comments:', comments);
+            
+            // Simulating server response
+            setTimeout(() => {
+                alert(`${action === 'approve' ? 'อนุมัติ' : 'ปฏิเสธ'}คำร้องเรียบร้อยแล้ว`);
+                // Reset the form
+                activeRequest.classList.remove('active');
+                activeRequest.nextElementSibling.style.display = 'none';
+                document.getElementById('comments').value = '';
+            }, 1000);
+        }
+
+        // Initialize the page
+        window.onload = populateRequests;
+        */
