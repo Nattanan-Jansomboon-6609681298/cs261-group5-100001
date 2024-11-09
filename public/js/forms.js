@@ -99,7 +99,7 @@ window.onload = async () => {
             for (let i = 0; i < items.length; i++) {
                 items[i].addEventListener("click", (event) => {
                     const id = event.currentTarget.dataset.id; // Use event.currentTarget to get the data-id
-                    window.location.href = `request.html?searchKey=${id}`;
+                    window.location.href = `request.html?searchKey=${id}&userName=test`;
                 });
             }
             
