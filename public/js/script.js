@@ -1,10 +1,4 @@
-let info = document.getElementById('user_info_container');
-let login = document.getElementById('login');
-let userEmail;
 
-login.addEventListener("click", function () {
-    info.classList.toggle('active');
-});
 
 function submitLogin() {
     const username = document.getElementById('username').value;

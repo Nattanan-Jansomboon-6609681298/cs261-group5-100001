@@ -7,11 +7,18 @@ let reMove = document.getElementById('remove');
 let reQuest = document.getElementById('request');
 let reSign = document.getElementById('resign');
 let submitButton = document.getElementById('submit');
+let bottonChoice = document.getElementById('text_botton');
+
+bottonChoice.addEventListener("click",function(){
+    registOradd.classList.toggle('active');
+    reMove.classList.toggle('active');
+    reQuest.classList.toggle('active');
+    reSign.classList.toggle('active');
+})
 
 
 registOradd.addEventListener("click",function(){
     document.getElementById('subject').innerHTML = "จดทะเบียน/เพิ่มถอน";
-    mainBox.classList.toggle('none');
     showForm.classList.toggle('active');
 });
 

@@ -44,6 +44,7 @@ document.getElementById('submit').addEventListener('click', async (e) => {
         email: userEmail
     };
 
+
     try {
         let res = await axios.post(`${BASE_URL}/forms`, formData);
         if (res.status === 200 && res.data.status === 200) { 
@@ -60,6 +61,7 @@ document.getElementById('submit').addEventListener('click', async (e) => {
     }
 });
 
+
 document.getElementById('submit').addEventListener('click', () => {
     // ตรวจสอบฟิลด์ที่จำเป็น
     const requiredFields = [
@@ -75,7 +77,6 @@ document.getElementById('submit').addEventListener('click', () => {
         const fieldValue = document.getElementById(field).value.trim();
         if (!fieldValue) {
             isFormValid = false;
-            document.getElementById(field).style.border = '2px solid red'; // ไฮไลต์ฟิลด์ที่ขาดหายไป
         } else {
             document.getElementById(field).style.border = ''; // รีเซ็ตถ้ามีข้อมูล
         }
