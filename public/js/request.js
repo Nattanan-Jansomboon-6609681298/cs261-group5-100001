@@ -9,14 +9,22 @@ async function loadRequestDetails() {
     try {
         const response = await axios.get(`${BASE_URL}/forms/edit/${searchKey}`);
         
-        // Check if there's any data
+        // ตรวจสอบว่ามีข้อมูลหรือไม่
         if (response.data && response.data.length > 0) {
-            const data = response.data[0]; // Assuming the data is in the first element
+            const data = response.data[0];
             userEmail = data.email;
 
-            let status = data.approved === '1' ? 'อนุมัติ' : (data.approved === '0' ? 'ไม่อนุมัติ' : 'รอการอนุมัติ');
+            // แปลงสถานะให้ตรงกับที่ควรแสดง
+            let status;
+            if (data.approved == 1) {
+                status = 'อนุมัติ';
+            } else if (data.approved == 0) {
+                status = 'ไม่อนุมัติ';
+            } else {
+                status = 'รอการอนุมัติ';
+            }
 
-            // Display the request details
+            // แสดงรายละเอียดคำร้อง
             document.getElementById('requestDetails').innerHTML = `
                 <div>
                     <p><strong>เรื่อง:</strong> ${data.subject}</p>
@@ -30,32 +38,28 @@ async function loadRequestDetails() {
                 </div>
             `;
 
-            // Show comment section and buttons
+            // แสดงส่วนความคิดเห็นและปุ่ม
             document.getElementById('commentSection').style.display = 'block';
             document.getElementById('buttonsContainer').style.display = 'flex';
-            document.getElementById('noRequestsMessage').style.display = 'none'; // Hide 'No Request' message
+            document.getElementById('noRequestsMessage').style.display = 'none';
 
         } else {
-            // No requests found
-            document.getElementById('requestDetails').textContent = ''; // Clear any existing request details
-            document.getElementById('noRequestsMessage').style.display = 'block'; // Show 'No Request' message
-            document.getElementById('commentSection').style.display = 'none'; // Hide comment section
-            document.getElementById('buttonsContainer').style.display = 'none'; // Hide buttons
+            // ไม่พบคำร้อง
+            document.getElementById('requestDetails').textContent = '';
+            document.getElementById('noRequestsMessage').style.display = 'block';
+            document.getElementById('commentSection').style.display = 'none';
+            document.getElementById('buttonsContainer').style.display = 'none';
         }
 
     } catch (error) {
-        // Error loading the request details
+        // เกิดข้อผิดพลาดในการโหลดรายละเอียดคำร้อง
         document.getElementById('requestDetails').textContent = 'เกิดข้อผิดพลาดในการโหลดรายละเอียดคำร้อง';
-        document.getElementById('noRequestsMessage').style.display = 'none'; // Hide 'No Request' message
-        document.getElementById('commentSection').style.display = 'none'; // Hide comment section
-        document.getElementById('buttonsContainer').style.display = 'none'; // Hide buttons
+        document.getElementById('noRequestsMessage').style.display = 'none';
+        document.getElementById('commentSection').style.display = 'none';
+        document.getElementById('buttonsContainer').style.display = 'none';
         console.error(error);
     }
 }
-
-// เรียกเมื่อโหลดหน้าเว็บเสร็จ
-document.addEventListener('DOMContentLoaded', loadRequestDetails);
-
 
 // เรียกเมื่อโหลดหน้าเว็บเสร็จ
 document.addEventListener('DOMContentLoaded', loadRequestDetails);
@@ -71,7 +75,11 @@ async function handleRequest(action) {
         if (response.status === 200) {
             document.getElementById('message').textContent = `คำร้องถูก${action}สำเร็จ!`;
             document.getElementById('message').style.color = 'green';
-            loadRequestDetails(); // รีเฟรชรายละเอียดคำร้อง
+            
+            // โหลดรายละเอียดคำร้องใหม่เพื่ออัปเดตสถานะ
+            await loadRequestDetails();
+            
+            // เปลี่ยนเส้นทางไปยังหน้า forms.html หลังอัปเดตสถานะ
             window.location.href = `forms.html?searchKey=${userName}&type=employee`;
         } else {
             document.getElementById('message').textContent = `ไม่สามารถ${action}คำร้องได้`;
@@ -83,11 +91,3 @@ async function handleRequest(action) {
         document.getElementById('message').style.color = 'red';
     }
 }
-
-
-
-
-
-
-
-
