@@ -6,6 +6,7 @@ let mode = type === "student" ? "WATCH" : "EDIT";
 
 window.onload = async () => {
     if (mode === "WATCH") {
+        console.log(mode);
         try {
             const response = await axios.get(`${BASE_URL}/forms/${searchKey}`);
             console.log(response.data);
@@ -14,7 +15,18 @@ window.onload = async () => {
             let htmlData = '';
             for (let i = 0; i < response.data.length; i++) {
                 let form = response.data[i];
-                htmlData += `<div class="form">
+                if(form.comments) {
+                    htmlData += `<div class="form">
+                    <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                    <p><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
+                    <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
+                    <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
+                    <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                    <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>ข้อเสนอแนะ:</strong>${form.comments}</p>
+                </div>`;
+                }else {
+                    htmlData += `<div class="form">
                     <p><strong>เรื่อง:</strong> ${form.subject}</p>
                     <p><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
                     <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
@@ -22,6 +34,8 @@ window.onload = async () => {
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                     <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
                 </div>`;
+                }
+
             }
             formDOM.innerHTML = htmlData;
 
@@ -55,7 +69,19 @@ window.onload = async () => {
             let htmlData = '';
             for (let i = 0; i < response.data.length; i++) {
                 let form = response.data[i];
-                htmlData += `<div class="form edit" data-id ='${form.id}'>
+                if(form.comments) {
+                    htmlData += `<div class="form edit" data-id ='${form.id}'>
+                    <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                    <p><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
+                    <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
+                    <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
+                    <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                    <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>ข้อเสนอแนะ:</strong>${form.comments}</p>
+                </div>`;
+                }
+                else {
+                    htmlData += `<div class="form edit" data-id ='${form.id}'>
                     <p><strong>เรื่อง:</strong> ${form.subject}</p>
                     <p><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
                     <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
@@ -63,6 +89,7 @@ window.onload = async () => {
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                     <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
                 </div>`;
+                }
             }
             formDOM.innerHTML = htmlData;
 
@@ -80,6 +107,7 @@ window.onload = async () => {
                 const statusText = status.textContent.trim();
                 if (statusText === '0' || statusText === "ไม่อนุมัติ") {
                     status.textContent = "ไม่อนุมัติ";
+                    
                     status.style.color = 'red';
                 } else if (statusText === '1' || statusText === "อนุมัติ") {
                     status.textContent = "อนุมัติ";

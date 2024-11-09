@@ -1,10 +1,10 @@
 const BASE_URL = 'http://localhost:3000';
 const params = new URLSearchParams(window.location.search);
-const studentID = params.get('studentID'); 
+const studentID = params.get('studentID');
 const type = params.get('type');
 const userEmail = params.get('email');
-document.getElementById('submitRequestForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+
+document.getElementById('submit').addEventListener('click', async (e) => {
     const subject = document.getElementById('subject').innerText;
     const fname = document.getElementById('fname').value;
     const lname = document.getElementById('lname').value;
@@ -23,43 +23,40 @@ document.getElementById('submitRequestForm').addEventListener('submit', async (e
     const section = document.getElementById('section').value;
     const reason = document.getElementById('reason').value;
 
-
     const formData = {
-        studentID : id,
+        studentID: id,
         subject: subject,
-        firstName : fname,
-        lastName : lname,
-        year : year,
-        addressNumber : addressNumber,
-        contactNumber : phoneNumber,
-        parentContactNumber : phoneParent,
-        purpose : reason,
-        advisor : teacher,
-        semester : courseSection,
-        courseCode : courseCode,
-        courseName : courseName,
-        section : section,
-        subdistrict : district,
-        district : country,
-        province : province,
-        email : userEmail
+        firstName: fname,
+        lastName: lname,
+        year: year,
+        addressNumber: addressNumber,
+        contactNumber: phoneNumber,
+        parentContactNumber: phoneParent,
+        purpose: reason,
+        advisor: teacher,
+        semester: courseSection,
+        courseCode: courseCode,
+        courseName: courseName,
+        section: section,
+        subdistrict: district,
+        district: country,
+        province: province,
+        email: userEmail
     };
 
     try {
-        let res = await axios.post( `${BASE_URL}/forms`, formData);
-        console.log(res);
-    
+        let res = await axios.post(`${BASE_URL}/forms`, formData);
         if (res.status === 200 && res.data.status === 200) { 
             document.getElementById('message').textContent = 'Request submitted successfully!';
             document.getElementById('message').style.color = 'green';
             document.getElementById('submitRequestForm').reset();
         } else {
-            throw res.data.message;
+            throw new Error(res.data.message);
         }
-    
     } catch (error) {
-        console.log(error.message)
         document.getElementById('message').textContent = 'An error occurred. Please try again later.';
+        document.getElementById('message').style.color = 'red';
+        console.error(error);
     }
 });
 
