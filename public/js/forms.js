@@ -116,12 +116,15 @@ window.onload = async () => {
                     status.style.color = 'purple';
                 }
             });
+        formDOM.classList.toggle('active');
 
         } catch (error) {
             console.error("Error fetching forms:", error);
             const formDOM = document.getElementById('forms-container');
             if (formDOM) {
-                formDOM.innerHTML += "<p>Error loading data. Please try again later.</p>";
+                //formDOM.innerHTML += "<p>Error loading data. Please try again later.</p>";
+                document.getElementById('test_text_show').classList.toggle('active');
+                formDOM.classList.toggle('none');
             }
         }
     }
