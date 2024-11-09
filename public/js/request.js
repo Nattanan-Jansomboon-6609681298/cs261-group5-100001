@@ -2,6 +2,7 @@ const BASE_URL = 'http://localhost:3000';
 const params = new URLSearchParams(window.location.search);
 const searchKey = params.get('searchKey'); 
 const type = params.get('type');
+const userName = params.get('userName');
 let userEmail;
 
 async function loadRequestDetails() {
@@ -93,11 +94,13 @@ async function finalizeApproval() {
             document.getElementById('message').textContent = `คำร้องถูก${action}สำเร็จ!`;
             document.getElementById('message').style.color = 'green';
             loadRequestDetails(requestId); // รีเฟรชรายละเอียดคำร้อง
+            window.location.href = `forms.html?searchKey=${userName}&type=employee`;
         } else {
             document.getElementById('message').textContent = `ไม่สามารถ${action}คำร้องได้`;
             document.getElementById('message').style.color = 'red';
         }
     } catch (error) {
+        console.log(error)
         document.getElementById('message').textContent = `เกิดข้อผิดพลาดในการ${action}คำร้อง`;
         document.getElementById('message').style.color = 'red';
     }
