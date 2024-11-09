@@ -8,31 +8,54 @@ let userEmail;
 async function loadRequestDetails() {
     try {
         const response = await axios.get(`${BASE_URL}/forms/edit/${searchKey}`);
-        const data = response.data[0];
-        userEmail = data.email;
+        
+        // Check if there's any data
+        if (response.data && response.data.length > 0) {
+            const data = response.data[0]; // Assuming the data is in the first element
+            userEmail = data.email;
 
-        let status = data.approved === '1' ? 'อนุมัติ' : (data.approved === '0' ? 'ไม่อนุมัติ' : 'รอการอนุมัติ');
+            let status = data.approved === '1' ? 'อนุมัติ' : (data.approved === '0' ? 'ไม่อนุมัติ' : 'รอการอนุมัติ');
 
-        if (response.status === 200) {
-            document.getElementById('requestDetails').innerHTML = `<div>
-                <p><strong>เรื่อง:</strong> ${data.subject}</p>
-                <p><strong>ชื่อ:</strong> ${data.firstName}</p>
-                <p><strong>นามสกุล:</strong> ${data.lastName}</p>
-                <p><strong>รหัสนักศึกษา:</strong> ${data.studentID}</p>
-                <p><strong>ปีการศึกษา:</strong> ${data.year}</p>
-                <p><strong>อีเมล:</strong> ${data.email}</p>
-                <p><strong>เหตุผล:</strong> ${data.purpose}</p>
-                <p><strong>สถานะ:</strong> ${status}</p>
+            // Display the request details
+            document.getElementById('requestDetails').innerHTML = `
                 <div>
+                    <p><strong>เรื่อง:</strong> ${data.subject}</p>
+                    <p><strong>ชื่อ:</strong> ${data.firstName}</p>
+                    <p><strong>นามสกุล:</strong> ${data.lastName}</p>
+                    <p><strong>รหัสนักศึกษา:</strong> ${data.studentID}</p>
+                    <p><strong>ปีการศึกษา:</strong> ${data.year}</p>
+                    <p><strong>อีเมล:</strong> ${data.email}</p>
+                    <p><strong>เหตุผล:</strong> ${data.purpose}</p>
+                    <p><strong>สถานะ:</strong> ${status}</p>
+                </div>
             `;
+
+            // Show comment section and buttons
+            document.getElementById('commentSection').style.display = 'block';
+            document.getElementById('buttonsContainer').style.display = 'flex';
+            document.getElementById('noRequestsMessage').style.display = 'none'; // Hide 'No Request' message
+
         } else {
-            document.getElementById('requestDetails').textContent = 'ไม่สามารถโหลดรายละเอียดคำร้องได้';
+            // No requests found
+            document.getElementById('requestDetails').textContent = ''; // Clear any existing request details
+            document.getElementById('noRequestsMessage').style.display = 'block'; // Show 'No Request' message
+            document.getElementById('commentSection').style.display = 'none'; // Hide comment section
+            document.getElementById('buttonsContainer').style.display = 'none'; // Hide buttons
         }
+
     } catch (error) {
+        // Error loading the request details
         document.getElementById('requestDetails').textContent = 'เกิดข้อผิดพลาดในการโหลดรายละเอียดคำร้อง';
+        document.getElementById('noRequestsMessage').style.display = 'none'; // Hide 'No Request' message
+        document.getElementById('commentSection').style.display = 'none'; // Hide comment section
+        document.getElementById('buttonsContainer').style.display = 'none'; // Hide buttons
         console.error(error);
     }
 }
+
+// เรียกเมื่อโหลดหน้าเว็บเสร็จ
+document.addEventListener('DOMContentLoaded', loadRequestDetails);
+
 
 // เรียกเมื่อโหลดหน้าเว็บเสร็จ
 document.addEventListener('DOMContentLoaded', loadRequestDetails);
@@ -60,3 +83,11 @@ async function handleRequest(action) {
         document.getElementById('message').style.color = 'red';
     }
 }
+
+
+
+
+
+
+
+
