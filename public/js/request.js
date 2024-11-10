@@ -25,19 +25,41 @@ async function loadRequestDetails() {
             }
 
             // แสดงรายละเอียดคำร้อง
-            document.getElementById('requestDetails').innerHTML = `
+            if(data.subject === 'ขอถอนวิชา/ถอนรายวิชา' || data.subject === 'ขอจดทะเบียนรายวิชาศึกษานอกหลักสูตร' || data.subject === 'จดทะเบียน/เพิ่มถอน') {
+                document.getElementById('requestDetails').innerHTML = `
                 <div class="detail">
-                    <div class="request-item" style="font-size: 20px;"><strong>เรื่อง:</strong> ${data.subject}</div>
-                    <div></div>
+                    <div class="request-item"><strong>เรื่อง:</strong> ${data.subject}</div>
                     <div class="request-item"><strong>ชื่อ:</strong> ${data.firstName}</div>
                     <div class="request-item"><strong>นามสกุล:</strong> ${data.lastName}</div>
                     <div class="request-item"><strong>รหัสนักศึกษา:</strong> ${data.studentID}</div>
-                    <div class="request-item"><strong>ปีการศึกษา:</strong> ${data.year}</div>
+                    <div class="request-item"><strong>ชั้นปี:</strong> ${data.year}</div>
                     <div class="request-item"><strong>อีเมล:</strong> ${data.email}</div>
+                    <div class="request-item"><strong>อาจารย์ที่ปรึกษา:</strong> ${data.advisor}</div>
+                    <div class="request-item"><strong>ภาคเรียนที่:</strong> ${data.semester}</div>
+                    <div class="request-item"><strong>รหัสวิชา:</strong> ${data.courseCode}</div>
+                    <div class="request-item"><strong>ชื่อวิชา:</strong> ${data.courseName}</div>
+                    <div class="request-item"><strong>Section:</strong> ${data.section}</div>
                     <div class="request-item"><strong>สถานะ:</strong> ${status}</div>
                     <div class="request-item"><strong>เหตุผล:</strong> ${data.purpose}</div>
                 </div>
             `;
+            }
+            else {
+                document.getElementById('requestDetails').innerHTML = `
+                <div class="detail">
+                    <div class="request-item"><strong>เรื่อง:</strong> ${data.subject}</div>
+                    <div class="request-item"><strong>ชื่อ:</strong> ${data.firstName}</div>
+                    <div class="request-item"><strong>นามสกุล:</strong> ${data.lastName}</div>
+                    <div class="request-item"><strong>รหัสนักศึกษา:</strong> ${data.studentID}</div>
+                    <div class="request-item"><strong>ชั้นปี:</strong> ${data.year}</div>
+                    <div class="request-item"><strong>อีเมล:</strong> ${data.email}</div>
+                    <div class="request-item"><strong>อาจารย์ที่ปรึกษา:</strong> ${data.advisor}</div>
+                    <div class="request-item"><strong>สถานะ:</strong> ${status}</div>
+                    <div class="request-item"><strong>เหตุผล:</strong> ${data.purpose}</div>
+                </div>
+            `;
+            }
+
 
             // แสดงส่วนความคิดเห็นและปุ่ม
             document.getElementById('commentSection').style.display = 'block';
@@ -74,8 +96,8 @@ async function handleRequest(action) {
         const response = await axios.put(endpoint, { comments, email: userEmail });
 
         if (response.status === 200) {
-            document.getElementById('message').textContent = `คำร้องถูก${action}สำเร็จ!`;
-            document.getElementById('message').style.color = 'green';
+            alert(`คําร้องถูก${action}สําเร็จ!`);
+
             
             // โหลดรายละเอียดคำร้องใหม่เพื่ออัปเดตสถานะ
             await loadRequestDetails();
@@ -83,12 +105,10 @@ async function handleRequest(action) {
             // เปลี่ยนเส้นทางไปยังหน้า forms.html หลังอัปเดตสถานะ
             window.location.href = `forms.html?searchKey=${userName}&type=employee`;
         } else {
-            document.getElementById('message').textContent = `ไม่สามารถ${action}คำร้องได้`;
-            document.getElementById('message').style.color = 'red';
+            alert(`ไม่สามารถ${action}คำร้องได้`);
         }
     } catch (error) {
         console.log(error);
-        document.getElementById('message').textContent = `เกิดข้อผิดพลาดในการ${action}คำร้อง`;
-        document.getElementById('message').style.color = 'red';
+        alert(`เกิดข้อผิดพลาดในการ${action}คำร้อง`);
     }
 }

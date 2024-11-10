@@ -4,9 +4,7 @@
     padding: 0;
     box-sizing: border-box;
 }
-p {
-    line-height: 35px;
-}
+
 
 /* General Body Styling */
 body {
@@ -242,6 +240,7 @@ textarea {
     border-radius: 4px;
     /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
     word-wrap: break-word;
+    font-size: 1rem;
 }
 
 .request-item {
@@ -257,4 +256,6 @@ textarea {
 
 #requestDetails{
     line-height: 20px;
+    margin-bottom: 20px;
 }
+
