@@ -8,6 +8,8 @@ let reQuest = document.getElementById('request');
 let reSign = document.getElementById('resign');
 let submitButton = document.getElementById('submit');
 let bottonChoice = document.getElementById('text_botton');
+let reSignHide = document.getElementById('resign_hide');
+
 
 bottonChoice.addEventListener("click",function(){
     registOradd.classList.toggle('active');
@@ -48,6 +50,7 @@ reSign.addEventListener("click",function(){
     registOradd.classList.toggle('none');
     reMove.classList.toggle('none');
     reQuest.classList.toggle('none');
+    reSignHide.classList.toggle('none');
 });
 
 /*submitButton.addEventListener("click",function(){
