@@ -10,48 +10,87 @@ window.onload = () => {
     autoFill()
 }
 
+// แก้ไขเพื่อหยุดการรีเฟรชหน้าเมื่อส่งข้อมูล
 document.getElementById('submit').addEventListener('click', async (e) => {
+    e.preventDefault(); 
+
     const subjectNotSplit = document.getElementById('subject').innerText;
-    const fname = document.getElementById('fname').value;
-    const lname = document.getElementById('lname').value;
-    const id = document.getElementById('id').value;
-    const year = document.getElementById('year').value;
-    const addressNumber = document.getElementById('address_number').value;
-    const district = document.getElementById('district').value;
-    const country = document.getElementById('country').value;
-    const province = document.getElementById('province').value;
-    const phoneNumber = document.getElementById('phone_number').value;
-    const phoneParent = document.getElementById('phone_parent').value;
-    const teacher = document.getElementById('teacher').value;
-    const courseSection = document.getElementById('course_section').value;
-    const courseCode = document.getElementById('course_code').value;
-    const courseName = document.getElementById('course_name').value;
-    const section = document.getElementById('section').value;
-    const reason = document.getElementById('reason').value;
     const subjectsplit = subjectNotSplit.split("เรื่อง");
     subject = subjectsplit[1];
+    let formData;
+    if(subject === 'ลาออก') {
+        const fname = document.getElementById('fname').value;
+        const lname = document.getElementById('lname').value;
+        const id = document.getElementById('id').value;
+        const year = document.getElementById('year').value;
+        const addressNumber = document.getElementById('address_number').value;
+        const district = document.getElementById('district').value;
+        const country = document.getElementById('country').value;
+        const province = document.getElementById('province').value;
+        const phoneNumber = document.getElementById('phone_number').value;
+        const phoneParent = document.getElementById('phone_parent').value;
+        const teacher = document.getElementById('teacher').value;
+        const courseSection = document.getElementById('academic_semester').value;
+        const reason = document.getElementById('reason').value;
 
-    const formData = {
-        studentID: id,
-        subject: subject,
-        firstName: fname,
-        lastName: lname,
-        year: year,
-        addressNumber: addressNumber,
-        contactNumber: phoneNumber,
-        parentContactNumber: phoneParent,
-        purpose: reason,
-        advisor: teacher,
-        semester: courseSection,
-        courseCode: courseCode,
-        courseName: courseName,
-        section: section,
-        subdistrict: district,
-        district: country,
-        province: province,
-        email: userEmail
-    };
+        formData = {
+            studentID: id,
+            subject: subject,
+            firstName: fname,
+            lastName: lname,
+            year: year,
+            addressNumber: addressNumber,
+            contactNumber: phoneNumber,
+            parentContactNumber: phoneParent,
+            purpose: reason,
+            advisor: teacher,
+            semester: courseSection,
+            subdistrict: district,
+            district: country,
+            province: province,
+            email: userEmail
+        };
+    }
 
+    else {
+        const fname = document.getElementById('fname').value;
+        const lname = document.getElementById('lname').value;
+        const id = document.getElementById('id').value;
+        const year = document.getElementById('year').value;
+        const addressNumber = document.getElementById('address_number').value;
+        const district = document.getElementById('district').value;
+        const country = document.getElementById('country').value;
+        const province = document.getElementById('province').value;
+        const phoneNumber = document.getElementById('phone_number').value;
+        const phoneParent = document.getElementById('phone_parent').value;
+        const teacher = document.getElementById('teacher').value;
+        const courseSection = document.getElementById('course_section').value;
+        const reason = document.getElementById('reason').value;
+        const courseCode = document.getElementById('course_code').value;
+        const courseName = document.getElementById('course_name').value;
+        const section = document.getElementById('section').value;
+
+        formData = {
+            studentID: id,
+            subject: subject,
+            firstName: fname,
+            lastName: lname,
+            year: year,
+            addressNumber: addressNumber,
+            contactNumber: phoneNumber,
+            parentContactNumber: phoneParent,
+            purpose: reason,
+            advisor: teacher,
+            semester: courseSection,
+            courseCode: courseCode,
+            courseName: courseName,
+            section: section,
+            subdistrict: district,
+            district: country,
+            province: province,
+            email: userEmail
+        };
+    }
 
     try {
         let res = await axios.post(`${BASE_URL}/forms`, formData);
@@ -77,8 +116,7 @@ document.getElementById('submit').addEventListener('click', () => {
             'fname', 'lname', 'id', 'year', 
             'address_number', 'district', 'country', 
             'province', 'phone_number', 'phone_parent', 
-            'teacher', 'academic_semester', 'semester_year', 
-            'amount', 'reason'
+            'teacher', 'academic_semester', 'semester_year', 'reason'
         ];
     } else {
         requiredFields = [
