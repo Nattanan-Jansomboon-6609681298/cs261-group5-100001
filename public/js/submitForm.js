@@ -4,6 +4,7 @@ const studentID = params.get('studentID');
 const type = params.get('type');
 const userEmail = params.get('email');
 const fullName = params.get('fullName');
+let subject = '';
 
 window.onload = () => {
     autoFill()
@@ -28,7 +29,7 @@ document.getElementById('submit').addEventListener('click', async (e) => {
     const section = document.getElementById('section').value;
     const reason = document.getElementById('reason').value;
     const subjectsplit = subjectNotSplit.split("เรื่อง");
-    const subject = subjectsplit[1];
+    subject = subjectsplit[1];
 
     const formData = {
         studentID: id,
@@ -70,14 +71,24 @@ document.getElementById('submit').addEventListener('click', async (e) => {
 
 
 document.getElementById('submit').addEventListener('click', () => {
-    // ตรวจสอบฟิลด์ที่จำเป็น
-    const requiredFields = [
-        'fname', 'lname', 'id', 'year', 
-        'address_number', 'district', 'country', 
-        'province', 'phone_number', 'phone_parent', 
-        'teacher', 'course_section', 'course_code', 
-        'course_name', 'section', 'reason'
-    ];
+    let requiredFields;
+    if(subject === 'ลาออก') {
+        requiredFields = [
+            'fname', 'lname', 'id', 'year', 
+            'address_number', 'district', 'country', 
+            'province', 'phone_number', 'phone_parent', 
+            'teacher', 'academic_semester', 'semester_year', 
+            'amount', 'reason'
+        ];
+    } else {
+        requiredFields = [
+            'fname', 'lname', 'id', 'year', 
+            'address_number', 'district', 'country', 
+            'province', 'phone_number', 'phone_parent', 
+            'teacher', 'course_section', 'course_code', 
+            'course_name', 'section', 'reason'
+        ];
+    }
 
     let isFormValid = true;
     for (let field of requiredFields) {
