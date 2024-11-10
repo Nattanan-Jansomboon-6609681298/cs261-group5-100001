@@ -10,7 +10,7 @@ window.onload = () => {
 }
 
 document.getElementById('submit').addEventListener('click', async (e) => {
-    const subject = document.getElementById('subject').innerText;
+    const subjectNotSplit = document.getElementById('subject').innerText;
     const fname = document.getElementById('fname').value;
     const lname = document.getElementById('lname').value;
     const id = document.getElementById('id').value;
@@ -27,6 +27,8 @@ document.getElementById('submit').addEventListener('click', async (e) => {
     const courseName = document.getElementById('course_name').value;
     const section = document.getElementById('section').value;
     const reason = document.getElementById('reason').value;
+    const subjectsplit = subjectNotSplit.split("เรื่อง");
+    const subject = subjectsplit[1];
 
     const formData = {
         studentID: id,

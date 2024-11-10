@@ -9,53 +9,87 @@ async function loadRequestDetails() {
     try {
         const response = await axios.get(`${BASE_URL}/forms/edit/${searchKey}`);
         
-        // Check if there's any data
+        // ตรวจสอบว่ามีข้อมูลหรือไม่
         if (response.data && response.data.length > 0) {
-            const data = response.data[0]; // Assuming the data is in the first element
+            const data = response.data[0];
             userEmail = data.email;
 
-            let status = data.approved === '1' ? 'อนุมัติ' : (data.approved === '0' ? 'ไม่อนุมัติ' : 'รอการอนุมัติ');
+            // แปลงสถานะให้ตรงกับที่ควรแสดง
+            let status;
+            if (data.approved == 1) {
+                status = 'อนุมัติ';
+            } else if (data.approved == 0) {
+                status = 'ไม่อนุมัติ';
+            } else {
+                status = 'รอการอนุมัติ';
+            }
 
-            // Display the request details
-            document.getElementById('requestDetails').innerHTML = `
-                <div>
-                    <p><strong>เรื่อง:</strong> ${data.subject}</p>
-                    <p><strong>ชื่อ:</strong> ${data.firstName}</p>
-                    <p><strong>นามสกุล:</strong> ${data.lastName}</p>
-                    <p><strong>รหัสนักศึกษา:</strong> ${data.studentID}</p>
-                    <p><strong>ปีการศึกษา:</strong> ${data.year}</p>
-                    <p><strong>อีเมล:</strong> ${data.email}</p>
-                    <p><strong>เหตุผล:</strong> ${data.purpose}</p>
-                    <p><strong>สถานะ:</strong> ${status}</p>
+            // แสดงรายละเอียดคำร้อง
+            if (data.subject === 'ขอถอนวิชา/ถอนรายวิชา' || data.subject === 'ขอจดทะเบียนรายวิชาศึกษานอกหลักสูตร' || data.subject === 'จดทะเบียน/เพิ่มถอน') {
+                document.getElementById('requestDetails').innerHTML = `
+                <div class="detail">
+                    <div class="request-item"><strong>เรื่อง:</strong> ${data.subject}</div>
+                    <div class="request-item"><strong>ชื่อ:</strong> ${data.firstName}</div>
+                    <div class="request-item"><strong>นามสกุล:</strong> ${data.lastName}</div>
+                    <div class="request-item"><strong>รหัสนักศึกษา:</strong> ${data.studentID}</div>
+                    <div class="request-item"><strong>ชั้นปี:</strong> ${data.year}</div>
+                    <div class="request-item"><strong>อีเมล:</strong> ${data.email}</div>
+                    <div class="request-item"><strong>อาจารย์ที่ปรึกษา:</strong> ${data.advisor}</div>
+                    <div class="request-item"><strong>ภาคเรียนที่:</strong> ${data.semester}</div>
+                    <div class="request-item"><strong>รหัสวิชา:</strong> ${data.courseCode}</div>
+                    <div class="request-item"><strong>ชื่อวิชา:</strong> ${data.courseName}</div>
+                    <div class="request-item"><strong>Section:</strong> ${data.section}</div>
+                    <div class="request-item"><strong>สถานะ:</strong> ${status}</div>
+                    <div class="request-item"><strong>เหตุผล:</strong> ${data.purpose}</div>
+                    <div class="request-item"><strong>ข้อเสนอแนะ:</strong> ${data.comments || '-'}</div>
                 </div>
-            `;
+                `;
+            } else {
+                document.getElementById('requestDetails').innerHTML = `
+                <div class="detail">
+                    <div class="request-item"><strong>เรื่อง:</strong> ${data.subject}</div>
+                    <div class="request-item"><strong>ชื่อ:</strong> ${data.firstName}</div>
+                    <div class="request-item"><strong>นามสกุล:</strong> ${data.lastName}</div>
+                    <div class="request-item"><strong>รหัสนักศึกษา:</strong> ${data.studentID}</div>
+                    <div class="request-item"><strong>ชั้นปี:</strong> ${data.year}</div>
+                    <div class="request-item"><strong>อีเมล:</strong> ${data.email}</div>
+                    <div class="request-item"><strong>อาจารย์ที่ปรึกษา:</strong> ${data.advisor}</div>
+                    <div class="request-item"><strong>สถานะ:</strong> ${status}</div>
+                    <div class="request-item"><strong>เหตุผล:</strong> ${data.purpose}</div>
+                    <div class="request-item"><strong>ข้อเสนอแนะ:</strong> ${data.comments || '-'}</div>
+                </div>
+                `;
+            }
 
-            // Show comment section and buttons
-            document.getElementById('commentSection').style.display = 'block';
-            document.getElementById('buttonsContainer').style.display = 'flex';
-            document.getElementById('noRequestsMessage').style.display = 'none'; // Hide 'No Request' message
+            // ตรวจสอบสถานะคำร้องและซ่อนปุ่มหากคำร้องได้รับการอนุมัติหรือปฏิเสธแล้ว
+            if (data.approved !== null) {
+                document.getElementById('commentSection').style.display = 'none';
+                document.getElementById('buttonsContainer').style.display = 'none';
+            } else {
+                // แสดงส่วนความคิดเห็นและปุ่มหากยังไม่มีการอนุมัติหรือปฏิเสธ
+                document.getElementById('commentSection').style.display = 'block';
+                document.getElementById('buttonsContainer').style.display = 'flex';
+            }
+
+            document.getElementById('noRequestsMessage').style.display = 'none';
 
         } else {
-            // No requests found
-            document.getElementById('requestDetails').textContent = ''; // Clear any existing request details
-            document.getElementById('noRequestsMessage').style.display = 'block'; // Show 'No Request' message
-            document.getElementById('commentSection').style.display = 'none'; // Hide comment section
-            document.getElementById('buttonsContainer').style.display = 'none'; // Hide buttons
+            // ไม่พบคำร้อง
+            document.getElementById('requestDetails').textContent = '';
+            document.getElementById('noRequestsMessage').style.display = 'block';
+            document.getElementById('commentSection').style.display = 'none';
+            document.getElementById('buttonsContainer').style.display = 'none';
         }
 
     } catch (error) {
-        // Error loading the request details
+        // เกิดข้อผิดพลาดในการโหลดรายละเอียดคำร้อง
         document.getElementById('requestDetails').textContent = 'เกิดข้อผิดพลาดในการโหลดรายละเอียดคำร้อง';
-        document.getElementById('noRequestsMessage').style.display = 'none'; // Hide 'No Request' message
-        document.getElementById('commentSection').style.display = 'none'; // Hide comment section
-        document.getElementById('buttonsContainer').style.display = 'none'; // Hide buttons
+        document.getElementById('noRequestsMessage').style.display = 'none';
+        document.getElementById('commentSection').style.display = 'none';
+        document.getElementById('buttonsContainer').style.display = 'none';
         console.error(error);
     }
 }
-
-// เรียกเมื่อโหลดหน้าเว็บเสร็จ
-document.addEventListener('DOMContentLoaded', loadRequestDetails);
-
 
 // เรียกเมื่อโหลดหน้าเว็บเสร็จ
 document.addEventListener('DOMContentLoaded', loadRequestDetails);
@@ -64,30 +98,29 @@ document.addEventListener('DOMContentLoaded', loadRequestDetails);
 async function handleRequest(action) {
     const comments = document.getElementById('comments').value;
 
+    // ตรวจสอบว่ามีการกรอกความคิดเห็นหรือไม่
+    if (!comments.trim()) {
+        alert('กรุณากรอกความคิดเห็นก่อนดำเนินการอนุมัติหรือปฏิเสธ');
+        return;
+    }
+
     try {
         const endpoint = `${BASE_URL}/api/requests/${searchKey}/${action}`;
         const response = await axios.put(endpoint, { comments, email: userEmail });
 
         if (response.status === 200) {
-            document.getElementById('message').textContent = `คำร้องถูก${action}สำเร็จ!`;
-            document.getElementById('message').style.color = 'green';
-            loadRequestDetails(); // รีเฟรชรายละเอียดคำร้อง
+            alert(`คำร้องถูก${action}สำเร็จ!`);
+
+            // โหลดรายละเอียดคำร้องใหม่เพื่ออัปเดตสถานะ
+            await loadRequestDetails();
+            
+            // เปลี่ยนเส้นทางไปยังหน้า forms.html หลังอัปเดตสถานะ
             window.location.href = `forms.html?searchKey=${userName}&type=employee`;
         } else {
-            document.getElementById('message').textContent = `ไม่สามารถ${action}คำร้องได้`;
-            document.getElementById('message').style.color = 'red';
+            alert(`ไม่สามารถ${action}คำร้องได้`);
         }
     } catch (error) {
         console.log(error);
-        document.getElementById('message').textContent = `เกิดข้อผิดพลาดในการ${action}คำร้อง`;
-        document.getElementById('message').style.color = 'red';
+        alert(`เกิดข้อผิดพลาดในการ${action}คำร้อง`);
     }
 }
-
-
-
-
-
-
-
-
