@@ -25,7 +25,7 @@ async function loadRequestDetails() {
             }
 
             // แสดงรายละเอียดคำร้อง
-            if(data.subject === 'ขอถอนวิชา/ถอนรายวิชา' || data.subject === 'ขอจดทะเบียนรายวิชาศึกษานอกหลักสูตร' || data.subject === 'จดทะเบียน/เพิ่มถอน') {
+            if (data.subject === 'ขอถอนวิชา/ถอนรายวิชา' || data.subject === 'ขอจดทะเบียนรายวิชาศึกษานอกหลักสูตร' || data.subject === 'จดทะเบียน/เพิ่มถอน') {
                 document.getElementById('requestDetails').innerHTML = `
                 <div class="detail">
                     <div class="request-item"><strong>เรื่อง:</strong> ${data.subject}</div>
@@ -42,9 +42,8 @@ async function loadRequestDetails() {
                     <div class="request-item"><strong>สถานะ:</strong> ${status}</div>
                     <div class="request-item"><strong>เหตุผล:</strong> ${data.purpose}</div>
                 </div>
-            `;
-            }
-            else {
+                `;
+            } else {
                 document.getElementById('requestDetails').innerHTML = `
                 <div class="detail">
                     <div class="request-item"><strong>เรื่อง:</strong> ${data.subject}</div>
@@ -57,13 +56,19 @@ async function loadRequestDetails() {
                     <div class="request-item"><strong>สถานะ:</strong> ${status}</div>
                     <div class="request-item"><strong>เหตุผล:</strong> ${data.purpose}</div>
                 </div>
-            `;
+                `;
             }
 
+            // ตรวจสอบสถานะคำร้องและซ่อนปุ่มหากคำร้องได้รับการอนุมัติหรือปฏิเสธแล้ว
+            if (data.approved !== null) {
+                document.getElementById('commentSection').style.display = 'none';
+                document.getElementById('buttonsContainer').style.display = 'none';
+            } else {
+                // แสดงส่วนความคิดเห็นและปุ่มหากยังไม่มีการอนุมัติหรือปฏิเสธ
+                document.getElementById('commentSection').style.display = 'block';
+                document.getElementById('buttonsContainer').style.display = 'flex';
+            }
 
-            // แสดงส่วนความคิดเห็นและปุ่ม
-            document.getElementById('commentSection').style.display = 'block';
-            document.getElementById('buttonsContainer').style.display = 'flex';
             document.getElementById('noRequestsMessage').style.display = 'none';
 
         } else {
