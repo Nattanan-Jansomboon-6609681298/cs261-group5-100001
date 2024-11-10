@@ -41,6 +41,7 @@ async function loadRequestDetails() {
                     <div class="request-item"><strong>Section:</strong> ${data.section}</div>
                     <div class="request-item"><strong>สถานะ:</strong> ${status}</div>
                     <div class="request-item"><strong>เหตุผล:</strong> ${data.purpose}</div>
+                    <div class="request-item"><strong>ข้อเสนอแนะ:</strong> ${data.comments || '-'}</div>
                 </div>
                 `;
             } else {
@@ -55,6 +56,7 @@ async function loadRequestDetails() {
                     <div class="request-item"><strong>อาจารย์ที่ปรึกษา:</strong> ${data.advisor}</div>
                     <div class="request-item"><strong>สถานะ:</strong> ${status}</div>
                     <div class="request-item"><strong>เหตุผล:</strong> ${data.purpose}</div>
+                    <div class="request-item"><strong>ข้อเสนอแนะ:</strong> ${data.comments || '-'}</div>
                 </div>
                 `;
             }
