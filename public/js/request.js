@@ -96,14 +96,19 @@ document.addEventListener('DOMContentLoaded', loadRequestDetails);
 async function handleRequest(action) {
     const comments = document.getElementById('comments').value;
 
+    // ตรวจสอบว่ามีการกรอกความคิดเห็นหรือไม่
+    if (!comments.trim()) {
+        alert('กรุณากรอกความคิดเห็นก่อนดำเนินการอนุมัติหรือปฏิเสธ');
+        return;
+    }
+
     try {
         const endpoint = `${BASE_URL}/api/requests/${searchKey}/${action}`;
         const response = await axios.put(endpoint, { comments, email: userEmail });
 
         if (response.status === 200) {
-            alert(`คําร้องถูก${action}สําเร็จ!`);
+            alert(`คำร้องถูก${action}สำเร็จ!`);
 
-            
             // โหลดรายละเอียดคำร้องใหม่เพื่ออัปเดตสถานะ
             await loadRequestDetails();
             
