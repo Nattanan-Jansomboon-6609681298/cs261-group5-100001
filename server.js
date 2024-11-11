@@ -14,20 +14,58 @@ app.use(express.static(path.join(__dirname, 'public')));
 let conn = null;
 
 // เชื่อม database
-const connectMySQL = async () => {
-  try {
-    conn = await mysql.createConnection({
-      host: process.env.DB_HOST || 'localhost', 
-      user: 'root',
-      password: 'root',
-      database: 'mydb',
-      port: 3306
-    });
-    console.log("Database connected successfully");
-  } catch (error) {
-    console.error("Database connection failed:", error.message);
+const connectMySQL = async (retries = 5) => {
+  while (retries) {
+    try {
+      conn = await mysql.createConnection({
+        host: process.env.DB_HOST || 'localhost',
+        user: process.env.DB_USER || 'root',
+        password: process.env.DB_PASSWORD || 'root',
+        database: process.env.DB_NAME || 'mydb',
+        port: process.env.DB_PORT || 3306
+      });
+      console.log("Connected to MySQL server");
+      await conn.query(`CREATE DATABASE IF NOT EXISTS mydb`);
+      console.log("Database 'mydb' checked/created");
+      await conn.query(`USE mydb`);
+      await conn.query(`
+        CREATE TABLE IF NOT EXISTS forms (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          studentID VARCHAR(11) NOT NULL,
+          subject TEXT NOT NULL,
+          firstName VARCHAR(255) NOT NULL,
+          lastName VARCHAR(255) NOT NULL,
+          year TINYINT NOT NULL,
+          addressNumber VARCHAR(50) NOT NULL,
+          subdistrict VARCHAR(65) NOT NULL,
+          district VARCHAR(60) NOT NULL,
+          province VARCHAR(50) NOT NULL,
+          contactNumber VARCHAR(10) NOT NULL,
+          parentContactNumber VARCHAR(10) NOT NULL,
+          advisor VARCHAR(255) NOT NULL,
+          semester TINYINT,
+          courseCode VARCHAR(10),
+          courseName VARCHAR(70),
+          section BIGINT,
+          purpose TEXT NOT NULL,
+          date DATETIME DEFAULT CURRENT_TIMESTAMP,
+          approved TINYINT(1),
+          comments TEXT,
+          email VARCHAR(80)
+        )
+      `);
+      console.log("Table 'forms' checked/created");
+      break;
+    } catch (error) {
+      console.error("Database connection failed:", error.message);
+      retries -= 1;
+      console.log(`Retries left: ${retries}`);
+      await new Promise(res => setTimeout(res, 5000)); // รอ 5 วินาทีแล้วลองใหม่
+    }
   }
+  if (!retries) throw new Error('Unable to connect to MySQL');
 };
+
 
 
 app.listen(PORT, async () => {
