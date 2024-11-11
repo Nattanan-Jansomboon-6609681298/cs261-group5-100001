@@ -149,8 +149,18 @@ app.get('/forms/advisor/:name', async (req, res) => {
   try {
     const name = req.params.name;
     const [rows] = await executeQuery('SELECT * FROM forms WHERE advisor = ?', [name]);
-    res.json(rows.length > 0 ? rows : []);
+    
+    if(rows.length > 0) {
+      return res.json(rows);
+    }
+    throw new Error("Not Found");
   } catch (error) {
+    if(error.message === 'Not Found') {
+      res.status(404).json({
+        message : error.message,
+        status : 404
+      });
+    }
     res.status(500).json({
       message: "something went wrong!",
       errorMessage: error.message

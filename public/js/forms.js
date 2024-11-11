@@ -118,7 +118,7 @@ window.onload = async () => {
                     status.style.color = 'purple';
                 }
             });
-        //formDOM.classList.toggle('active');
+        formDOM.classList.toggle('active');
 
         } catch (error) {
             console.error("Error fetching forms:", error);
