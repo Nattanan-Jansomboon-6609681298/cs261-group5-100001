@@ -93,6 +93,44 @@ document.getElementById('submit').addEventListener('click', async (e) => {
     }
 
     try {
+        let requiredFields;
+        if(subject === 'ลาออก') {
+            requiredFields = [
+                'fname', 'lname', 'id', 'year', 
+                'address_number', 'district', 'country', 
+                'province', 'phone_number', 'phone_parent', 
+                'teacher', 'academic_semester', 'semester_year', 'reason'
+            ];
+        } else {
+            requiredFields = [
+                'fname', 'lname', 'id', 'year', 
+                'address_number', 'district', 'country', 
+                'province', 'phone_number', 'phone_parent', 
+                'teacher', 'course_section', 'course_code', 
+                'course_name', 'section', 'reason'
+            ];
+        }
+    
+        let isFormValid = true;
+        for (let field of requiredFields) {
+            const fieldValue = document.getElementById(field).value.trim();
+            if (!fieldValue) {
+                isFormValid = false;
+                document.getElementById(field).style.border = '1px solid red'; // รีเซ็ตถ้ามีข้อมูล
+            } else {
+                document.getElementById(field).style.border = ''; // รีเซ็ตถ้ามีข้อมูล
+            }
+        }
+    
+        // แสดงการแจ้งเตือนถ้าข้อมูลไม่ครบถ้วน
+        if (!isFormValid) {
+            alert("กรุณากรอกข้อมูลให้ครบทุกช่องที่จำเป็น");
+            return; // หยุดการทำงานถ้าข้อมูลไม่ครบ
+        }
+    
+        // ถ้าข้อมูลครบถ้วน
+        alert("คุณได้ส่งคำร้องเรียบร้อยแล้ว");
+        window.location.href = `forms.html?searchKey=${studentID}&type=${type}`; 
         let res = await axios.post(`${BASE_URL}/forms`, formData);
         if (res.status === 200 && res.data.status === 200) { 
             document.getElementById('message').textContent = 'Request submitted successfully!';
@@ -109,45 +147,6 @@ document.getElementById('submit').addEventListener('click', async (e) => {
 });
 
 
-document.getElementById('submit').addEventListener('click', () => {
-    let requiredFields;
-    if(subject === 'ลาออก') {
-        requiredFields = [
-            'fname', 'lname', 'id', 'year', 
-            'address_number', 'district', 'country', 
-            'province', 'phone_number', 'phone_parent', 
-            'teacher', 'academic_semester', 'semester_year', 'reason'
-        ];
-    } else {
-        requiredFields = [
-            'fname', 'lname', 'id', 'year', 
-            'address_number', 'district', 'country', 
-            'province', 'phone_number', 'phone_parent', 
-            'teacher', 'course_section', 'course_code', 
-            'course_name', 'section', 'reason'
-        ];
-    }
-
-    let isFormValid = true;
-    for (let field of requiredFields) {
-        const fieldValue = document.getElementById(field).value.trim();
-        if (!fieldValue) {
-            isFormValid = false;
-        } else {
-            document.getElementById(field).style.border = ''; // รีเซ็ตถ้ามีข้อมูล
-        }
-    }
-
-    // แสดงการแจ้งเตือนถ้าข้อมูลไม่ครบถ้วน
-    if (!isFormValid) {
-        alert("กรุณากรอกข้อมูลให้ครบทุกช่องที่จำเป็น");
-        return; // หยุดการทำงานถ้าข้อมูลไม่ครบ
-    }
-
-    // ถ้าข้อมูลครบถ้วน
-    alert("คุณได้ส่งคำร้องเรียบร้อยแล้ว");
-    window.location.href = `forms.html?searchKey=${studentID}&type=${type}`; 
-});
 document.getElementById('redirectBtn').addEventListener('click',function(){
     window.location.href = `forms.html?searchKey=${studentID}&type=${type}`; 
 });
