@@ -24,6 +24,7 @@ window.onload = async () => {
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                     <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
                     <p><strong>ข้อเสนอแนะ:</strong>${form.comments}</p>
+                    ${form.approved !== null ? '' : `<button class="cancel-button" data-id="${form.id}">ยกเลิกคำร้อง</button>`}
                 </div>`;
                 }else {
                     htmlData += `<div class="form">
@@ -33,6 +34,7 @@ window.onload = async () => {
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                     <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    ${form.approved !== null ? '' : `<button class="cancel-button" data-id="${form.id}">ยกเลิกคำร้อง</button>`}
                 </div>`;
                 }
 
@@ -80,6 +82,7 @@ window.onload = async () => {
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                     <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
                     <p><strong>ข้อเสนอแนะ:</strong>${form.comments}</p>
+                    ${form.approved !== null ? '' : `<button class="cancel-button" data-id="${form.id}">ยกเลิกคำร้อง</button>`}
                 </div>`;
                 }
                 else {
@@ -90,6 +93,7 @@ window.onload = async () => {
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                     <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    ${form.approved !== null ? '' : `<button class="cancel-button" data-id="${form.id}">ยกเลิกคำร้อง</button>`}
                 </div>`;
                 }
             }
@@ -130,4 +134,36 @@ window.onload = async () => {
             }
         }
     }
-};
+}
+
+// การยกเลิกคำร้อง
+document.addEventListener('click', async function(event) {
+    // ตรวจสอบว่าปุ่มที่ถูกคลิกมีคลาส cancel-button หรือไม่
+    if (event.target && event.target.classList.contains('cancel-button')) {
+        const formId = event.target.getAttribute('data-id'); // ดึงค่า data-id ของคำร้องที่เลือก
+        if (!formId) {
+            alert("ไม่พบคำร้องที่เลือก");
+            return;
+        }
+
+        const confirmCancel = confirm("คุณต้องการยกเลิกคำร้องนี้หรือไม่?");
+        if (!confirmCancel) return;
+
+        try {
+            const response = await axios.delete(`${BASE_URL}/forms/${formId}`);
+            if (response.status === 200) {
+                alert("ยกเลิกคำร้องเรียบร้อยแล้ว");
+                // หลีกเลี่ยงการรีเฟรชหน้าทั้งหมด
+                const formContainer = event.target.closest('.form'); // หาคอนเทนเนอร์ของคำร้องที่ถูกยกเลิก
+                if (formContainer) {
+                    formContainer.remove(); // ลบคำร้องที่ถูกยกเลิกออกจากหน้าจอ
+                }
+            } else {
+                alert("เกิดข้อผิดพลาดในการยกเลิกคำร้อง");
+            }
+        } catch (error) {
+            console.error("Error cancelling request:", error);
+            alert("ไม่สามารถยกเลิกคำร้องได้");
+        }
+    }
+});
