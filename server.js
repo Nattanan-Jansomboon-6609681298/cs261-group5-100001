@@ -50,6 +50,9 @@ const connectMySQL = async (retries = 5) => {
           purpose TEXT NOT NULL,
           date DATETIME DEFAULT CURRENT_TIMESTAMP,
           approved TINYINT(1),
+          advisor_approved TINYINT(1),
+          teacher_approved TINYINT(1),
+          dean_approved TINYINT(1),
           comments TEXT,
           email VARCHAR(80)
         )
@@ -143,7 +146,6 @@ app.get('/forms', async (req, res) => {
     });
   }
 });
-
 
 
 // คืนค่าข้อมูลตามที่ปรึกษา
