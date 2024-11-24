@@ -62,7 +62,7 @@ async function loadRequestDetails() {
             }
 
             // ตรวจสอบสถานะคำร้องและซ่อนปุ่มหากคำร้องได้รับการอนุมัติหรือปฏิเสธแล้ว
-            if (data.approved !== null) {
+            if (data.approved == 1 || data.approved == 0) {
                 document.getElementById('commentSection').style.display = 'none';
                 document.getElementById('buttonsContainer').style.display = 'none';
             } else {

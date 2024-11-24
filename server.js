@@ -144,29 +144,54 @@ app.get('/forms', async (req, res) => {
   }
 });
 
+
+
 // คืนค่าข้อมูลตามที่ปรึกษา
 app.get('/forms/advisor/:name', async (req, res) => {
   try {
     const name = req.params.name;
     const [rows] = await executeQuery('SELECT * FROM forms WHERE advisor = ?', [name]);
     
-    if(rows.length > 0) {
+    if (rows.length > 0) {
       return res.json(rows);
     }
     throw new Error("Not Found");
   } catch (error) {
-    if(error.message === 'Not Found') {
-      res.status(404).json({
-        message : error.message,
-        status : 404
+    if (error.message === 'Not Found') {
+      return res.status(404).json({
+        message: error.message,
+        status: 404
       });
     }
-    res.status(500).json({
-      message: "something went wrong!",
+    return res.status(500).json({
+      message: "Something went wrong!",
       errorMessage: error.message
     });
   }
 });
+
+// app.get('/forms/advisor/:name', async (req, res) => {
+//   try {
+//     const name = req.params.name;
+//     const [rows] = await executeQuery('SELECT * FROM forms WHERE advisor = ?', [name]);
+    
+//     if(rows.length > 0) {
+//       return res.json(rows);
+//     }
+//     throw new Error("Not Found");
+//   } catch (error) {
+//     if(error.message === 'Not Found') {
+//       res.status(404).json({
+//         message : error.message,
+//         status : 404
+//       });
+//     }
+//     res.status(500).json({
+//       message: "something went wrong!",
+//       errorMessage: error.message
+//     });
+//   }
+// }); 
 
 // insert ข้อมูลใหม่ลง database
 app.post('/forms', async (req, res) => {
