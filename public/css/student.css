@@ -185,6 +185,7 @@ textarea{
     width: 150px;
     height: 50px;
     cursor: pointer;
+    margin-right: 20px;
 }
 
 .example_btn {
