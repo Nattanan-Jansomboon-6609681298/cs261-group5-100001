@@ -55,6 +55,20 @@ const connectMySQL = async (retries = 5) => {
         )
       `);
       console.log("Table 'forms' checked/created");
+      await conn.query(`
+        CREATE TABLE IF NOT EXISTS appointment (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          studentID VARCHAR(11) NOT NULL,
+          firstName VARCHAR(255) NOT NULL,
+          lastName VARCHAR(255) NOT NULL,
+          advisor VARCHAR(255) NOT NULL,
+          advisor_date DATETIME NOT NULL,
+          teacher VARCHAR(255),
+          teacher_date DATETIME,
+          approved TINYINT(1)
+        )
+      `);
+      console.log("Table 'appointment' checked/created");
       break;
     } catch (error) {
       console.error("Database connection failed:", error.message);
@@ -237,3 +251,48 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
     res.status(500).json({ message: 'Error processing request', error: error.message });
   }
 });
+
+app.post('/appointment', async(req, res) => {
+  let data = req.body;
+  try {
+    await executeQuery('INSERT INTO appointment SET ?', data);
+    res.status(200).json({
+      message : "Insert Success",
+      status : 200
+    });
+  } catch(error) {
+    res.status(500).json({
+      errorMessage : "Something went wrong.",
+      status : 500,
+      error 
+    });
+  }
+});
+
+app.get('/appointment', async (req, res) => {
+  try {
+    const [rows] = await executeQuery('SELECT * FROM appointment');
+    res.json(rows.length > 0 ? rows : []);
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      ErrorMessage: error.message
+    });
+  }
+});
+
+// app.post('/forms', async (req, res) => {
+//   try {
+//     let forms = req.body;
+//     await executeQuery('INSERT INTO forms SET ?', forms);
+//     res.status(200).json({
+//       message: 'Insert Success',
+//       status: 200
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       errorMessage: error.message,
+//       status: 500
+//     });
+//   }
+// });
