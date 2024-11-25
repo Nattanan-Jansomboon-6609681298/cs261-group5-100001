@@ -13,9 +13,9 @@ async function loadRequestDetails() {
             userEmail = data.email;
 
             let status;
-            if (data.approved == 1) {
+            if (data.teacher_approved == 1) {
                 status = 'อนุมัติ';
-            } else if (data.approved == 0) {
+            } else if (data.teacher_approved == 0) {
                 status = 'ไม่อนุมัติ';
             } else {
                 status = 'รอการอนุมัติ';
@@ -27,7 +27,10 @@ async function loadRequestDetails() {
                 <div class="request-item"><strong>ชื่อ:</strong> ${data.firstName}</div>
                 <div class="request-item"><strong>นามสกุล:</strong> ${data.lastName}</div>
                 <div class="request-item"><strong>รหัสนักศึกษา:</strong> ${data.studentID}</div>
+                <div class="request-item"><strong>ชั้นปี:</strong> ${data.year}</div>
+                <div class="request-item"><strong>ภาคเรียนที่:</strong> ${data.semester}</div>
                 <div class="request-item"><strong>สถานะ:</strong> ${status}</div>
+                <div class="request-item"><strong>เหตุผล:</strong> ${data.purpose}</div>
             </div>`;
         } else {
             document.getElementById('requestDetails').textContent = '';
