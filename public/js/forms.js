@@ -14,27 +14,41 @@ window.onload = async () => {
             console.log(response.data);
             const formDOM = document.getElementById('forms-container');
 
+            //ตรวจสอบสถานะ
+            const getStatus = (approvalValue) => {
+                if (approvalValue == 1) return 'อนุมัติ';
+                if (approvalValue == 0) return 'ไม่อนุมัติ';
+                return 'รอการอนุมัติ';
+            };
+
             let htmlData = '';
             for (let i = 0; i < response.data.length; i++) {
                 let form = response.data[i];
                 if(form.comments) {
-                    htmlData += `<div class="form">
-                    <p><strong>เรื่อง:</strong> ${form.subject}</p>
-                    <p><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
-                    <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
-                    <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
-                    <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                    <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                    <p><strong>ข้อเสนอแนะ:</strong>${form.comments}</p>
-                </div>`;
+                    htmlData += 
+                    `<div class="form">
+                        <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                        <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
+                        <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
+                        <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
+                        <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                        <p><strong>สถานะ:</strong></p>
+                        <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                        <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                        <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+                        ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
+                    </div>`;
                 }else {
                     htmlData += `<div class="form">
                     <p><strong>เรื่อง:</strong> ${form.subject}</p>
-                    <p><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
-                    <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
-                    <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
-                    <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                    <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                        <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
+                        <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
+                        <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
+                        <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                        <p><strong>สถานะ:</strong></p>
+                        <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                        <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                        <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
                 </div>`;
                 }
 
@@ -70,28 +84,41 @@ window.onload = async () => {
             console.log(response.data);
             const formDOM = document.getElementById('forms-container');
 
+            //ตรวจสอบสถานะ
+            const getStatus = (approvalValue) => {
+                if (approvalValue == 1) return 'อนุมัติ';
+                if (approvalValue == 0) return 'ไม่อนุมัติ';
+                return 'รอการอนุมัติ';
+            };
+
             let htmlData = '';
             for (let i = 0; i < response.data.length; i++) {
                 let form = response.data[i];
                 if(form.comments) {
-                    htmlData += `<div class="form edit" data-id ='${form.id}'>
+                    htmlData += 
+                    `<div class="form">
+                        <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                        <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
+                        <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
+                        <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
+                        <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                        <p><strong>สถานะ:</strong></p>
+                        <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                        <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                        <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+                        ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
+                    </div>`;
+                }else {
+                    htmlData += `<div class="form">
                     <p><strong>เรื่อง:</strong> ${form.subject}</p>
-                    <p><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
-                    <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
-                    <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
-                    <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                    <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                    <p><strong>ข้อเสนอแนะ:</strong>${form.comments}</p>
-                </div>`;
-                }
-                else {
-                    htmlData += `<div class="form edit" data-id ='${form.id}'>
-                    <p><strong>เรื่อง:</strong> ${form.subject}</p>
-                    <p><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
-                    <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
-                    <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
-                    <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                    <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                        <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
+                        <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
+                        <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
+                        <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                        <p><strong>สถานะ:</strong></p>
+                        <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                        <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                        <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
                 </div>`;
                 }
             }
@@ -159,7 +186,7 @@ window.onload = async () => {
                         <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
                         <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
                         <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
-                        </ul>
+                        
                         ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
                     </div>
                 `;
