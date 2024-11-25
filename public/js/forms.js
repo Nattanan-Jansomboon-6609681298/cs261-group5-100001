@@ -133,7 +133,7 @@ window.onload = async () => {
         }
     }else if(mode === "VERIFY"){
         try {
-            const response = await axios.get(`${BASE_URL}/forms/dean/${searchKey}`);
+            const response = await axios.get(`${BASE_URL}/forms/dean`);
             console.log(response.data);
             const formDOM = document.getElementById('forms-container');
 

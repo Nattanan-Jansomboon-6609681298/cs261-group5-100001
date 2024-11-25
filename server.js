@@ -91,7 +91,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // ตรวจสอบการเชื่อมต่อก่อนเรียกใช้ conn.query
-const executeQuery = async (query, params) => {
+const executeQuery = async (query, params = []) => {
   if (!conn) {
     throw new Error("Database connection is not established.");
   }
