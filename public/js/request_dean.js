@@ -7,7 +7,7 @@ let userEmail;
 // โหลดรายละเอียดคำร้องนักศึกษา
 async function loadRequestDetails() {
     try {
-        const response = await axios.get(`${BASE_URL}/forms/dean`);
+        const response = await axios.get(`${BASE_URL}/forms/request/dean`);
         
         // ตรวจสอบว่ามีข้อมูลหรือไม่
         if (response.data && response.data.length > 0) {
@@ -105,7 +105,7 @@ async function handleRequest(action) {
     }
 
     try {
-        const endpoint = `${BASE_URL}/api/requests/${searchKey}/${action}`;
+        const endpoint = `${BASE_URL}/forms/dean/update/${searchKey}/${action}`;
         const response = await axios.put(endpoint, { comments, email: userEmail });
 
         if (response.status === 200) {
