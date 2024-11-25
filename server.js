@@ -251,7 +251,12 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
   const { comments, email } = req.body;
 
   try {
-    const [result] = await executeQuery('UPDATE forms SET advisor_approved = ?, comments = ? WHERE id = ?', [action === 'approve' ? 1 : 0, comments, requestId]);
+    const employeeApprovedStatus = action === 'approve' ? 1 : 0;
+
+    const [result] = await executeQuery(
+      'UPDATE forms SET advisor_approved = ?, comments = ? WHERE id = ?', 
+      [employeeApprovedStatus, comments, requestId]
+    );
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Request not found' });
     }
@@ -308,7 +313,12 @@ app.put('/forms/dean/update/:requestId/:action', async (req, res) => {
   const { comments, email } = req.body;
 
   try {
-    const [result] = await executeQuery('UPDATE forms SET dean_approved = ?, comments = ? WHERE id = ?', [action === 'approve' ? 1 : 0, comments, requestId]);
+    const deanApprovedStatus = action === 'approve' ? 1 : 0;
+
+    const [result] = await executeQuery(
+      'UPDATE forms SET dean_approved = ?, comments = ? WHERE id = ?', 
+      [deanApprovedStatus, comments, requestId]
+    );
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Request not found' });
     }

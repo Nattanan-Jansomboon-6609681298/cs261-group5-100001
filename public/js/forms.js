@@ -4,7 +4,7 @@ const searchKey = params.get('searchKey');
 const type = params.get('type');
 let mode = (type === "student") ? "WATCH" : 
            (type === "employee") ? "EDIT" : 
-           (type === "dean") ? "VERIFY" : "DEFAULT";
+           (type === "dean" || type === "teacher") ? "VERIFY" : "DEFAULT";
 
 window.onload = async () => {
     if (mode === "WATCH") {
@@ -13,6 +13,12 @@ window.onload = async () => {
             const response = await axios.get(`${BASE_URL}/forms/${searchKey}`);
             console.log(response.data);
             const formDOM = document.getElementById('forms-container');
+
+            const getStatus = (approvalValue) => {
+                if (approvalValue == 1) return 'อนุมัติ';
+                if (approvalValue == 0) return 'ไม่อนุมัติ';
+                return 'รอการอนุมัติ';
+            };
 
             let htmlData = '';
             for (let i = 0; i < response.data.length; i++) {
@@ -25,9 +31,9 @@ window.onload = async () => {
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                     <p><strong>สถานะ:</strong></p>
-                    <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                    <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                    <p><strong>คณบดี</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                    <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                    <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
                     <p><strong>ข้อเสนอแนะ:</strong>${form.comments}</p>
                 </div>`;
                 }else {
@@ -38,9 +44,9 @@ window.onload = async () => {
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                     <p><strong>สถานะ:</strong></p>
-                    <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                    <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                    <p><strong>คณบดี</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                    <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                    <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
                 </div>`;
                 }
 
@@ -76,6 +82,12 @@ window.onload = async () => {
             console.log(response.data);
             const formDOM = document.getElementById('forms-container');
 
+            const getStatus = (approvalValue) => {
+                if (approvalValue == 1) return 'อนุมัติ';
+                if (approvalValue == 0) return 'ไม่อนุมัติ';
+                return 'รอการอนุมัติ';
+            };
+
             let htmlData = '';
             for (let i = 0; i < response.data.length; i++) {
                 let form = response.data[i];
@@ -87,9 +99,10 @@ window.onload = async () => {
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                     <p><strong>สถานะ:</strong></p>
-                    <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                    <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                    <p><strong>คณบดี</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                    <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                    <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+                    ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
                 </div>`;
                 }
                 else {
@@ -100,9 +113,9 @@ window.onload = async () => {
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                     <p><strong>สถานะ:</strong></p>
-                    <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                    <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                    <p><strong>คณบดี</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                    <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                    <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
                 </div>`;
                 }
             }
@@ -149,6 +162,12 @@ window.onload = async () => {
             console.log(response.data);
             const formDOM = document.getElementById('forms-container');
 
+            const getStatus = (approvalValue) => {
+                if (approvalValue == 1) return 'อนุมัติ';
+                if (approvalValue == 0) return 'ไม่อนุมัติ';
+                return 'รอการอนุมัติ';
+            };
+
             let htmlData = '';
             for (let i = 0; i < response.data.length; i++) {
                 let form = response.data[i];
@@ -160,7 +179,10 @@ window.onload = async () => {
                         <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                         <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                         <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                        <p><strong>ข้อเสนอแนะ:</strong>${form.comments}</p>
+                        <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                        <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                        <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+                        ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
                     </div>`;
                 } else {
                     htmlData += `<div class="form edit" data-id ='${form.id}'>
@@ -170,6 +192,9 @@ window.onload = async () => {
                         <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                         <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                         <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                        <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                        <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                        <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
                     </div>`;
                 }
             }
