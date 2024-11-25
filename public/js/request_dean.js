@@ -7,7 +7,7 @@ let userEmail;
 // โหลดรายละเอียดคำร้องนักศึกษา
 async function loadRequestDetails() {
     try {
-        const response = await axios.get(`${BASE_URL}/forms/edit/${searchKey}`);
+        const response = await axios.get(`${BASE_URL}/forms/dean`);
         
         // ตรวจสอบว่ามีข้อมูลหรือไม่
         if (response.data && response.data.length > 0) {
@@ -115,7 +115,7 @@ async function handleRequest(action) {
             await loadRequestDetails();
             
             // เปลี่ยนเส้นทางไปยังหน้า forms.html หลังอัปเดตสถานะ
-            window.location.href = `forms.html?searchKey=${userName}&type=employee`;
+            window.location.href = `forms.html?searchKey=${userName}&type=dean`;
         } else {
             alert(`ไม่สามารถ${action}คำร้องได้`);
         }

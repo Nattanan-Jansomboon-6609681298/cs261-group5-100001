@@ -264,3 +264,24 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
     res.status(500).json({ message: 'Error processing request', error: error.message });
   }
 });
+
+app.get('/forms/dean', async (req, res) => {
+  try {
+    const [rows] = await executeQuery('SELECT * FROM forms WHERE advisor_approved = 1 AND teacher_approved = 1');
+    if (rows.length > 0) {
+      return res.json(rows);
+    }
+    throw new Error("Not Found");
+  } catch (error) {
+    if (error.message === 'Not Found') {
+      return res.status(404).json({
+        message: error.message,
+        status: 404
+      });
+    }
+    return res.status(500).json({
+      message: "Something went wrong!",
+      errorMessage: error.message
+    });
+  }
+});
