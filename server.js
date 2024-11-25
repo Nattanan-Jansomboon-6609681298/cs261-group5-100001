@@ -264,3 +264,14 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
     res.status(500).json({ message: 'Error processing request', error: error.message });
   }
 });
+
+// API teacher
+app.get('/forms/teacher/:name', async (req, res) => {
+  const name = req.params.name;
+  try {
+      const [rows] = await executeQuery('SELECT * FROM forms WHERE advisor = ?', [name]);
+      res.json(rows);
+  } catch (error) {
+      res.status(500).json({ errorMessage: error.message });
+  }
+});

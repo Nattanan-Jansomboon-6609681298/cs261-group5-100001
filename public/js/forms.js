@@ -4,7 +4,7 @@ const searchKey = params.get('searchKey');
 const type = params.get('type');
 let mode = (type === "student") ? "WATCH" : 
            (type === "employee") ? "EDIT" : 
-           (type === "dean") ? "VERIFY" : "DEFAULT";
+           (type === "dean" || type === "teacher") ? "VERIFY" : "DEFAULT";
 
 window.onload = async () => {
     if (mode === "WATCH") {
@@ -131,54 +131,53 @@ window.onload = async () => {
                 formDOM.classList.toggle('none');
             }
         }
-    }else if(mode === "VERIFY"){
+    }else if (mode === "VERIFY") {
         try {
-            const response = await axios.get(`${BASE_URL}/forms/dean/${searchKey}`);
+            const userType = type === "dean" ? "dean" : "teacher"; // ตรวจสอบว่าเป็น dean หรือ teacher
+            const response = await axios.get(`${BASE_URL}/forms/${userType}/${searchKey}`); // ใช้ userType
             console.log(response.data);
             const formDOM = document.getElementById('forms-container');
-
+    
             let htmlData = '';
             for (let i = 0; i < response.data.length; i++) {
                 let form = response.data[i];
-                if(form.comments) {
+                if (form.comments) {
                     htmlData += `<div class="form edit" data-id ='${form.id}'>
-                    <p><strong>เรื่อง:</strong> ${form.subject}</p>
-                    <p><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
-                    <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
-                    <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
-                    <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                    <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                    <p><strong>ข้อเสนอแนะ:</strong>${form.comments}</p>
-                </div>`;
-                }
-                else {
+                        <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                        <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
+                        <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName + ' ' + form.lastName}</p>
+                        <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
+                        <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                        <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                        <p><strong>ข้อเสนอแนะ:</strong>${form.comments}</p>
+                    </div>`;
+                } else {
                     htmlData += `<div class="form edit" data-id ='${form.id}'>
-                    <p><strong>เรื่อง:</strong> ${form.subject}</p>
-                    <p><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
-                    <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
-                    <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
-                    <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                    <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                </div>`;
+                        <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                        <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
+                        <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName + ' ' + form.lastName}</p>
+                        <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
+                        <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                        <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    </div>`;
                 }
             }
             formDOM.innerHTML = htmlData;
-
+    
             const statusElements = document.querySelectorAll('.status');
             const items = document.getElementsByClassName("form");
-
+    
             for (let i = 0; i < items.length; i++) {
                 items[i].addEventListener("click", (event) => {
-                    const id = event.currentTarget.dataset.id; // Use event.currentTarget to get the data-id
-                    window.location.href = `request_dean.html?searchKey=${id}&userName=dean`;
+                    const id = event.currentTarget.dataset.id; // ใช้ event.currentTarget เพื่อรับค่า data-id
+                    window.location.href = `request_${userType}.html?searchKey=${id}&userName=${userType}`; // สำหรับทั้ง dean และ teacher
                 });
             }
-            
+    
             statusElements.forEach(status => {
                 const statusText = status.textContent.trim();
                 if (statusText === '0' || statusText === "ไม่อนุมัติ") {
                     status.textContent = "ไม่อนุมัติ";
-                    
                     status.style.color = 'red';
                 } else if (statusText === '1' || statusText === "อนุมัติ") {
                     status.textContent = "อนุมัติ";
