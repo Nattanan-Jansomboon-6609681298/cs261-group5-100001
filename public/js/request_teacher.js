@@ -21,6 +21,7 @@ async function loadRequestDetails() {
                 status = 'รอการอนุมัติ';
             }
 
+            //แสดงรายละเอียดคำร้อง
             document.getElementById('requestDetails').innerHTML = `
             <div class="detail">
                 <div class="request-item"><strong>เรื่อง:</strong> ${data.subject}</div>
@@ -32,6 +33,19 @@ async function loadRequestDetails() {
                 <div class="request-item"><strong>สถานะ:</strong> ${status}</div>
                 <div class="request-item"><strong>เหตุผล:</strong> ${data.purpose}</div>
             </div>`;
+
+            // ตรวจสอบสถานะคำร้องและซ่อนปุ่มหากคำร้องได้รับการอนุมัติหรือปฏิเสธแล้ว
+            if (data.approved == 1 || data.approved == 0) {
+                document.getElementById('commentSection').style.display = 'none';
+                document.getElementById('buttonsContainer').style.display = 'none';
+            } else {
+            // แสดงส่วนความคิดเห็นและปุ่มหากยังไม่มีการอนุมัติหรือปฏิเสธ
+                document.getElementById('commentSection').style.display = 'block';
+                document.getElementById('buttonsContainer').style.display = 'flex';
+            }
+            
+            document.getElementById('noRequestsMessage').style.display = 'none';
+            
         } else {
             document.getElementById('requestDetails').textContent = '';
             document.getElementById('noRequestsMessage').style.display = 'block';
@@ -41,19 +55,29 @@ async function loadRequestDetails() {
     }
 }
 
+// เรียกเมื่อโหลดหน้าเว็บเสร็จ
+document.addEventListener('DOMContentLoaded', loadRequestDetails);
+
+// ฟังก์ชันสำหรับอนุมัติหรือปฏิเสธคำร้องทันที
 async function handleRequest(action) {
     const comments = document.getElementById('comments').value;
+
     if (!comments.trim()) {
         alert('กรุณากรอกความคิดเห็นก่อนดำเนินการ');
         return;
     }
 
     try {
-        const endpoint = `${BASE_URL}/api/requests/${searchKey}/${action}`;
+        const endpoint = `${BASE_URL}/forms/teacher/update/${searchKey}/${action}`;
         const response = await axios.put(endpoint, { comments, email: userEmail });
 
         if (response.status === 200) {
             alert(`คำร้องถูก${action}สำเร็จ!`);
+
+            // โหลดรายละเอียดคำร้องใหม่เพื่ออัปเดตสถานะ
+            await loadRequestDetails();
+
+            // เปลี่ยนเส้นทางไปยังหน้า forms.html หลังอัปเดตสถานะ
             window.location.href = `forms.html?searchKey=${userName}&type=teacher`;
         }
     } catch (error) {

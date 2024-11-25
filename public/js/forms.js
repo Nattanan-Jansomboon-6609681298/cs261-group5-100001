@@ -156,10 +156,9 @@ window.onload = async () => {
                         <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
                         <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                         <p><strong>สถานะ:</strong></p>
-                        <ul>
-                            <li><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></li>
-                            <li><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></li>
-                            <li><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></li>
+                        <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                        <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                        <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
                         </ul>
                         ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
                     </div>

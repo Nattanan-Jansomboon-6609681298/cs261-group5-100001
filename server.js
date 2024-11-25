@@ -286,3 +286,30 @@ app.get('/forms/teacher/:name', async (req, res) => {
     return res.status(500).json({ errorMessage: error.message });
   }
 });
+
+app.put('/forms/teacher/update/:id/:action', async (req, res) => {
+  const { id, action } = req.params;
+  const { comments } = req.body;
+
+  try {
+      // กำหนดค่า approved ตาม action
+      const teacherApprovedStatus = action === 'approve' ? 1 : 0;
+
+      // อัปเดตฐานข้อมูล
+      const [result] = await executeQuery(
+          `UPDATE forms SET teacher_approved = ?, comments = ? WHERE id = ?`,
+          [teacherApprovedStatus, comments, id]
+      );
+
+      // ตรวจสอบว่าอัปเดตสำเร็จหรือไม่
+      if (result.affectedRows === 0) {
+          return res.status(404).json({ message: 'Request not found' });
+      }
+
+      // ส่งคำตอบกลับ
+      res.status(200).json({ message: 'Request updated successfully' });
+  } catch (error) {
+      console.error('Error updating request:', error);
+      res.status(500).json({ message: 'Failed to update request', error: error.message });
+  }
+});
