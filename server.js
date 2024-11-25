@@ -28,6 +28,7 @@ const connectMySQL = async (retries = 5) => {
       await conn.query(`CREATE DATABASE IF NOT EXISTS mydb`);
       console.log("Database 'mydb' checked/created");
       await conn.query(`USE mydb`);
+      
       await conn.query(`
         CREATE TABLE IF NOT EXISTS forms (
           id INT AUTO_INCREMENT PRIMARY KEY,
@@ -250,7 +251,7 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
   const { comments, email } = req.body;
 
   try {
-    const [result] = await executeQuery('UPDATE forms SET approved = ?, comments = ? WHERE id = ?', [action === 'approve' ? 1 : 0, comments, requestId]);
+    const [result] = await executeQuery('UPDATE forms SET advisor_approved = ?, comments = ? WHERE id = ?', [action === 'approve' ? 1 : 0, comments, requestId]);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Request not found' });
     }
@@ -279,7 +280,7 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
 app.get('/forms/request/dean', async (req, res) => {
   try {
     const [rows] = await executeQuery(`SELECT * FROM forms WHERE (subject = ? AND advisor_approved = ?)
-      OR (subject != ? AND advisor_approved = ? AND teacher_approved = ?)`, ['ลาออก', 1, 'ลาออก', 1, ]);
+      OR (subject != ? AND advisor_approved = ? AND teacher_approved = ?)`, ['ลาออก', 1, 'ลาออก', 1, 1]);
 
     if (rows.length > 0) {
       return res.json(rows);

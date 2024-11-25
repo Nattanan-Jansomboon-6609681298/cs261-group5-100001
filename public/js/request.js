@@ -39,7 +39,10 @@ async function loadRequestDetails() {
                     <div class="request-item"><strong>รหัสวิชา:</strong> ${data.courseCode}</div>
                     <div class="request-item"><strong>ชื่อวิชา:</strong> ${data.courseName}</div>
                     <div class="request-item"><strong>Section:</strong> ${data.section}</div>
-                    <div class="request-item"><strong>สถานะ:</strong> ${status}</div>
+                    <div class="request-item"><strong>สถานะ:</strong></div>
+                    <div class="request-item"><strong>อาจารย์ที่ปรึกษา:</strong>${status}</div>
+                    <div class="request-item"><strong>อาจารย์ผู้สอน:</strong>${status}</div>
+                    <div class="request-item"><strong>คณบดี:</strong>${status}</div>
                     <div class="request-item"><strong>เหตุผล:</strong> ${data.purpose}</div>
                     <div class="request-item"><strong>ข้อเสนอแนะ:</strong> ${data.comments || '-'}</div>
                 </div>
@@ -54,7 +57,9 @@ async function loadRequestDetails() {
                     <div class="request-item"><strong>ชั้นปี:</strong> ${data.year}</div>
                     <div class="request-item"><strong>อีเมล:</strong> ${data.email}</div>
                     <div class="request-item"><strong>อาจารย์ที่ปรึกษา:</strong> ${data.advisor}</div>
-                    <div class="request-item"><strong>สถานะ:</strong> ${status}</div>
+                    <div class="request-item"><strong>สถานะ:</strong></div>
+                    <div class="request-item"><strong>อาจารย์ที่ปรึกษา:</strong>${status}</div>
+                    <div class="request-item"><strong>คณบดี:</strong>${status}</div>
                     <div class="request-item"><strong>เหตุผล:</strong> ${data.purpose}</div>
                     <div class="request-item"><strong>ข้อเสนอแนะ:</strong> ${data.comments || '-'}</div>
                 </div>
@@ -62,7 +67,7 @@ async function loadRequestDetails() {
             }
 
             // ตรวจสอบสถานะคำร้องและซ่อนปุ่มหากคำร้องได้รับการอนุมัติหรือปฏิเสธแล้ว
-            if (data.approved == 1 || data.approved == 0) {
+            if (data.dean_approved !== null) {
                 document.getElementById('commentSection').style.display = 'none';
                 document.getElementById('buttonsContainer').style.display = 'none';
             } else {

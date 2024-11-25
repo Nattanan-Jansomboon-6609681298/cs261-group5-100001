@@ -24,7 +24,10 @@ window.onload = async () => {
                     <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                    <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>สถานะ:</strong></p>
+                    <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>คณบดี</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
                     <p><strong>ข้อเสนอแนะ:</strong>${form.comments}</p>
                 </div>`;
                 }else {
@@ -34,7 +37,10 @@ window.onload = async () => {
                     <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                    <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>สถานะ:</strong></p>
+                    <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>คณบดี</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
                 </div>`;
                 }
 
@@ -80,8 +86,10 @@ window.onload = async () => {
                     <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                    <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                    <p><strong>ข้อเสนอแนะ:</strong>${form.comments}</p>
+                    <p><strong>สถานะ:</strong></p>
+                    <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>คณบดี</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
                 </div>`;
                 }
                 else {
@@ -91,7 +99,10 @@ window.onload = async () => {
                     <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                    <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>สถานะ:</strong></p>
+                    <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>คณบดี</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
                 </div>`;
                 }
             }
