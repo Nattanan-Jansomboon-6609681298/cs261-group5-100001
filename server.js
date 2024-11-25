@@ -294,7 +294,6 @@ app.get('/forms/request/dean', async (req, res) => {
         status: 404
       });
     }
-
     return res.status(500).json({
       message: "Something went wrong!",
       errorMessage: error.message

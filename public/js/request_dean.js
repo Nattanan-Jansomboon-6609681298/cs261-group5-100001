@@ -7,7 +7,7 @@ let userEmail;
 // โหลดรายละเอียดคำร้องนักศึกษา
 async function loadRequestDetails() {
     try {
-        const response = await axios.get(`${BASE_URL}/forms/edit/${searchKey}`);
+        const response = await axios.get(`${BASE_URL}/forms/dean`);
         
         // ตรวจสอบว่ามีข้อมูลหรือไม่
         if (response.data && response.data.length > 0) {

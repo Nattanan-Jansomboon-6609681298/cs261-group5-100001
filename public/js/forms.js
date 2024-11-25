@@ -131,7 +131,8 @@ window.onload = async () => {
                 formDOM.classList.toggle('none');
             }
         }
-    }else if(mode === "VERIFY"){
+    }else if (mode === "VERIFY") {
+        console.log(mode);
         try {
             const response = await axios.get(`${BASE_URL}/forms/request/dean`);
             console.log(response.data);
@@ -142,24 +143,23 @@ window.onload = async () => {
                 let form = response.data[i];
                 if(form.comments) {
                     htmlData += `<div class="form edit" data-id ='${form.id}'>
-                    <p><strong>เรื่อง:</strong> ${form.subject}</p>
-                    <p><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
-                    <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
-                    <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
-                    <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                    <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                    <p><strong>ข้อเสนอแนะ:</strong>${form.comments}</p>
-                </div>`;
-                }
-                else {
+                        <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                        <p><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
+                        <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
+                        <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
+                        <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                        <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                        <p><strong>ข้อเสนอแนะ:</strong>${form.comments}</p>
+                    </div>`;
+                } else {
                     htmlData += `<div class="form edit" data-id ='${form.id}'>
-                    <p><strong>เรื่อง:</strong> ${form.subject}</p>
-                    <p><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
-                    <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
-                    <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
-                    <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                    <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                </div>`;
+                        <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                        <p><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
+                        <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
+                        <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
+                        <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                        <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    </div>`;
                 }
             }
             formDOM.innerHTML = htmlData;
@@ -167,18 +167,18 @@ window.onload = async () => {
             const statusElements = document.querySelectorAll('.status');
             const items = document.getElementsByClassName("form");
 
+            // เพิ่ม event listener เพื่อเปลี่ยนเส้นทางไปยังหน้ารายละเอียดฟอร์ม
             for (let i = 0; i < items.length; i++) {
                 items[i].addEventListener("click", (event) => {
-                    const id = event.currentTarget.dataset.id; // Use event.currentTarget to get the data-id
+                    const id = event.currentTarget.dataset.id; // ใช้ event.currentTarget เพื่อดึง data-id
                     window.location.href = `request_dean.html?searchKey=${id}&userName=dean`;
                 });
             }
-            
+
             statusElements.forEach(status => {
                 const statusText = status.textContent.trim();
                 if (statusText === '0' || statusText === "ไม่อนุมัติ") {
                     status.textContent = "ไม่อนุมัติ";
-                    
                     status.style.color = 'red';
                 } else if (statusText === '1' || statusText === "อนุมัติ") {
                     status.textContent = "อนุมัติ";
@@ -187,13 +187,11 @@ window.onload = async () => {
                     status.style.color = 'purple';
                 }
             });
-        //formDOM.classList.toggle('active');
 
         } catch (error) {
             console.error("Error fetching forms:", error);
             const formDOM = document.getElementById('forms-container');
             if (formDOM) {
-                //formDOM.innerHTML += "<p>Error loading data. Please try again later.</p>";
                 document.getElementById('test_text_show').classList.toggle('active');
                 formDOM.classList.toggle('none');
             }
