@@ -43,6 +43,7 @@ const connectMySQL = async (retries = 5) => {
           contactNumber VARCHAR(10) NOT NULL,
           parentContactNumber VARCHAR(10) NOT NULL,
           advisor VARCHAR(255) NOT NULL,
+          teacher VARCHAR(255),
           semester TINYINT,
           courseCode VARCHAR(10),
           courseName VARCHAR(70),
@@ -269,9 +270,19 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
 app.get('/forms/teacher/:name', async (req, res) => {
   const name = req.params.name;
   try {
-      const [rows] = await executeQuery('SELECT * FROM forms WHERE advisor = ?', [name]);
-      res.json(rows);
+      const [rows] = await executeQuery('SELECT * FROM forms WHERE teacher = ?', [name]);
+      if (rows.length > 0) {
+        return res.json(rows);
+      }
+      throw new Error("Not Found");
   } catch (error) {
-      res.status(500).json({ errorMessage: error.message });
+    if(error.message === 'Not Found') {
+      return res.status(404).json({
+        message : error.message,
+        status : 404
+      });
+    }
+    console.log(error.message);
+    return res.status(500).json({ errorMessage: error.message });
   }
 });
