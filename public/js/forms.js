@@ -10,6 +10,39 @@ window.onload = async () => {
     await loadRequestDetail();
 };
 
+async function updateAppointmentStatus(formID, action, type) {
+    if(type === 'teacher') {
+        try {
+            const response = await axios.put(`${BASE_URL}/appointment/teacher/update/${formID}/${action}`);
+            console.log(`Update successful for form ID ${formID}:`, response.data);
+        } catch (error) {
+            console.error(`Error updating status for form ID ${formID}:`, error);
+            alert('เกิดข้อผิดพลาดในการอัปเดตสถานะ');
+        }
+    } else if(type === 'employee') {
+        try {
+            const response = await axios.put(`${BASE_URL}/appointment/advisor/update/${formID}/${action}`);
+            console.log(`Update successful for form ID ${formID}:`, response.data);
+    
+            // อัปเดตสถานะในหน้าเว็บ
+            const formElement = document.querySelector(`.form[data-id="${formID}"]`);
+            const statusElement = formElement.querySelector('.status');
+            // if (action === '1') {
+            //     statusElement.textContent = 'อนุมัติ';
+            //     statusElement.style.color = 'green';
+            // } else {
+            //     statusElement.textContent = 'ไม่อนุมัติ';
+            //     statusElement.style.color = 'red';
+            // }
+        } catch (error) {
+            console.error(`Error updating status for form ID ${formID}:`, error);
+            alert('เกิดข้อผิดพลาดในการอัปเดตสถานะ');
+        }
+    }
+
+}
+
+
 async function loadRequestDetail() {
     if (mode === "WATCH") {
         console.log(mode);
@@ -33,6 +66,15 @@ async function loadRequestDetail() {
             const apm = apmResponse.data[0];
             let advisor_date;
             let teacher_date;
+            // let advisorAPM_status;
+            // let teacherAPM_status;
+            // // if(apm == null) {
+            //     advisorAPM_status = 'ไม่ได้นัดหมาย';
+            //     teacherAPM_status = 'ไม่ได้นัดหมาย';
+            // } else {
+            //     advisorAPM_status = apm.advisor_approved == 1 ? 'ผ่าน':'ปฎิเสธ';
+            //     teacherAPM_status = apm.teacher_approved == 1 ? 'ผ่าน':'ปฎิเสธ';
+            // }
             const options = {
                 timeZone: 'Asia/Bangkok',
                 year: 'numeric',
@@ -53,7 +95,6 @@ async function loadRequestDetail() {
                 teacher_date = 'ไม่ได้นัดหมาย';
             }
 
-  
 
             console.log(advisor_date); 
             console.log(teacher_date); 
@@ -66,7 +107,7 @@ async function loadRequestDetail() {
                     <p id="studentID" data-id="${form.studentID}"><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
                     <p id="fullName" data-firstname="${form.firstName}" data-lastname="${form.lastName}"><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
-                    <p id="advisor" data-advisor="${form.advisor}"><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p id="advisor" data-advisor="${form.advisor}"><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${form.advisor_approved ?? 'รอการอนุมัติ'}</span></p>
                     <form>
                         <label for="appointment_date"><strong>ขอนัดหมายอาจารย์ที่ปรึกษา:</strong></label>
                         <input type="date" class="appointment_advisor" name="date">
@@ -84,7 +125,7 @@ async function loadRequestDetail() {
                     <p id="studentID" data-id="${form.studentID}"><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
                     <p id="fullName" data-firstname="${form.firstName}" data-lastname="${form.lastName}"><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
-                    <p id="advisor" data-advisor="${form.advisor}"><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p id="advisor" data-advisor="${form.advisor}"><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${form.advisor_approved ?? 'รอการอนุมัติ'}</span></p>
                     <form>
                         <label for="appointment_date"><strong>ขอนัดหมายอาจารย์ที่ปรึกษา:</strong></label>
                         <input type="date" class="appointment_advisor" name="date">
@@ -108,8 +149,8 @@ async function loadRequestDetail() {
                     <p id="studentID" data-id="${form.studentID}"><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
                     <p id="fullName" data-firstname="${form.firstName}" data-lastname="${form.lastName}"><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
-                    <p id="advisor" data-advisor="${form.advisor}"><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                    <p><strong>วันนัดหมายอาจาร์ที่ปรึกษา:</strong> ${advisor_date}</p>
+                    <p id="advisor" data-advisor="${form.advisor}"><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${form.advisor_approved?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>วันนัดหมายอาจาร์ที่ปรึกษา:</strong> ${advisor_date} <span class="status">${apm.advisor_approved?? 'รอการอนุมัติ'}</span></p>
                     <p><strong>คณบดี:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
                 </div>`;
                 }
@@ -120,15 +161,17 @@ async function loadRequestDetail() {
                     <p id="fullName" data-firstname="${form.firstName}" data-lastname="${form.lastName}"><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                     <p id="advisor" data-advisor="${form.advisor}"><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${form._advisor_approved ?? 'รอการอนุมัติ'}</span></p>
-                    <p><strong>วันนัดหมายอาจาร์ที่ปรึกษา:</strong> ${advisor_date}</p>
+                    <p><strong>วันนัดหมายอาจาร์ที่ปรึกษา:</strong> ${advisor_date} <span class="status">${apm.advisor_approved ?? 'รอการอนุมัติ'}</span></p>
                     <p id="teacher" data-teacher="${form.teacher}"><strong>อาจารย์ผู้สอน:</strong> <span class="status">${form.teacher_approved ?? 'รอการอนุมัติ'}</span></p>
-                    <p><strong>วันนัดหมายอาจารย์ผู้สอน:</strong> ${teacher_date}</p>
+                    <p><strong>วันนัดหมายอาจารย์ผู้สอน:</strong> ${teacher_date} <span class="status">${apm.teacher_approved ?? 'รอการอนุมัติ'}</span></p>
                     <p><strong>คณบดี:</strong> <span class="status">${form.dean_approved ?? 'รอการอนุมัติ'}</span></p>
                 </div>`;
                 }
             }
         }
         formDOM.innerHTML = htmlData;
+
+
 
         const appointmentBtns = document.getElementsByClassName('appointment_btn');
         for (let btn of appointmentBtns) {
@@ -149,32 +192,39 @@ async function loadRequestDetail() {
 
                 const advisorDateInput = formElement.querySelector('.appointment_advisor');
                 const teacherDateInput = formElement.querySelector('.appointment_teacher');
-
-                // ฟังก์ชันตรวจสอบวันที่เก่ากว่าปัจจุบัน
+                
                 function isPastDate(date) {
                     const currentDate = new Date();
-                    currentDate.setHours(0, 0, 0, 0); 
+                    currentDate.setHours(0, 0, 0, 0); // ตั้งเป็นเวลา 00:00 ของวันนี้
                     const selectedDate = new Date(date);
-                    selectedDate.setHours(0, 0, 0, 0); 
-                    return selectedDate < currentDate;
+                    selectedDate.setHours(0, 0, 0, 0); // ตั้งเป็นเวลา 00:00 ของวันที่เลือก
+                    return selectedDate < currentDate; // ตรวจสอบว่าก่อนวันนี้หรือไม่
                 }
-
-                // ตรวจสอบเมื่อมีการเปลี่ยนแปลงวันที่
-                advisorDateInput.addEventListener('change', (event) => {
-                    const advisor_date = advisorDateInput.value;
-                    if (advisor_date && isPastDate(advisor_date)) {
-                        alert("ไม่สามารถเลือกวันที่ในอดีตได้สำหรับวันที่อาจารย์ที่ปรึกษา");
-                        advisorDateInput.value = ""; // ล้างวันที่
+                    // ตรวจสอบเมื่อมีการเปลี่ยนแปลงวันที่ 
+                    if (advisorDateInput) {
+                        advisorDateInput.addEventListener('change', () => {
+                            const advisor_date = advisorDateInput.value;
+                            if (advisor_date && isPastDate(advisor_date)) {
+                                alert("ไม่สามารถเลือกวันที่ในอดีตได้สำหรับวันที่อาจารย์ที่ปรึกษา");
+                                advisorDateInput.value = ""; // Clear the date
+                            } else {
+                                console.log(`วันที่อาจารย์ที่ปรึกษาเลือก: ${advisor_date}`);
+                            }
+                        });
                     }
-                });
-
-                teacherDateInput.addEventListener('change', (event) => {
-                    const teacher_date = teacherDateInput.value;
-                    if (teacher_date && isPastDate(teacher_date)) {
-                        alert("ไม่สามารถเลือกวันที่ในอดีตได้สำหรับวันที่อาจารย์ผู้สอน");
-                        teacherDateInput.value = ""; // ล้างวันที่
+                    if (teacherDateInput) {
+                        teacherDateInput.addEventListener('change', () => {
+                            const teacher_date = teacherDateInput.value;
+                            if (teacher_date && isPastDate(teacher_date)) {
+                                alert("ไม่สามารถเลือกวันที่ในอดีตได้สำหรับวันที่อาจารย์ผู้สอน");
+                                teacherDateInput.value = ""; // Clear the date
+                            } else {
+                                console.log(`วันที่อาจารย์ผู้สอนเลือก: ${teacher_date}`);
+                            }
+                        });
                     }
-                });
+
+
 
                 const advisor_date = advisorDateInput?.value || null;
                 const teacher_date = teacherDateInput?.value || null;
@@ -267,162 +317,408 @@ async function loadRequestDetail() {
                 formDOM.classList.toggle('none');
             }
         }
-    } else if(mode ==="EDIT"){
+    } else if (mode === "EDIT") {
         console.log(mode);
         try {
             const response = await axios.get(`${BASE_URL}/forms/advisor/${searchKey}`);
-            const apmResponse = await axios.get(`${BASE_URL}/appointment/`)
             console.log(response.data);
+    
             const formDOM = document.getElementById('forms-container');
-
+            if (!formDOM) {
+                console.error("Forms container not found");
+                return;
+            }
+    
             const getStatus = (approvalValue) => {
                 if (approvalValue == 1) return 'อนุมัติ';
                 if (approvalValue == 0) return 'ไม่อนุมัติ';
                 return 'รอการอนุมัติ';
             };
-
+    
             let htmlData = '';
             for (let i = 0; i < response.data.length; i++) {
-                let form = response.data[i];
-                if(form.comments) {
-                    htmlData += `<div class="form edit" data-id ='${form.id}'>
-                    <p><strong>เรื่อง:</strong> ${form.subject}</p>
-                    <p><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
-                    <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
-                    <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
-                    <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                    <p><strong>สถานะ:</strong></p>
-                    <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
-                    <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
-                    <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
-                    ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
-                </div>`;
+                const form = response.data[i];
+    
+                // Check if form and required properties exist
+                if (!form || form.id === undefined || form.advisor_approved === undefined) {
+                    console.warn(`Invalid form data at index ${i}:`, form);
+                    continue; // Skip this form and continue with the next one
                 }
-                else {
-                    htmlData += `<div class="form edit" data-id ='${form.id}'>
-                    <p><strong>เรื่อง:</strong> ${form.subject}</p>
-                    <p><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
-                    <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
-                    <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
-                    <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                    <p><strong>สถานะ:</strong></p>
-                    <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
-                    <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
-                    <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
-                </div>`;
+    
+                const id = form.id;
+                let apmResponse = { data: [] }; // Default value if no appointment data is found
+                let apm = null;
+                let date = 'ไม่ได้นัดหมาย'; // Default value if no appointment found
+    
+                try {
+                    // Fetch appointment data
+                    apmResponse = await axios.get(`${BASE_URL}/appointment/advisor/${id}/${searchKey}`);
+                    console.log(apmResponse.data);
+    
+                    if (apmResponse.data.length > 0) {
+                        apm = apmResponse.data[0];
+                        console.log(apm.advisor_approved);
+                        if (apm.advisor_date) {
+                            const options = {
+                                timeZone: 'Asia/Bangkok',
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit',
+                            };
+                            const advisorDateObj = new Date(apm.advisor_date);
+                            date = advisorDateObj.toLocaleString('th-TH', options);
+                        }
+                    }
+                    else {
+                        date = "ไม่ได้นัดหมาย";
+                    }
+                } catch (apmError) {
+                    console.warn(`Error fetching appointment data for form ID ${id}:`, apmError);
                 }
-            }
-            formDOM.innerHTML = htmlData;
-
-            const statusElements = document.querySelectorAll('.status');
-            const items = document.getElementsByClassName("form");
-
-            for (let i = 0; i < items.length; i++) {
-                items[i].addEventListener("click", (event) => {
-                    const id = event.currentTarget.dataset.id; // Use event.currentTarget to get the data-id
-                    console.log(id);
-                    window.location.href = `request.html?searchKey=${id}&userName=test`;
-                });
-            }
-            
-            statusElements.forEach(status => {
-                const statusText = status.textContent.trim();
-                if (statusText === '0' || statusText === "ไม่อนุมัติ") {
-                    status.textContent = "ไม่อนุมัติ";
-                    
-                    status.style.color = 'red';
-                } else if (statusText === '1' || statusText === "อนุมัติ") {
-                    status.textContent = "อนุมัติ";
-                    status.style.color = 'green';
-                } else {
-                    status.style.color = 'purple';
-                }
-            });
-        formDOM.classList.toggle('active');
-
-        } catch (error) {
-            console.error("Error fetching forms:", error);
-            const formDOM = document.getElementById('forms-container');
-            if (formDOM) {
-                //formDOM.innerHTML += "<p>Error loading data. Please try again later.</p>";
-                document.getElementById('test_text_show').classList.toggle('active');
-                formDOM.classList.toggle('none');
-            }
-        }
-    }else if (mode === "VERIFY") {
-        console.log(mode);
-        let endpoint;
-        if(type === 'dean') {
-            endpoint = `${BASE_URL}/forms/request/dean`;
-        }else if(type === 'teacher'){
-            endpoint= `${BASE_URL}/forms/${type}/${searchKey}`
-        }
-        try {
-            const response = await axios.get(endpoint);
-            console.log(response.data);
-            const formDOM = document.getElementById('forms-container');
-
-            const getStatus = (approvalValue) => {
-                if (approvalValue == 1) return 'อนุมัติ';
-                if (approvalValue == 0) return 'ไม่อนุมัติ';
-                return 'รอการอนุมัติ';
-            };
-
-            let htmlData = '';
-            for (let i = 0; i < response.data.length; i++) {
-                let form = response.data[i];
-                htmlData += `
-                    <div class="form edit" data-id='${form.id}'>
+    
+                // Build the HTML structure
+                if(apm == null) {
+                    htmlData += `
+                    <div class="form edit" data-id="${form.id}">
                         <p><strong>เรื่อง:</strong> ${form.subject}</p>
                         <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
-                        <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
+                        <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName + ' ' + form.lastName}</p>
                         <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
                         <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                        <p><strong>สถานะ:</strong></p>
                         <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
                         <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
                         <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
-                        
-                        ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
-                    </div>
-                `;
+                        <p><strong>วันที่นัดหมาย:</strong>ไม่ได้นัดหมาย</p>
+                    </div>`;
+                    continue;
+                }
+                if (apmResponse.data.length === 0 || apm.advisor_approved != null) {
+                    // No appointment or decision already made (approved/rejected)
+                    console.log("apm", apm);
+                    if(apm.advisor_approved == 0) {
+                        htmlData += `
+                        <div class="form edit" data-id="${form.id}">
+                            <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                            <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
+                            <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName + ' ' + form.lastName}</p>
+                            <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
+                            <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                            <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                            <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                            <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+                        </div>`;
+                    } else {
+                        htmlData += `
+                        <div class="form edit" data-id="${form.id}">
+                            <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                            <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
+                            <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName + ' ' + form.lastName}</p>
+                            <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
+                            <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                            <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                            <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                            <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+                            <p><strong>วันที่นัดหมาย:</strong> ${date}</p>
+                        </div>`;
+                    }
+
+                } else {
+                    htmlData += `
+                        <div class="form edit" data-id="${form.id}">
+                            <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                            <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
+                            <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName + ' ' + form.lastName}</p>
+                            <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
+                            <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                            <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                            <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                            <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+                            <div class="advisor-action-container">
+                                <p>นักศึกษาต้องการนัดหมายวันที่ ${date}</p>
+                                <div>
+                                    <!-- Check if decision already made (either approved or rejected) -->
+
+                                        <button class="approved-btn" data-id="${form.id}" data-action="1">ยอมรับ</button>
+                                        <button class="reject-btn" data-id="${form.id}" data-action="0">ปฏิเสธ</button>
+                                </div>
+                            </div>
+                        </div>`;
+                }
             }
+    
+            // Update the DOM
             formDOM.innerHTML = htmlData;
     
-            const statusElements = document.querySelectorAll('.status');
-            const items = document.getElementsByClassName("form");
-    
-            for (let i = 0; i < items.length; i++) {
-                items[i].addEventListener("click", (event) => {
-                    const id = event.currentTarget.dataset.id; // ใช้ event.currentTarget เพื่อรับค่า data-id
-                    window.location.href = `request_${type}.html?searchKey=${id}&userName=${type}`; // สำหรับทั้ง dean และ teacher
+            // Add event listeners to .form elements
+            const forms = document.querySelectorAll('.form');
+            forms.forEach((form) => {
+                form.addEventListener('click', (event) => {
+                    const id = event.currentTarget.dataset.id;
+                    console.log(id);
+                    window.location.href = `request.html?searchKey=${id}&userName=test`;
                 });
-            }
+            });
     
-            statusElements.forEach(status => {
+            // Add event listeners to buttons
+            const approveButtons = document.querySelectorAll('.approved-btn');
+            const rejectButtons = document.querySelectorAll('.reject-btn');
+    
+            approveButtons.forEach((button) => {
+                button.addEventListener('click', async (event) => {
+                    event.stopPropagation(); // Prevent triggering the .form click event
+                    const formID = event.target.dataset.id;
+                    const action = event.target.dataset.action;
+                    await updateAppointmentStatus(formID, action, type);
+                    await loadRequestDetail();
+                });
+            });
+    
+            rejectButtons.forEach((button) => {
+                button.addEventListener('click', async (event) => {
+                    event.stopPropagation(); // Prevent triggering the .form click event
+                    const formID = event.target.dataset.id;
+                    const action = event.target.dataset.action;
+                    date = 'ไม่ได้นัดหมาย';
+                    await updateAppointmentStatus(formID, action, type);
+                    await loadRequestDetail();
+                });
+            });
+    
+            // Update status elements' styles
+            const statusElements = document.querySelectorAll('.status');
+            statusElements.forEach((status) => {
                 const statusText = status.textContent.trim();
-                if (statusText === '0' || statusText === "ไม่อนุมัติ") {
-                    status.textContent = "ไม่อนุมัติ";
+                if (statusText === '0' || statusText === 'ไม่อนุมัติ') {
+                    status.textContent = 'ไม่อนุมัติ';
                     status.style.color = 'red';
-                } else if (statusText === '1' || statusText === "อนุมัติ") {
-                    status.textContent = "อนุมัติ";
+                } else if (statusText === '1' || statusText === 'อนุมัติ') {
+                    status.textContent = 'อนุมัติ';
                     status.style.color = 'green';
                 } else {
                     status.style.color = 'purple';
                 }
             });
-        //formDOM.classList.toggle('active');
+    
+            formDOM.classList.add('active');
+        } catch (error) {
+            console.error("Error fetching forms:", error);
+    
+            const formDOM = document.getElementById('forms-container');
+            const errorText = document.getElementById('test_text_show');
+            if (formDOM) formDOM.classList.add('none');
+            if (errorText) errorText.classList.add('active');
+        }
 
+    } else if (mode === "VERIFY") {
+        console.log(mode);
+        let endpoint;
+        if (type === 'dean') {
+            endpoint = `${BASE_URL}/forms/request/dean`;
+        } else if (type === 'teacher') {
+            endpoint = `${BASE_URL}/forms/${type}/${searchKey}`;
+        }
+    
+        try {
+            const response = await axios.get(endpoint);
+            console.log(response.data);
+    
+            const formDOM = document.getElementById('forms-container');
+    
+            const getStatus = (approvalValue) => {
+                if (approvalValue == 1) return 'อนุมัติ';
+                if (approvalValue == 0) return 'ไม่อนุมัติ';
+                return 'รอการอนุมัติ';
+            };
+    
+            let htmlData = '';
+            for (let i = 0; i < response.data.length; i++) {
+                let form = response.data[i];
+    
+                // Check if type is 'teacher' and fetch appointment details for teacher
+                if (type === 'teacher') {
+                    const apmResponse = await axios.get(`${BASE_URL}/appointment/teacher/${form.id}/${type}`);
+                    const apm = apmResponse.data[0];
+                    console.log("test:", apm)
+    
+                    let date;
+                    const options = {
+                        timeZone: 'Asia/Bangkok',
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                    };
+    
+                    if (apm?.teacher_date) {
+                        let appointmentDateObj = new Date(apm.teacher_date);
+                        date = appointmentDateObj.toLocaleString('th-TH', options);
+                    } else {
+                        date = 'ไม่ได้นัดหมาย';
+                    }
+    
+                    if(apm == null) {
+                        htmlData += `
+                        <div class="form edit" data-id='${form.id}'>
+                            <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                            <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
+                            <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
+                            <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
+                            <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                            <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                            <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                            <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+                            <p><strong>วันที่นัดหมาย:</strong> ${date}</p>
+                            ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
+                        </div>
+                    `;
+                    continue;
+                    }
+                    if(apm.teacher_approved != null) {
+                        if(apm.teacher_approved == 1) {
+                            htmlData += `
+                            <div class="form edit" data-id='${form.id}'>
+                                <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                                <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
+                                <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
+                                <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
+                                <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                                <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                                <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                                <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+                                <p><strong>วันที่นัดหมาย:</strong> ${date}</p>
+                                ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
+                            </div>
+                        `;
+                        }
+                        else {
+                            htmlData += `
+                            <div class="form edit" data-id='${form.id}'>
+                                <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                                <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
+                                <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
+                                <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
+                                <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                                <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                                <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                                <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+                                <p><strong>วันที่นัดหมาย:</strong>ไม่ได้นัดมาย</p>
+                                ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
+                            </div>
+                        `;
+                        }
+
+                    } else {
+                        htmlData += `
+                        <div class="form edit" data-id='${form.id}'>
+                            <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                            <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
+                            <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
+                            <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
+                            <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                            <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                            <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                            <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+                            ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
+                        </div>
+                    `;
+                    }
+
+                } else {
+                    if(form.subject === 'ลาออก') {
+                        htmlData += `
+                        <div class="form edit" data-id='${form.id}'>
+                            <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                            <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
+                            <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
+                            <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
+                            <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                            <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+                            ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
+                        </div>
+                    `;
+                    }
+                    else {
+                        htmlData += `
+                        <div class="form edit" data-id='${form.id}'>
+                            <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                            <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
+                            <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
+                            <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
+                            <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                            <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                            <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+                            ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
+                        </div>
+                    `;
+
+                    }
+                }
+            }
+    
+            formDOM.innerHTML = htmlData;
+    
+            // Handle status elements
+            const statusElements = document.querySelectorAll('.status');
+            statusElements.forEach((status) => {
+                const statusText = status.textContent.trim();
+                if (statusText === '0' || statusText === 'ไม่อนุมัติ') {
+                    status.textContent = 'ไม่อนุมัติ';
+                    status.style.color = 'red';
+                } else if (statusText === '1' || statusText === 'อนุมัติ') {
+                    status.textContent = 'อนุมัติ';
+                    status.style.color = 'green';
+                } else {
+                    status.style.color = 'purple';
+                }
+            });
+    
+            // Handle form item clicks
+            const items = document.getElementsByClassName("form");
+            for (let i = 0; i < items.length; i++) {
+                items[i].addEventListener("click", (event) => {
+                    const id = event.currentTarget.dataset.id; // Use event.currentTarget to get the data-id
+                    window.location.href = `request_${type}.html?searchKey=${id}&userName=${type}`; // For both dean and teacher
+                });
+            }
+    
+            if(type === 'teacher') {
+                            // Add event listeners to approve/reject buttons
+            const approveButtons = document.querySelectorAll('.approved-btn');
+            const rejectButtons = document.querySelectorAll('.reject-btn');
+    
+            approveButtons.forEach((button) => {
+                button.addEventListener('click', async (event) => {
+                    event.stopPropagation(); // Prevent triggering the .form click event
+                    const formID = event.target.dataset.id;
+                    const action = event.target.dataset.action;
+                    await updateAppointmentStatus(formID, action, type);
+                    await loadRequestDetail();
+                });
+            });
+    
+            rejectButtons.forEach((button) => {
+                button.addEventListener('click', async (event) => {
+                    event.stopPropagation(); // Prevent triggering the .form click event
+                    const formID = event.target.dataset.id;
+                    const action = event.target.dataset.action;
+                    await updateAppointmentStatus(formID, action, type);
+                    await loadRequestDetail();
+                });
+            });
+            }
+
+    
         } catch (error) {
             console.error("Error fetching forms:", error);
             const formDOM = document.getElementById('forms-container');
             if (formDOM) {
-                //formDOM.innerHTML += "<p>Error loading data. Please try again later.</p>";
                 document.getElementById('test_text_show').classList.toggle('active');
                 formDOM.classList.toggle('none');
             }
         }
-    } //else if (mode === "VERIFY") {
+    }
+    
+    
+     //else if (mode === "VERIFY") {
     //     try {
     //         const userType = type === "dean" ? "dean" : "teacher"; // ตรวจสอบว่าเป็น dean หรือ teacher
     //         const response = await axios.get(`${BASE_URL}/forms/${userType}/${searchKey}`); // ใช้ userType

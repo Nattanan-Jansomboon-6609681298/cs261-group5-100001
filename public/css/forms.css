@@ -115,3 +115,36 @@ body{
     display: flex;
     justify-content: flex-end; /* ให้ทุกอย่างชิดขวา */
 }
+
+.advisor-action-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.approved-btn {
+    width: 100px;
+    height: 40px;
+    background-color: green;
+    border:none;
+    color: white;
+    border-radius: 7px;
+}
+
+.reject-btn {
+    width: 100px;
+    height: 40px;
+    background-color: red;
+    border:none;
+    color: white;
+    border-radius: 7px;
+}
+
+.reject-btn:hover {
+    cursor: pointer;
+}
+
+.approved-btn:hover {
+    cursor: pointer;
+}
