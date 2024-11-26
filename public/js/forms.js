@@ -26,7 +26,7 @@ window.onload = async () => {
                 let form = response.data[i];
                 if(form.comments) {
                     htmlData += 
-                    `<div class="form">
+                    `<div class="form edit" data-id='${form.id}'>
                         <p><strong>เรื่อง:</strong> ${form.subject}</p>
                         <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
                         <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
@@ -39,7 +39,7 @@ window.onload = async () => {
                         ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
                     </div>`;
                 }else {
-                    htmlData += `<div class="form">
+                    htmlData += `<div class="form edit" data-id='${form.id}'>
                     <p><strong>เรื่อง:</strong> ${form.subject}</p>
                         <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
                         <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
@@ -96,7 +96,7 @@ window.onload = async () => {
                 let form = response.data[i];
                 if(form.comments) {
                     htmlData += 
-                    `<div class="form">
+                    `<div class="form edit" data-id='${form.id}'>
                         <p><strong>เรื่อง:</strong> ${form.subject}</p>
                         <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
                         <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
@@ -109,7 +109,7 @@ window.onload = async () => {
                         ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
                     </div>`;
                 }else {
-                    htmlData += `<div class="form">
+                    htmlData += `<div class="form edit" data-id='${form.id}'>
                     <p><strong>เรื่อง:</strong> ${form.subject}</p>
                         <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
                         <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
