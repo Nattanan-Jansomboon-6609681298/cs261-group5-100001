@@ -26,7 +26,7 @@ window.onload = async () => {
                     reSignHide.classList.toggle('none');
 
                     // กำหนดค่าลงในช่อง input
-                    document.getElementById('subject').innerHTML = `เรื่อง <b>${selectedForm.subject || ''}</b>`;
+                    document.getElementById('subject').innerHTML = `<b>${selectedForm.subject || ''}</b>`;
                     document.getElementById('fname').value = selectedForm.firstName || '';
                     document.getElementById('lname').value = selectedForm.lastName || '';
                     document.getElementById('id').value = selectedForm.studentID || '';
@@ -44,7 +44,7 @@ window.onload = async () => {
                 } else {
                     console.log(2)
                     showForm.classList.add('active');
-
+                    document.getElementById('subject').innerHTML = `<b>${selectedForm.subject || ''}</b>`;
                     document.getElementById('fname').value = selectedForm.firstName || '';
                     document.getElementById('lname').value = selectedForm.lastName || '';
                     document.getElementById('id').value = selectedForm.studentID || '';
@@ -106,9 +106,8 @@ document.getElementById('submit').addEventListener('click', async () => {
         courseName: document.getElementById('course_name').value,
         section: document.getElementById('section').value,
         purpose: document.getElementById('reason').value,
-        approved: false, // Adjust this as needed
-        comments: "", // Optional: Add a field for comments if needed
-        email: "", // Optional: Add a field for email if needed
+        // comments: "", // Optional: Add a field for comments if needed
+        // email: "", // Optional: Add a field for email if needed
     };
 
     try {

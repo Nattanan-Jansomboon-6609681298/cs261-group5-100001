@@ -20,59 +20,58 @@
                     <div class="show_form"id = "show_form">
                         <form id="submitRequestForm">
                             <div class="form_center">
-                                    <div class="select_text" id="subject"></div>
-                                    <label for="fname">ชื่อ</label>
-                                    <input type="text" id="fname" name="fname">
-                                    <label for="lname">นามสกุล</label>
-                                    <input type="text" id="lname" name="lname">
-                                    <label for="id">เลขทะเบียน</label>
-                                    <input type="text" id="id" name="id">
-                                    <label for="year">ชั้นปี</label>
-                                    <input type="text" id="year" name="year"><br>
+                                <p>เรื่อง: <span id="subject"> </span></p>
+                                <label for="fname">ชื่อ</label>
+                                <input type="text" id="fname" name="fname">
+                                <label for="lname">นามสกุล</label>
+                                <input type="text" id="lname" name="lname">
+                                <label for="id">เลขทะเบียน</label>
+                                <input type="text" id="id" name="id">
+                                <label for="year">ชั้นปี</label>
+                                <input type="text" id="year" name="year"><br>
+                                <label for="address_number">ที่อยู่เลขที่</label>
+                                <input type="text" id="address_number" name="address_number">
+                                <label for="district">แขวง/ตำบล</label>
+                                <input type="text" id="district" name="district">
+                                <label for="country">เขต/อำเภอ</label>
+                                <input type="text" id="country" name="country"><br>
 
-                                    <label for="address_number">ที่อยู่เลขที่</label>
-                                    <input type="text" id="address_number" name="address_number">
-                                    <label for="district">แขวง/ตำบล</label>
-                                    <input type="text" id="district" name="district">
-                                    <label for="country">เขต/อำเภอ</label>
-                                    <input type="text" id="country" name="country"><br>
+                                <label for="province">จังหวัด</label>
+                                <input type="text" id="province" name="province" >
+                                <label for="phone_number">เบอร์ติดต่อ</label>
+                                <input type="text" id="phone_number" name="phone_number" >
+                                <label for="phone_parent">เบอร์โทรศัพท์ติดต่อผู้ปกครอง</label><br>
 
-                                    <label for="province">จังหวัด</label>
-                                    <input type="text" id="province" name="province" >
-                                    <label for="phone_number">เบอร์ติดต่อ</label>
-                                    <input type="text" id="phone_number" name="phone_number" >
-                                    <label for="phone_parent">เบอร์โทรศัพท์ติดต่อผู้ปกครอง</label><br>
+                                <input type="text" id="phone_parent" name="phone_parent" >
+                                <label for="teacher">อาจารย์ที่ปรึกษา</label>
+                                <input type="text" id="teacher" name="teacher" ><br>
 
-                                    <input type="text" id="phone_parent" name="phone_parent" >
-                                    <label for="teacher">อาจารย์ที่ปรึกษา</label>
-                                    <input type="text" id="teacher" name="teacher" ><br>
+                                <div id="resign_hide">
+                                    <label for="course_section">ภาคที่เรียน</label>
+                                    <input type="text" id="course_section" name="course_section" >
+                                    <label for="course_code">รหัสวิชา</label>
+                                    <input type="text" id="course_code" name="course_code" >
+                                    <label for="course_name">ชื่อวิชา</label>
+                                    <input type="text" id="course_name" name="course_name">
+                                    <label for="section">section</label>
+                                    <input type="text" id="section" name="section"><br>
+                                </div>    
+                                
+                                <div class="show_more_form"id = "show_more_form">
+                                    <label for="academic_semester">ตั้งแต่ภาคเรียนการศึกษา</label>
+                                    <input type="text" id="academic_semester" name="academic_semester">
+                                    <label for="semester_year">ปีการศึกษา</label>
+                                    <input type="text" id="semester_year" name="semester_year"><br>
+                                    <input type="checkbox" id="dont_have_debt" name="dont_have_debt">
+                                    <label for="dont_have_debt">ไม่มีภาระหนี้สินคงค้าง</label>
+                                    <input type="checkbox" id="have_debt" name="have_debt">
+                                    <label for="have_debt">มีภาระหนี้สินคงค้าง</label>
+                                    <label for="amount">จำนวน</label>
+                                    <input type="text" id="amount" name="amount">
+                                </div>
 
-                                    <div id="resign_hide">
-                                        <label for="course_section">ภาคที่เรียน</label>
-                                        <input type="text" id="course_section" name="course_section" >
-                                        <label for="course_code">รหัสวิชา</label>
-                                        <input type="text" id="course_code" name="course_code" >
-                                        <label for="course_name">ชื่อวิชา</label>
-                                        <input type="text" id="course_name" name="course_name">
-                                        <label for="section">section</label>
-                                        <input type="text" id="section" name="section"><br>
-                                    </div>    
-
-                                    <div class="show_more_form"id = "show_more_form">
-                                        <label for="academic_semester">ตั้งแต่ภาคเรียนการศึกษา</label>
-                                        <input type="text" id="academic_semester" name="academic_semester">
-                                        <label for="semester_year">ปีการศึกษา</label>
-                                        <input type="text" id="semester_year" name="semester_year"><br>
-                                        <input type="checkbox" id="dont_have_debt" name="dont_have_debt">
-                                        <label for="dont_have_debt">ไม่มีภาระหนี้สินคงค้าง</label>
-                                        <input type="checkbox" id="have_debt" name="have_debt">
-                                        <label for="have_debt">มีภาระหนี้สินคงค้าง</label>
-                                        <label for="amount">จำนวน</label>
-                                        <input type="text" id="amount" name="amount">
-                                    </div>
-
-                                    <label for="reason">เหตุผลที่ยื่นคำร้อง</label><br>
-                                    <textarea type="text" id="reason" name="reason" rows="10"></textarea><br>
+                                <label for="reason">เหตุผลที่ยื่นคำร้อง</label><br>
+                                <textarea type="text" id="reason" name="reason" rows="10"></textarea><br>
 
                                 </form>
                                 <div class="end_move">

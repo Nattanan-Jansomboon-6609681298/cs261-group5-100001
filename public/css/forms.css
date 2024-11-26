@@ -98,3 +98,15 @@ body{
 .active{
     display: block;
 }
+
+.editBtn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 7.5vh;
+    background-color: red;
+    color: white;
+    border-radius: 7px;
+    width: 150px;
+    height: 50px;
+}
