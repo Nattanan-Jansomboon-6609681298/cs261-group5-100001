@@ -18,7 +18,6 @@ async function loadRequestDetail() {
             console.log(response.data);
             const formDOM = document.getElementById('forms-container');
 
-            //ตรวจสอบสถานะ
             const getStatus = (approvalValue) => {
                 if (approvalValue == 1) return 'อนุมัติ';
                 if (approvalValue == 0) return 'ไม่อนุมัติ';
@@ -124,7 +123,7 @@ async function loadRequestDetail() {
                     <p><strong>วันนัดหมายอาจาร์ที่ปรึกษา:</strong> ${advisor_date}</p>
                     <p id="teacher" data-teacher="${form.teacher}"><strong>อาจารย์ผู้สอน:</strong> <span class="status">${form.teacher_approved ?? 'รอการอนุมัติ'}</span></p>
                     <p><strong>วันนัดหมายอาจารย์ผู้สอน:</strong> ${teacher_date}</p>
-                    <p><strong>คณบดี:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>คณบดี:</strong> <span class="status">${form.dean_approved ?? 'รอการอนุมัติ'}</span></p>
                 </div>`;
                 }
             }
@@ -272,10 +271,10 @@ async function loadRequestDetail() {
         console.log(mode);
         try {
             const response = await axios.get(`${BASE_URL}/forms/advisor/${searchKey}`);
+            const apmResponse = await axios.get(`${BASE_URL}/appointment/`)
             console.log(response.data);
             const formDOM = document.getElementById('forms-container');
 
-            //ตรวจสอบสถานะ
             const getStatus = (approvalValue) => {
                 if (approvalValue == 1) return 'อนุมัติ';
                 if (approvalValue == 0) return 'ไม่อนุมัติ';
@@ -286,30 +285,30 @@ async function loadRequestDetail() {
             for (let i = 0; i < response.data.length; i++) {
                 let form = response.data[i];
                 if(form.comments) {
-                    htmlData += 
-                    `<div class="form">
-                        <p><strong>เรื่อง:</strong> ${form.subject}</p>
-                        <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
-                        <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
-                        <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
-                        <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                        <p><strong>สถานะ:</strong></p>
-                        <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
-                        <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
-                        <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
-                        ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
-                    </div>`;
-                }else {
-                    htmlData += `<div class="form">
+                    htmlData += `<div class="form edit" data-id ='${form.id}'>
                     <p><strong>เรื่อง:</strong> ${form.subject}</p>
-                        <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
-                        <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
-                        <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
-                        <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                        <p><strong>สถานะ:</strong></p>
-                        <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
-                        <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
-                        <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+                    <p><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
+                    <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
+                    <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
+                    <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                    <p><strong>สถานะ:</strong></p>
+                    <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                    <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                    <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+                    ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
+                </div>`;
+                }
+                else {
+                    htmlData += `<div class="form edit" data-id ='${form.id}'>
+                    <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                    <p><strong>รหัสนักศีกษา:</strong> ${form.studentID}</p>
+                    <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
+                    <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
+                    <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                    <p><strong>สถานะ:</strong></p>
+                    <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                    <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                    <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
                 </div>`;
                 }
             }
@@ -351,19 +350,24 @@ async function loadRequestDetail() {
             }
         }
     }else if (mode === "VERIFY") {
+        console.log(mode);
+        let endpoint;
+        if(type === 'dean') {
+            endpoint = `${BASE_URL}/forms/request/dean`;
+        }else if(type === 'teacher'){
+            endpoint= `${BASE_URL}/forms/${type}/${searchKey}`
+        }
         try {
-            const userType = type === "dean" ? "dean" : "teacher"; // ตรวจสอบว่าเป็น dean หรือ teacher
-            const response = await axios.get(`${BASE_URL}/forms/${userType}/${searchKey}`); // ใช้ userType
+            const response = await axios.get(endpoint);
             console.log(response.data);
             const formDOM = document.getElementById('forms-container');
-    
-            //ตรวจสอบสถานะ
+
             const getStatus = (approvalValue) => {
                 if (approvalValue == 1) return 'อนุมัติ';
                 if (approvalValue == 0) return 'ไม่อนุมัติ';
                 return 'รอการอนุมัติ';
             };
-    
+
             let htmlData = '';
             for (let i = 0; i < response.data.length; i++) {
                 let form = response.data[i];
@@ -391,7 +395,7 @@ async function loadRequestDetail() {
             for (let i = 0; i < items.length; i++) {
                 items[i].addEventListener("click", (event) => {
                     const id = event.currentTarget.dataset.id; // ใช้ event.currentTarget เพื่อรับค่า data-id
-                    window.location.href = `request_${userType}.html?searchKey=${id}&userName=${userType}`; // สำหรับทั้ง dean และ teacher
+                    window.location.href = `request_${type}.html?searchKey=${id}&userName=${type}`; // สำหรับทั้ง dean และ teacher
                 });
             }
     
@@ -418,73 +422,73 @@ async function loadRequestDetail() {
                 formDOM.classList.toggle('none');
             }
         }
-    }else if (mode === "VERIFY") {
-        try {
-            const userType = type === "dean" ? "dean" : "teacher"; // ตรวจสอบว่าเป็น dean หรือ teacher
-            const response = await axios.get(`${BASE_URL}/forms/${userType}/${searchKey}`); // ใช้ userType
-            console.log(response.data);
-            const formDOM = document.getElementById('forms-container');
+    } //else if (mode === "VERIFY") {
+    //     try {
+    //         const userType = type === "dean" ? "dean" : "teacher"; // ตรวจสอบว่าเป็น dean หรือ teacher
+    //         const response = await axios.get(`${BASE_URL}/forms/${userType}/${searchKey}`); // ใช้ userType
+    //         console.log(response.data);
+    //         const formDOM = document.getElementById('forms-container');
     
-            //ตรวจสอบสถานะ
-            const getStatus = (approvalValue) => {
-                if (approvalValue == 1) return 'อนุมัติ';
-                if (approvalValue == 0) return 'ไม่อนุมัติ';
-                return 'รอการอนุมัติ';
-            };
+    //         //ตรวจสอบสถานะ
+    //         const getStatus = (approvalValue) => {
+    //             if (approvalValue == 1) return 'อนุมัติ';
+    //             if (approvalValue == 0) return 'ไม่อนุมัติ';
+    //             return 'รอการอนุมัติ';
+    //         };
     
-            let htmlData = '';
-            for (let i = 0; i < response.data.length; i++) {
-                let form = response.data[i];
-                htmlData += `
-                    <div class="form edit" data-id='${form.id}'>
-                        <p><strong>เรื่อง:</strong> ${form.subject}</p>
-                        <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
-                        <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
-                        <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
-                        <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                        <p><strong>สถานะ:</strong></p>
-                        <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
-                        <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
-                        <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+    //         let htmlData = '';
+    //         for (let i = 0; i < response.data.length; i++) {
+    //             let form = response.data[i];
+    //             htmlData += `
+    //                 <div class="form edit" data-id='${form.id}'>
+    //                     <p><strong>เรื่อง:</strong> ${form.subject}</p>
+    //                     <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
+    //                     <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
+    //                     <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
+    //                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+    //                     <p><strong>สถานะ:</strong></p>
+    //                     <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+    //                     <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+    //                     <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
                         
-                        ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
-                    </div>
-                `;
-            }
-            formDOM.innerHTML = htmlData;
+    //                     ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
+    //                 </div>
+    //             `;
+    //         }
+    //         formDOM.innerHTML = htmlData;
     
-            const statusElements = document.querySelectorAll('.status');
-            const items = document.getElementsByClassName("form");
-    
-            for (let i = 0; i < items.length; i++) {
-                items[i].addEventListener("click", (event) => {
-                    const id = event.currentTarget.dataset.id; // ใช้ event.currentTarget เพื่อรับค่า data-id
-                    window.location.href = `request_${userType}.html?searchKey=${id}&userName=${userType}`; // สำหรับทั้ง dean และ teacher
-                });
-            }
-    
-            statusElements.forEach(status => {
-                const statusText = status.textContent.trim();
-                if (statusText === '0' || statusText === "ไม่อนุมัติ") {
-                    status.textContent = "ไม่อนุมัติ";
-                    status.style.color = 'red';
-                } else if (statusText === '1' || statusText === "อนุมัติ") {
-                    status.textContent = "อนุมัติ";
-                    status.style.color = 'green';
-                } else {
-                    status.style.color = 'purple';
-                }
-            });
-        //formDOM.classList.toggle('active');
+    //         const statusElements = document.querySelectorAll('.status');
+    //         const items = document.getElementsByClassName("form");
 
-        } catch (error) {
-            console.error("Error fetching forms:", error);
-            const formDOM = document.getElementById('forms-container');
-            if (formDOM) {
-                //formDOM.innerHTML += "<p>Error loading data. Please try again later.</p>";
-                document.getElementById('test_text_show').classList.toggle('active');
-                formDOM.classList.toggle('none');
-            }
-        }
-    }
+    //         // เพิ่ม event listener เพื่อเปลี่ยนเส้นทางไปยังหน้ารายละเอียดฟอร์ม
+    
+    //         for (let i = 0; i < items.length; i++) {
+    //             items[i].addEventListener("click", (event) => {
+    //                 const id = event.currentTarget.dataset.id; // ใช้ event.currentTarget เพื่อดึง data-id
+    //                 window.location.href = `request_dean.html?searchKey=${id}&userName=dean`;
+    //             });
+    //         }
+
+    //         statusElements.forEach(status => {
+    //             const statusText = status.textContent.trim();
+    //             if (statusText === '0' || statusText === "ไม่อนุมัติ") {
+    //                 status.textContent = "ไม่อนุมัติ";
+    //                 status.style.color = 'red';
+    //             } else if (statusText === '1' || statusText === "อนุมัติ") {
+    //                 status.textContent = "อนุมัติ";
+    //                 status.style.color = 'green';
+    //             } else {
+    //                 status.style.color = 'purple';
+    //             }
+    //         });
+
+    //     } catch (error) {
+    //         console.error("Error fetching forms:", error);
+    //         const formDOM = document.getElementById('forms-container');
+    //         if (formDOM) {
+    //             document.getElementById('test_text_show').classList.toggle('active');
+    //             formDOM.classList.toggle('none');
+    //         }
+    //     }
+    // }
 }

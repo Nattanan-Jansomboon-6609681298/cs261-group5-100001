@@ -28,6 +28,7 @@ const connectMySQL = async (retries = 5) => {
       await conn.query(`CREATE DATABASE IF NOT EXISTS mydb`);
       console.log("Database 'mydb' checked/created");
       await conn.query(`USE mydb`);
+      
       await conn.query(`
         CREATE TABLE IF NOT EXISTS forms (
           id INT AUTO_INCREMENT PRIMARY KEY,
@@ -108,7 +109,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // ตรวจสอบการเชื่อมต่อก่อนเรียกใช้ conn.query
-const executeQuery = async (query, params) => {
+const executeQuery = async (query, params = []) => {
   if (!conn) {
     throw new Error("Database connection is not established.");
   }
@@ -155,9 +156,18 @@ app.get('/forms/:studentID', async (req, res) => {
 app.get('/forms', async (req, res) => {
   try {
     const [rows] = await executeQuery('SELECT * FROM forms');
-    res.json(rows.length > 0 ? rows : []);
+    if (rows.length > 0) {
+      return res.json(rows);
+    } 
+      throw new Error("Not Found");
   } catch (error) {
-    res.status(500).json({
+    if(error.message === 'Not Found') {
+      return res.status(404).json({
+        message : error.message,
+        status : 404,
+      })
+    }
+    return res.status(500).json({
       status: 500,
       ErrorMessage: error.message
     });
@@ -258,7 +268,12 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
   const { comments, email } = req.body;
 
   try {
-    const [result] = await executeQuery('UPDATE forms SET advisor_approved= ?, comments = ? WHERE id = ?', [action === 'approve' ? 1 : 0, comments, requestId]);
+    const employeeApprovedStatus = action === 'approve' ? 1 : 0;
+
+    const [result] = await executeQuery(
+      'UPDATE forms SET advisor_approved = ?, comments = ? WHERE id = ?', 
+      [employeeApprovedStatus, comments, requestId]
+    );
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Request not found' });
     }
@@ -418,4 +433,69 @@ app.get('/appointment/teacher/formID/:name', async (req, res) => {
     });
   }
 });
+
+
+
+//
+app.get('/forms/request/dean', async (req, res) => {
+  try {
+    const [rows] = await executeQuery(`SELECT * FROM forms WHERE (subject = ? AND advisor_approved = ?)
+      OR (subject != ? AND advisor_approved = ? AND teacher_approved = ?)`, ['ลาออก', 1, 'ลาออก', 1, 1]);
+
+    if (rows.length > 0) {
+      return res.json(rows);
+    }
+
+    throw new Error("Not Found");
+  } catch (error) {
+    if (error.message === 'Not Found') {
+      console.error('Error:', error);
+      return res.status(404).json({
+        message: error.message,
+        status: 404
+      });
+    }
+    return res.status(500).json({
+      message: "Something went wrong!",
+      errorMessage: error.message
+    });
+  }
+});
+
+
+app.put('/forms/dean/update/:requestId/:action', async (req, res) => {
+  const { requestId, action } = req.params;
+  const { comments, email } = req.body;
+
+  try {
+    const deanApprovedStatus = action === 'approve' ? 1 : 0;
+
+    const [result] = await executeQuery(
+      'UPDATE forms SET dean_approved = ?, comments = ? WHERE id = ?', 
+      [deanApprovedStatus, comments, requestId]
+    );
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+
+    const emailStatus = action === 'approve' ? 'approved' : 'rejected';
+    const mailOptions = {
+      from: 'andasecondary@gmail.com',
+      to: email,
+      subject: `Your request has been ${emailStatus}`,
+      text: `Dear user,\n\nYour request has been ${emailStatus} by dean. Comments: ${comments}\n\nBest regards,\nYour Team`
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).json({ message: 'Failed to send email', error: error.message });
+      }
+      res.status(200).json({ message: 'Request processed and email sent' });
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error processing request', error: error.message });
+  }
+});
+
+
 
