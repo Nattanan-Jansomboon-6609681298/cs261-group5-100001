@@ -164,29 +164,53 @@ app.get('/forms', async (req, res) => {
   }
 });
 
+
 // คืนค่าข้อมูลตามที่ปรึกษา
 app.get('/forms/advisor/:name', async (req, res) => {
   try {
     const name = req.params.name;
     const [rows] = await executeQuery('SELECT * FROM forms WHERE advisor = ?', [name]);
     
-    if(rows.length > 0) {
+    if (rows.length > 0) {
       return res.json(rows);
     }
     throw new Error("Not Found");
   } catch (error) {
-    if(error.message === 'Not Found') {
+    if (error.message === 'Not Found') {
       return res.status(404).json({
-        message : error.message,
-        status : 404
+        message: error.message,
+        status: 404
       });
     }
     return res.status(500).json({
-      message: "something went wrong!",
+      message: "Something went wrong!",
       errorMessage: error.message
     });
   }
 });
+
+// app.get('/forms/advisor/:name', async (req, res) => {
+//   try {
+//     const name = req.params.name;
+//     const [rows] = await executeQuery('SELECT * FROM forms WHERE advisor = ?', [name]);
+    
+//     if(rows.length > 0) {
+//       return res.json(rows);
+//     }
+//     throw new Error("Not Found");
+//   } catch (error) {
+//     if(error.message === 'Not Found') {
+//       res.status(404).json({
+//         message : error.message,
+//         status : 404
+//       });
+//     }
+//     res.status(500).json({
+//       message: "something went wrong!",
+//       errorMessage: error.message
+//     });
+//   }
+// }); 
 
 // insert ข้อมูลใหม่ลง database
 app.post('/forms', async (req, res) => {
@@ -234,7 +258,7 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
   const { comments, email } = req.body;
 
   try {
-    const [result] = await executeQuery('UPDATE forms SET approved = ?, comments = ? WHERE id = ?', [action === 'approve' ? 1 : 0, comments, requestId]);
+    const [result] = await executeQuery('UPDATE forms SET advisor_approved= ?, comments = ? WHERE id = ?', [action === 'approve' ? 1 : 0, comments, requestId]);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Request not found' });
     }
@@ -255,6 +279,54 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: 'Error processing request', error: error.message });
+  }
+});
+
+// API teacher
+app.get('/forms/teacher/:name', async (req, res) => {
+  const name = req.params.name;
+  try {
+      const [rows] = await executeQuery('SELECT * FROM forms WHERE teacher = ?', [name]);
+      if (rows.length > 0) {
+        return res.json(rows);
+      }
+      throw new Error("Not Found");
+  } catch (error) {
+    if(error.message === 'Not Found') {
+      return res.status(404).json({
+        message : error.message,
+        status : 404
+      });
+    }
+    console.log(error.message);
+    return res.status(500).json({ errorMessage: error.message });
+  }
+});
+
+app.put('/forms/teacher/update/:id/:action', async (req, res) => {
+  const { id, action } = req.params;
+  const { comments } = req.body;
+
+  try {
+      // กำหนดค่า approved ตาม action
+      const teacherApprovedStatus = action === 'approve' ? 1 : 0;
+
+      // อัปเดตฐานข้อมูล
+      const [result] = await executeQuery(
+          `UPDATE forms SET teacher_approved = ?, comments = ? WHERE id = ?`,
+          [teacherApprovedStatus, comments, id]
+      );
+
+      // ตรวจสอบว่าอัปเดตสำเร็จหรือไม่
+      if (result.affectedRows === 0) {
+          return res.status(404).json({ message: 'Request not found' });
+      }
+
+      // ส่งคำตอบกลับ
+      res.status(200).json({ message: 'Request updated successfully' });
+  } catch (error) {
+      console.error('Error updating request:', error);
+      res.status(500).json({ message: 'Failed to update request', error: error.message });
   }
 });
 
@@ -301,7 +373,7 @@ app.get('/appointment/:formID', async (req, res) => {
   }
 });
 
-app.get('/appointment/:formID/:name', async (req, res) => {
+app.get('/appointment/advisor/formID/:name', async (req, res) => {
   const name = req.params.name;
   const formID = req.params.formID;
   try {
@@ -324,40 +396,26 @@ app.get('/appointment/:formID/:name', async (req, res) => {
   }
 });
 
-// app.get('/appointment/:id', async (req, res) => {
-//   const id = req.params.stuid;
-//   try {
-//     const [rows] = await executeQuery('SELECT * FROM appointment WHERE studentID = ?', [id]);
-//     if(rows.length > 0) {
-//       return res.status(200).json(rows);
-//     }
-//     throw new Error("Not Found");
-//   } catch (error) {
-//     if(error.message === 'Not Found'){
-//       return res.status(404).json({
-//         message : error.message,
-//         status : 404
-//       })
-//     }
-//     return res.status(500).json({
-//       status: 500,
-//       ErrorMessage: error.message
-//     });
-//   }
-// });
+app.get('/appointment/teacher/formID/:name', async (req, res) => {
+  const name = req.params.name;
+  const formID = req.params.formID;
+  try {
+    const [rows] = await executeQuery('SELECT * FROM appointment WHERE advisor = ? AND formID = ?', [name, formID]);
+    if(rows.length > 0) {
+      return res.status(200).json(rows);
+    }
+    throw new Error('Not Found');
+  } catch (error) {
+    if(error.message === 'Not Found') {
+      return res.status(404).json({
+        message : error.message,
+        status : 404
+      });
+    }
+    return res.status(500).json({
+      status: 500,
+      ErrorMessage: error.message
+    });
+  }
+});
 
-// app.post('/forms', async (req, res) => {
-//   try {
-//     let forms = req.body;
-//     await executeQuery('INSERT INTO forms SET ?', forms);
-//     res.status(200).json({
-//       message: 'Insert Success',
-//       status: 200
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       errorMessage: error.message,
-//       status: 500
-//     });
-//   }
-// });
