@@ -131,6 +131,24 @@ app.get('/forms/:studentID', async (req, res) => {
   }
 });
 
+app.get('/editforms/:id', async (req, res) => {
+  try {
+    const id = req.params.studentID;
+    const [rows] = await executeQuery('SELECT * FROM forms WHERE id = ?', [id]);
+    if (rows.length > 0) {
+      res.json(rows);
+      console.log(rows)
+    } else {
+      throw new Error("Not Found");
+    }
+  } catch (error) {
+    res.status(error.message === "Not Found" ? 404 : 500).json({
+      status: error.message === "Not Found" ? 404 : 500,
+      ErrorMessage: error.message
+    });
+  }
+});
+
 // คืนค่าข้อมูลทั้งหมดใน database
 app.get('/forms', async (req, res) => {
   try {
@@ -235,5 +253,58 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: 'Error processing request', error: error.message });
+  }
+});
+
+app.put('/forms/student/edit/:id', async (req, res) => {
+  const { id } = req.params;
+  const { studentID, subject, firstName, lastName, year, addressNumber, subdistrict, district, province, contactNumber, parentContactNumber, advisor, semester, courseCode, courseName, section, purpose, approved, comments, email } = req.body;
+
+  try {
+      const [result] = await executeQuery(
+          `UPDATE forms SET 
+              studentID = ?, 
+              subject = ?, 
+              firstName = ?, 
+              lastName = ?, 
+              year = ?, 
+              addressNumber = ?, 
+              subdistrict = ?, 
+              district = ?, 
+              province = ?, 
+              contactNumber = ?, 
+              parentContactNumber = ?, 
+              advisor = ?, 
+              semester = ?, 
+              courseCode = ?, 
+              courseName = ?, 
+              section = ?, 
+              purpose = ?, 
+              approved = ?, 
+              comments = ?, 
+              email = ? 
+          WHERE id = ?`,
+          [studentID, subject, firstName, lastName, year, addressNumber, subdistrict, district, province, contactNumber, parentContactNumber, advisor, semester, courseCode, courseName, section, purpose, approved, comments, email, id]
+      );
+
+      if (result.affectedRows === 0) {
+          throw new Error("Not Found");
+      }
+
+      res.status(200).json({
+          message: "Update successful",
+          status: 200
+      });
+  } catch (error) {
+      if (error.message === 'Not Found') {
+          return res.status(404).json({
+              message: error.message,
+              status: 404
+          });
+      }
+      return res.status(500).json({
+          message: error.message,
+          status: 500
+      });
   }
 });

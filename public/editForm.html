@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>หน้าคำร้อง</title>
-    <link rel="stylesheet" href="css/student.css">
+    <link rel="stylesheet" href="css/editForm.css">
 </head>
 <body>
-    <!--<button id="redirectBtn">ดูผลการยื่นคําร้อง</button>-->
     <div class="body_container">
         <div class="container">
             <div class="main_box"id = "main_box">
@@ -18,16 +17,6 @@
                         <p>คณะวิทยาศาสตร์และเทคโนโลยี</p>
                     </div>
                 </div>
-                <div class="intro">ระบบยื่นคำร้อง</div>
-                <!--<div class="open_select_botton">
-                    <div class="text_botton">เขียนคำร้อง</div>
-                </div>!-->
-                <div class="select_choice">
-                    <div class="text_botton"id = "text_botton">เขียนคำร้อง</div>
-                    <div class="choice"id = "regist/add">จดทะเบียน/เพิ่มถอน</div>
-                    <div class="choice"id = "remove">ขอถอนวิชา/ถอนรายวิชา (Drop W)</div>
-                    <div class="choice"id = "request">ขอจดทะเบียนรายวิชาศึกษานอกหลักสูตร</div>
-                    <div class="choice"id = "resign">ลาออก</div>
                     <div class="show_form"id = "show_form">
                         <form id="submitRequestForm">
                             <div class="form_center">
@@ -70,18 +59,16 @@
                                     </div>    
 
                                     <div class="show_more_form"id = "show_more_form">
-                                    
-                                            <label for="academic_semester">ตั้งแต่ภาคเรียนการศึกษา</label>
-                                            <input type="text" id="academic_semester" name="academic_semester">
-                                            <label for="semester_year">ปีการศึกษา</label>
-                                            <input type="text" id="semester_year" name="semester_year"><br>
-                                            <input type="checkbox" id="dont_have_debt" name="dont_have_debt">
-                                            <label for="dont_have_debt">ไม่มีภาระหนี้สินคงค้าง</label>
-                                            <input type="checkbox" id="have_debt" name="have_debt">
-                                            <label for="have_debt">มีภาระหนี้สินคงค้าง</label>
-                                            <label for="amount">จำนวน</label>
-                                            <input type="text" id="amount" name="amount">
-                                        
+                                        <label for="academic_semester">ตั้งแต่ภาคเรียนการศึกษา</label>
+                                        <input type="text" id="academic_semester" name="academic_semester">
+                                        <label for="semester_year">ปีการศึกษา</label>
+                                        <input type="text" id="semester_year" name="semester_year"><br>
+                                        <input type="checkbox" id="dont_have_debt" name="dont_have_debt">
+                                        <label for="dont_have_debt">ไม่มีภาระหนี้สินคงค้าง</label>
+                                        <input type="checkbox" id="have_debt" name="have_debt">
+                                        <label for="have_debt">มีภาระหนี้สินคงค้าง</label>
+                                        <label for="amount">จำนวน</label>
+                                        <input type="text" id="amount" name="amount">
                                     </div>
 
                                     <label for="reason">เหตุผลที่ยื่นคำร้อง</label><br>
@@ -90,26 +77,19 @@
                                 </form>
                                 <div class="end_move">
                                     <div class="submit_block">
-                                        <div class="submit"id = "submit">ยื่นคำร้อง</div>
+                                        <div class="submit"id = "submit">ยืนยันการแก้ไขคำร้อง</div>
                                     </div>
                                 </div>
                                     <p id="message"></p>
                             </div>
-                            <!--<button type="submit" value="submit_Re">ส่งคําร้อง</button>-->
                         </form>
                     </div>
-                </div>
-                <div class="edit_request">
-                    <div class="option"id = "redirectEdit">แก้ไขคำร้อง</div>
-                </div>
-                <div class="outer_option">
-                    <div class="option"id = "redirectBtn">ดูสถานะคำร้อง</div>
                 </div>
             </div>
         </div>  
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
-    <script src="js/student.js"></script>
-    <script src="js/submitForm.js"></script>
+    <script src="js/editForm.js"></script>
+    <script src=""></script>
 </body>
 </html>
