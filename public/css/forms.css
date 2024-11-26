@@ -110,3 +110,8 @@ body{
 .appointment_btn:hover {
     cursor: pointer;
 }
+
+.btn-container {
+    display: flex;
+    justify-content: flex-end; /* ให้ทุกอย่างชิดขวา */
+}

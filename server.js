@@ -43,6 +43,7 @@ const connectMySQL = async (retries = 5) => {
           contactNumber VARCHAR(10) NOT NULL,
           parentContactNumber VARCHAR(10) NOT NULL,
           advisor VARCHAR(255) NOT NULL,
+          teacher VARCHAR(255),
           semester TINYINT,
           courseCode VARCHAR(10),
           courseName VARCHAR(70),
@@ -50,6 +51,9 @@ const connectMySQL = async (retries = 5) => {
           purpose TEXT NOT NULL,
           date DATETIME DEFAULT CURRENT_TIMESTAMP,
           approved TINYINT(1),
+          advisor_approved TINYINT(1),
+          teacher_approved TINYINT(1),
+          dean_approved TINYINT(1),
           comments TEXT,
           email VARCHAR(80)
         )
@@ -58,14 +62,16 @@ const connectMySQL = async (retries = 5) => {
       await conn.query(`
         CREATE TABLE IF NOT EXISTS appointment (
           id INT AUTO_INCREMENT PRIMARY KEY,
+          formID TINYINT(3) NOT NULL UNIQUE,
           studentID VARCHAR(11) NOT NULL,
           firstName VARCHAR(255) NOT NULL,
           lastName VARCHAR(255) NOT NULL,
-          advisor VARCHAR(255) NOT NULL,
-          advisor_date DATETIME NOT NULL,
+          advisor VARCHAR(255),
+          advisor_date DATETIME,
           teacher VARCHAR(255),
           teacher_date DATETIME,
-          approved TINYINT(1)
+          advisor_approved TINYINT(1),
+          teacher_approved TINYINT(1)
         )
       `);
       console.log("Table 'appointment' checked/created");
@@ -170,12 +176,12 @@ app.get('/forms/advisor/:name', async (req, res) => {
     throw new Error("Not Found");
   } catch (error) {
     if(error.message === 'Not Found') {
-      res.status(404).json({
+      return res.status(404).json({
         message : error.message,
         status : 404
       });
     }
-    res.status(500).json({
+    return res.status(500).json({
       message: "something went wrong!",
       errorMessage: error.message
     });
@@ -252,6 +258,19 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
   }
 });
 
+app.get('/appointment', async (req, res) => {
+  const formID = req.params.formID;
+  try {
+    const [rows] = await executeQuery('SELECT * FROM appointment');
+    res.json(rows.length > 0 ? rows : []);
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      ErrorMessage: error.message
+    });
+  }
+});
+
 app.post('/appointment', async(req, res) => {
   let data = req.body;
   try {
@@ -269,9 +288,10 @@ app.post('/appointment', async(req, res) => {
   }
 });
 
-app.get('/appointment', async (req, res) => {
+app.get('/appointment/:formID', async (req, res) => {
+  const formID = req.params.formID;
   try {
-    const [rows] = await executeQuery('SELECT * FROM appointment');
+    const [rows] = await executeQuery('SELECT * FROM appointment WHERE formID = ?', [formID]);
     res.json(rows.length > 0 ? rows : []);
   } catch (error) {
     res.status(500).json({
@@ -280,6 +300,51 @@ app.get('/appointment', async (req, res) => {
     });
   }
 });
+
+app.get('/appointment/:formID/:name', async (req, res) => {
+  const name = req.params.name;
+  const formID = req.params.formID;
+  try {
+    const [rows] = await executeQuery('SELECT * FROM appointment WHERE advisor = ? AND formID = ?', [name, formID]);
+    if(rows.length > 0) {
+      return res.status(200).json(rows);
+    }
+    throw new Error('Not Found');
+  } catch (error) {
+    if(error.message === 'Not Found') {
+      return res.status(404).json({
+        message : error.message,
+        status : 404
+      });
+    }
+    return res.status(500).json({
+      status: 500,
+      ErrorMessage: error.message
+    });
+  }
+});
+
+// app.get('/appointment/:id', async (req, res) => {
+//   const id = req.params.stuid;
+//   try {
+//     const [rows] = await executeQuery('SELECT * FROM appointment WHERE studentID = ?', [id]);
+//     if(rows.length > 0) {
+//       return res.status(200).json(rows);
+//     }
+//     throw new Error("Not Found");
+//   } catch (error) {
+//     if(error.message === 'Not Found'){
+//       return res.status(404).json({
+//         message : error.message,
+//         status : 404
+//       })
+//     }
+//     return res.status(500).json({
+//       status: 500,
+//       ErrorMessage: error.message
+//     });
+//   }
+// });
 
 // app.post('/forms', async (req, res) => {
 //   try {
