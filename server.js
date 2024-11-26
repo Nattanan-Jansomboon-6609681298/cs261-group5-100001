@@ -256,55 +256,133 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
   }
 });
 
-app.put('/forms/student/edit/:id', async (req, res) => {
+app.patch('/forms/student/edit/:id', async (req, res) => {
   const { id } = req.params;
   const { studentID, subject, firstName, lastName, year, addressNumber, subdistrict, district, province, contactNumber, parentContactNumber, advisor, semester, courseCode, courseName, section, purpose, approved, comments, email } = req.body;
 
+  const updatedFields = [];
+  const values = [];
+
+  // Collect the fields that need to be updated
+  if (studentID) {
+    updatedFields.push('studentID = ?');
+    values.push(studentID);
+  }
+  if (subject) {
+    updatedFields.push('subject = ?');
+    values.push(subject);
+  }
+  if (firstName) {
+    updatedFields.push('firstName = ?');
+    values.push(firstName);
+  }
+  if (lastName) {
+    updatedFields.push('lastName = ?');
+    values.push(lastName);
+  }
+  if (year) {
+    updatedFields.push('year = ?');
+    values.push(year);
+  }
+  if (addressNumber) {
+    updatedFields.push('addressNumber = ?');
+    values.push(addressNumber);
+  }
+  if (subdistrict) {
+    updatedFields.push('subdistrict = ?');
+    values.push(subdistrict);
+  }
+  if (district) {
+    updatedFields.push('district = ?');
+    values.push(district);
+  }
+  if (province) {
+    updatedFields.push('province = ?');
+    values.push(province);
+  }
+  if (contactNumber) {
+    updatedFields.push('contactNumber = ?');
+    values.push(contactNumber);
+  }
+  if (parentContactNumber) {
+    updatedFields.push('parentContactNumber = ?');
+    values.push(parentContactNumber);
+  }
+  if (advisor) {
+    updatedFields.push('advisor = ?');
+    values.push(advisor);
+  }
+  if (semester) {
+    updatedFields.push('semester = ?');
+    values.push(semester);
+  }
+  if (courseCode) {
+    updatedFields.push('courseCode = ?');
+    values.push(courseCode);
+  }
+  if (courseName) {
+    updatedFields.push('courseName = ?');
+    values.push(courseName);
+  }
+  if (section) {
+    updatedFields.push('section = ?');
+    values.push(section);
+  }
+  if (purpose) {
+    updatedFields.push('purpose = ?');
+    values.push(purpose);
+  }
+  if (approved !== undefined) {
+    updatedFields.push('approved = ?');
+    values.push(approved);
+  }
+  if (comments) {
+    updatedFields.push('comments = ?');
+    values.push(comments);
+  }
+  if (email) {
+    updatedFields.push('email = ?');
+    values.push(email);
+  }
+
+  // Append the form ID to the values for the WHERE clause
+  values.push(id);
+
+  if (updatedFields.length === 0) {
+    return res.status(400).json({
+      message: "No valid fields to update",
+      status: 400
+    });
+  }
+
   try {
-      const [result] = await executeQuery(
-          `UPDATE forms SET 
-              studentID = ?, 
-              subject = ?, 
-              firstName = ?, 
-              lastName = ?, 
-              year = ?, 
-              addressNumber = ?, 
-              subdistrict = ?, 
-              district = ?, 
-              province = ?, 
-              contactNumber = ?, 
-              parentContactNumber = ?, 
-              advisor = ?, 
-              semester = ?, 
-              courseCode = ?, 
-              courseName = ?, 
-              section = ?, 
-              purpose = ?, 
-              approved = ?, 
-              comments = ?, 
-              email = ? 
-          WHERE id = ?`,
-          [studentID, subject, firstName, lastName, year, addressNumber, subdistrict, district, province, contactNumber, parentContactNumber, advisor, semester, courseCode, courseName, section, purpose, approved, comments, email, id]
-      );
+    // Build the dynamic query for updating only provided fields
+    const query = `
+      UPDATE forms SET 
+        ${updatedFields.join(', ')} 
+      WHERE id = ?
+    `;
+    
+    const [result] = await executeQuery(query, values);
 
-      if (result.affectedRows === 0) {
-          throw new Error("Not Found");
-      }
+    if (result.affectedRows === 0) {
+      throw new Error("Not Found");
+    }
 
-      res.status(200).json({
-          message: "Update successful",
-          status: 200
-      });
+    res.status(200).json({
+      message: "Update successful",
+      status: 200
+    });
   } catch (error) {
-      if (error.message === 'Not Found') {
-          return res.status(404).json({
-              message: error.message,
-              status: 404
-          });
-      }
-      return res.status(500).json({
-          message: error.message,
-          status: 500
+    if (error.message === 'Not Found') {
+      return res.status(404).json({
+        message: error.message,
+        status: 404
       });
+    }
+    return res.status(500).json({
+      message: error.message,
+      status: 500
+    });
   }
 });

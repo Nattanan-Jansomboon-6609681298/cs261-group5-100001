@@ -112,7 +112,7 @@ document.getElementById('submit').addEventListener('click', async () => {
 
     try {
         // Send the updated data to the backend
-        const response = await axios.put(`${BASE_URL}/forms/student/edit/${formId}`, formData);
+        const response = await axios.patch(`${BASE_URL}/forms/student/edit/${formId}`, formData);
         alert(response.data.message || "Updated successfully!");
     } catch (error) {
         console.error("Error updating form:", error);
