@@ -18,7 +18,7 @@ async function loadRequestDetails() {
             let status;
             if (data.advisor_approved == 1) {
                 status = 'อนุมัติ';
-            } else if (data.advisor_approvedapproved == 0) {
+            } else if (data.advisor_approved == 0) {
                 status = 'ไม่อนุมัติ';
             } else {
                 status = 'รอการอนุมัติ';
@@ -39,7 +39,7 @@ async function loadRequestDetails() {
             
 
             // ตรวจสอบสถานะคำร้องและซ่อนปุ่มหากคำร้องได้รับการอนุมัติหรือปฏิเสธแล้ว
-            if (data.advisor_approved == 1 || advisor_approved == 0) {
+            if (data.advisor_approved == 1 || data.advisor_approved == 0) {
                 document.getElementById('commentSection').style.display = 'none';
                 document.getElementById('buttonsContainer').style.display = 'none';
             } else {
