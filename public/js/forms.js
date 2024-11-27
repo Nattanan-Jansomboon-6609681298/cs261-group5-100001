@@ -34,7 +34,7 @@ window.onload = async () => {
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                     <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                    <button class="editBtn" onclick="editForm(${form.id})">แก้ไขคำร้อง</button>
+                    <div class="editBox"><button class="editBtn" onclick="editForm(${form.id})">แก้ไขคำร้อง</button></div>
                 </div>`;
                 }
 

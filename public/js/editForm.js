@@ -114,6 +114,8 @@ document.getElementById('submit').addEventListener('click', async () => {
         // Send the updated data to the backend
         const response = await axios.patch(`${BASE_URL}/forms/student/edit/${formId}`, formData);
         alert(response.data.message || "Updated successfully!");
+        const studentID = formData.studentID;
+        window.location.href = `${BASE_URL}/forms.html?searchKey=${studentID}&type=student`;
     } catch (error) {
         console.error("Error updating form:", error);
         alert("Error updating the form.");
