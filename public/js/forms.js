@@ -24,7 +24,7 @@ window.onload = async () => {
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                     <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
                     <p><strong>ข้อเสนอแนะ:</strong>${form.comments}</p>
-                    ${form.approved !== null ? '' : `<button class="cancel-button" data-id="${form.id}">ยกเลิกคำร้อง</button>`}
+                    <button class="cancel-button" data-id="${form.id}">ยกเลิกคำร้อง</button>
                 </div>`;
                 }else {
                     htmlData += `<div class="form">
@@ -34,7 +34,7 @@ window.onload = async () => {
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                     <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                    ${form.approved !== null ? '' : `<button class="cancel-button" data-id="${form.id}">ยกเลิกคำร้อง</button>`}
+                    <button class="cancel-button" data-id="${form.id}">ยกเลิกคำร้อง</button>
                 </div>`;
                 }
 
@@ -82,7 +82,7 @@ window.onload = async () => {
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                     <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
                     <p><strong>ข้อเสนอแนะ:</strong>${form.comments}</p>
-                    ${form.approved !== null ? '' : `<button class="cancel-button" data-id="${form.id}">ยกเลิกคำร้อง</button>`}
+                    <button class="cancel-button" data-id="${form.id}">ยกเลิกคำร้อง</button>
                 </div>`;
                 }
                 else {
@@ -93,7 +93,7 @@ window.onload = async () => {
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                     <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
-                    ${form.approved !== null ? '' : `<button class="cancel-button" data-id="${form.id}">ยกเลิกคำร้อง</button>`}
+                   <button class="cancel-button" data-id="${form.id}">ยกเลิกคำร้อง</button>
                 </div>`;
                 }
             }
