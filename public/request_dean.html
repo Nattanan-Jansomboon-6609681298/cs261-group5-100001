@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Student Request</title>
+    <link rel="stylesheet" href="./css/request_dean.css">
+</head>
+<body>
+    <div class="body_container">
+        <div class="container">
+            <div class="main_box" id="main_box">
+                <div class="tu_logo">
+                    <img src="./img/tu-logo.png" alt="">
+                    <div class="text_logo">
+                        <b>มหาวิทยาลัยธรรมศาสตร์</b>
+                        <p>คณะวิทยาศาสตร์และเทคโนโลยี</p>
+                    </div>
+                </div>
+                <div class="intro">คำร้องจากนักศึกษา</div>
+
+                <div class="select_choice">
+                    <!-- This is where request details will be dynamically added -->
+                    <div id="requestDetails" style="padding: 0 60px 0 60px;"></div>
+
+                    <!-- No Requests Message (hidden by default) -->
+                    <div id="noRequestsMessage" class="no-requests-message" style="display:none;">
+                        <p>ไม่มีคำร้อง</p>
+                    </div>
+
+                    <div id="commentSection" style="display:none;">
+                        <div class="form-group">
+                            <label for="comments">Comments</label>
+                            <textarea id="comments" rows="5" placeholder="Enter your comments here..." required></textarea>
+                        </div>
+                    </div>
+
+                    <div id="buttonsContainer" class="buttons-container" style="display:none;">
+                        <button id="approveButton" onclick="handleRequest('approve')">อนุมัติคำร้อง</button>
+                        <button id="rejectButton" onclick="handleRequest('reject')">ปฏิเสธคำร้อง</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="message"></div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+    <script src="./js/request_dean.js"></script>
+</body>
+</html>

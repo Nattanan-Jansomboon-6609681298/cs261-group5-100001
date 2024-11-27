@@ -43,6 +43,7 @@ const connectMySQL = async (retries = 5) => {
           contactNumber VARCHAR(10) NOT NULL,
           parentContactNumber VARCHAR(10) NOT NULL,
           advisor VARCHAR(255) NOT NULL,
+          teacher VARCHAR(255),
           semester TINYINT,
           courseCode VARCHAR(10),
           courseName VARCHAR(70),
@@ -50,11 +51,30 @@ const connectMySQL = async (retries = 5) => {
           purpose TEXT NOT NULL,
           date DATETIME DEFAULT CURRENT_TIMESTAMP,
           approved TINYINT(1),
+          advisor_approved TINYINT(1),
+          teacher_approved TINYINT(1),
+          dean_approved TINYINT(1),
           comments TEXT,
           email VARCHAR(80)
         )
       `);
       console.log("Table 'forms' checked/created");
+      await conn.query(`
+        CREATE TABLE IF NOT EXISTS appointment (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          formID TINYINT(3) NOT NULL UNIQUE,
+          studentID VARCHAR(11) NOT NULL,
+          firstName VARCHAR(255) NOT NULL,
+          lastName VARCHAR(255) NOT NULL,
+          advisor VARCHAR(255),
+          advisor_date DATETIME,
+          teacher VARCHAR(255),
+          teacher_date DATETIME,
+          advisor_approved TINYINT(1),
+          teacher_approved TINYINT(1)
+        )
+      `);
+      console.log("Table 'appointment' checked/created");
       break;
     } catch (error) {
       console.error("Database connection failed:", error.message);
@@ -144,29 +164,53 @@ app.get('/forms', async (req, res) => {
   }
 });
 
+
 // คืนค่าข้อมูลตามที่ปรึกษา
 app.get('/forms/advisor/:name', async (req, res) => {
   try {
     const name = req.params.name;
     const [rows] = await executeQuery('SELECT * FROM forms WHERE advisor = ?', [name]);
     
-    if(rows.length > 0) {
+    if (rows.length > 0) {
       return res.json(rows);
     }
     throw new Error("Not Found");
   } catch (error) {
-    if(error.message === 'Not Found') {
-      res.status(404).json({
-        message : error.message,
-        status : 404
+    if (error.message === 'Not Found') {
+      return res.status(404).json({
+        message: error.message,
+        status: 404
       });
     }
-    res.status(500).json({
-      message: "something went wrong!",
+    return res.status(500).json({
+      message: "Something went wrong!",
       errorMessage: error.message
     });
   }
 });
+
+// app.get('/forms/advisor/:name', async (req, res) => {
+//   try {
+//     const name = req.params.name;
+//     const [rows] = await executeQuery('SELECT * FROM forms WHERE advisor = ?', [name]);
+    
+//     if(rows.length > 0) {
+//       return res.json(rows);
+//     }
+//     throw new Error("Not Found");
+//   } catch (error) {
+//     if(error.message === 'Not Found') {
+//       res.status(404).json({
+//         message : error.message,
+//         status : 404
+//       });
+//     }
+//     res.status(500).json({
+//       message: "something went wrong!",
+//       errorMessage: error.message
+//     });
+//   }
+// }); 
 
 // insert ข้อมูลใหม่ลง database
 app.post('/forms', async (req, res) => {
@@ -214,7 +258,7 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
   const { comments, email } = req.body;
 
   try {
-    const [result] = await executeQuery('UPDATE forms SET approved = ?, comments = ? WHERE id = ?', [action === 'approve' ? 1 : 0, comments, requestId]);
+    const [result] = await executeQuery('UPDATE forms SET advisor_approved = ?, comments = ? WHERE id = ?', [action === 'approve' ? 1 : 0, comments, requestId]);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Request not found' });
     }
@@ -237,3 +281,231 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
     res.status(500).json({ message: 'Error processing request', error: error.message });
   }
 });
+
+// API teacher
+app.get('/forms/teacher/:name', async (req, res) => {
+  const name = req.params.name;
+  try {
+      const [rows] = await executeQuery('SELECT * FROM forms WHERE teacher = ?', [name]);
+      if (rows.length > 0) {
+        return res.json(rows);
+      }
+      throw new Error("Not Found");
+  } catch (error) {
+    if(error.message === 'Not Found') {
+      return res.status(404).json({
+        message : error.message,
+        status : 404
+      });
+    }
+    console.log(error.message);
+    return res.status(500).json({ errorMessage: error.message });
+  }
+});
+
+app.put('/forms/teacher/update/:id/:action', async (req, res) => {
+  const { id, action } = req.params;
+  const { comments } = req.body;
+
+  try {
+      // กำหนดค่า approved ตาม action
+      const teacherApprovedStatus = action === 'approve' ? 1 : 0;
+
+      // อัปเดตฐานข้อมูล
+      const [result] = await executeQuery(
+          `UPDATE forms SET teacher_approved = ?, comments = ? WHERE id = ?`,
+          [teacherApprovedStatus, comments, id]
+      );
+
+      // ตรวจสอบว่าอัปเดตสำเร็จหรือไม่
+      if (result.affectedRows === 0) {
+          return res.status(404).json({ message: 'Request not found' });
+      }
+
+      // ส่งคำตอบกลับ
+      res.status(200).json({ message: 'Request updated successfully' });
+  } catch (error) {
+      console.error('Error updating request:', error);
+      res.status(500).json({ message: 'Failed to update request', error: error.message });
+  }
+});
+
+app.get('/appointment', async (req, res) => {
+  const formID = req.params.formID;
+  try {
+    const [rows] = await executeQuery('SELECT * FROM appointment');
+    res.json(rows.length > 0 ? rows : []);
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      ErrorMessage: error.message
+    });
+  }
+});
+
+app.post('/appointment', async(req, res) => {
+  let data = req.body;
+  try {
+    await executeQuery('INSERT INTO appointment SET ?', data);
+    res.status(200).json({
+      message : "Insert Success",
+      status : 200
+    });
+  } catch(error) {
+    res.status(500).json({
+      errorMessage : "Something went wrong.",
+      status : 500,
+      error 
+    });
+  }
+});
+
+app.get('/appointment/:formID', async (req, res) => {
+  const formID = req.params.formID;
+  try {
+    const [rows] = await executeQuery('SELECT * FROM appointment WHERE formID = ?', [formID]);
+    res.json(rows.length > 0 ? rows : []);
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      ErrorMessage: error.message
+    });
+  }
+});
+
+app.get('/appointment/advisor/:formID/:name', async (req, res) => {
+  const name = req.params.name;
+  const formID = req.params.formID;
+  try {
+    const [rows] = await executeQuery('SELECT * FROM appointment WHERE advisor = ? AND formID = ?', [name, formID]);
+    res.json(rows.length > 0 ? rows : []);
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      ErrorMessage: error.message
+    });
+  }
+});
+
+app.put('/appointment/advisor/update/:formID/:action', async (req, res) => {
+  const formID = req.params.formID;
+  const action = req.params.action;
+
+  try {
+      const [result] = await executeQuery(
+          `UPDATE appointment SET advisor_approved = ? WHERE formID = ?`,
+          [action, formID]
+      );
+
+      if (result.affectedRows === 0) {
+          return res.status(404).json({ error: 'Form not found or no changes made' });
+      }
+
+      res.status(200).json({ message: 'Update successful' });
+  } catch (error) {
+      console.error('Error updating advisor_approved:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+app.get('/appointment/teacher/:formID/:name', async (req, res) => {
+  const name = req.params.name;
+  const formID = req.params.formID;
+  try {
+    const [rows] = await executeQuery('SELECT * FROM appointment WHERE teacher = ? AND formID = ?', [name, formID]);
+    res.json(rows.length > 0 ? rows : []);
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      ErrorMessage: error.message
+    });
+  }
+});
+
+
+app.put('/appointment/teacher/update/:formID/:action', async (req, res) => {
+  const formID = req.params.formID;
+  const action = req.params.action;
+
+  try {
+      const [result] = await executeQuery(
+          `UPDATE appointment SET teacher_approved = ? WHERE formID = ?`,
+          [action, formID]
+      );
+
+      if (result.affectedRows === 0) {
+          return res.status(404).json({ error: 'Form not found or no changes made' });
+      }
+
+      res.status(200).json({ message: 'Update successful' });
+  } catch (error) {
+      console.error('Error updating advisor_approved:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+//
+app.get('/forms/request/dean', async (req, res) => {
+  try {
+    const [rows] = await executeQuery(`SELECT * FROM forms WHERE (subject = ? AND advisor_approved = ?)
+      OR (subject != ? AND advisor_approved = ? AND teacher_approved = ?)`, ['ลาออก', 1, 'ลาออก', 1, 1]);
+
+    if (rows.length > 0) {
+      return res.json(rows);
+    }
+
+    throw new Error("Not Found");
+  } catch (error) {
+    if (error.message === 'Not Found') {
+      console.error('Error:', error);
+      return res.status(404).json({
+        message: error.message,
+        status: 404
+      });
+    }
+    return res.status(500).json({
+      message: "Something went wrong!",
+      errorMessage: error.message
+    });
+  }
+});
+
+
+app.put('/forms/dean/update/:requestId/:action', async (req, res) => {
+  const { requestId, action } = req.params;
+  const { comments, email } = req.body;
+
+  try {
+    const deanApprovedStatus = action === 'approve' ? 1 : 0;
+
+    const [result] = await executeQuery(
+      'UPDATE forms SET dean_approved = ?, comments = ? WHERE id = ?', 
+      [deanApprovedStatus, comments, requestId]
+    );
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+
+    const emailStatus = action === 'approve' ? 'approved' : 'rejected';
+    const mailOptions = {
+      from: 'andasecondary@gmail.com',
+      to: email,
+      subject: `Your request has been ${emailStatus}`,
+      text: `Dear user,\n\nYour request has been ${emailStatus} by dean. Comments: ${comments}\n\nBest regards,\nYour Team`
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).json({ message: 'Failed to send email', error: error.message });
+      }
+      res.status(200).json({ message: 'Request processed and email sent' });
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error processing request', error: error.message });
+  }
+});
+
+
+

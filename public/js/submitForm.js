@@ -69,6 +69,7 @@ document.getElementById('submit').addEventListener('click', async (e) => {
         const courseCode = document.getElementById('course_code').value;
         const courseName = document.getElementById('course_name').value;
         const section = document.getElementById('section').value;
+        const teacher_name = document.getElementById('teacher_name').value;
 
         formData = {
             studentID: id,
@@ -88,7 +89,8 @@ document.getElementById('submit').addEventListener('click', async (e) => {
             subdistrict: district,
             district: country,
             province: province,
-            email: userEmail
+            email: userEmail,
+            teacher : teacher_name
         };
     }
 
@@ -107,7 +109,7 @@ document.getElementById('submit').addEventListener('click', async (e) => {
                 'address_number', 'district', 'country', 
                 'province', 'phone_number', 'phone_parent', 
                 'teacher', 'course_section', 'course_code', 
-                'course_name', 'section', 'reason'
+                'course_name', 'section', 'reason', 'teacher_name'
             ];
         }
     

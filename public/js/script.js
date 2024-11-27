@@ -8,6 +8,13 @@ function submitLogin() {
     if (username === 'test' && password === 'test') {
         window.location.href = `forms.html?searchKey=test&type=employee`;
     }
+    if (username === 'dean' && password === 'dean') {
+        window.location.href = `forms.html?searchKey=dean&type=dean`;
+    }
+    if (username === 'teacher' && password === 'teacher') {
+        window.location.href = `forms.html?searchKey=teacher&type=teacher`;
+    }
+    
     // ตรวจสอบการกรอกข้อมูล
     if (!username || !password) {
         messageElement.innerText = 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน';
@@ -56,6 +63,10 @@ function submitLogin() {
                 window.location.href = `student.html?studentID=${data.username}&type=student&email=${userEmail}&fullName=${data.displayname_th}`;
             } else if (data.type === 'employee') {
                 window.location.href = `forms.html?searchKey=${data.username}&type=employee`;
+            } else if (data.type === 'dean') {
+                window.location.href = `forms.html?searchKey=${data.username}&type=dean`;
+            } else if (data.type === 'teacher') {
+                window.location.href = `forms.html?searchKey=${data.username}&type=teacher`;
             }
         } else {
             throw new Error(data.message || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
