@@ -25,68 +25,36 @@ async function loadRequestDetails() {
             }
 
             // แสดงรายละเอียดคำร้อง
-            if (data.subject === 'ขอถอนวิชา/ถอนรายวิชา' || data.subject === 'ขอจดทะเบียนรายวิชาศึกษานอกหลักสูตร' || data.subject === 'จดทะเบียน/เพิ่มถอน') {
-                document.getElementById('requestDetails').innerHTML = `
-                <div class="detail">
-                    <div class="request-item"><strong>เรื่อง:</strong> ${data.subject}</div>
-                    <div class="request-item"><strong>ชื่อ:</strong> ${data.firstName}</div>
-                    <div class="request-item"><strong>นามสกุล:</strong> ${data.lastName}</div>
-                    <div class="request-item"><strong>รหัสนักศึกษา:</strong> ${data.studentID}</div>
-                    <div class="request-item"><strong>ชั้นปี:</strong> ${data.year}</div>
-                    <div class="request-item"><strong>อีเมล:</strong> ${data.email}</div>
-                    <div class="request-item"><strong>อาจารย์ที่ปรึกษา:</strong> ${data.advisor}</div>
-                    <div class="request-item"><strong>ภาคเรียนที่:</strong> ${data.semester}</div>
-                    <div class="request-item"><strong>รหัสวิชา:</strong> ${data.courseCode}</div>
-                    <div class="request-item"><strong>ชื่อวิชา:</strong> ${data.courseName}</div>
-                    <div class="request-item"><strong>Section:</strong> ${data.section}</div>
-                    <div class="request-item"><strong>สถานะ:</strong> ${status}</div>
-                    <div class="request-item"><strong>เหตุผล:</strong> ${data.purpose}</div>
-                    <div class="request-item"><strong>ข้อเสนอแนะ:</strong> ${data.comments || '-'}</div>
-                </div>
-                `;
-            } else {
-                document.getElementById('requestDetails').innerHTML = `
-                <div class="detail">
-                    <div class="request-item"><strong>เรื่อง:</strong> ${data.subject}</div>
-                    <div class="request-item"><strong>ชื่อ:</strong> ${data.firstName}</div>
-                    <div class="request-item"><strong>นามสกุล:</strong> ${data.lastName}</div>
-                    <div class="request-item"><strong>รหัสนักศึกษา:</strong> ${data.studentID}</div>
-                    <div class="request-item"><strong>ชั้นปี:</strong> ${data.year}</div>
-                    <div class="request-item"><strong>อีเมล:</strong> ${data.email}</div>
-                    <div class="request-item"><strong>อาจารย์ที่ปรึกษา:</strong> ${data.advisor}</div>
-                    <div class="request-item"><strong>สถานะ:</strong> ${status}</div>
-                    <div class="request-item"><strong>เหตุผล:</strong> ${data.purpose}</div>
-                    <div class="request-item"><strong>ข้อเสนอแนะ:</strong> ${data.comments || '-'}</div>
-                </div>
-                `;
-            }
+            document.getElementById('requestDetails').innerHTML = `
+            <div class="detail">
+                <div class="request-item"><strong>เรื่อง:</strong> ${data.subject}</div>
+                <div class="request-item"><strong>ชื่อ:</strong> ${data.firstName}</div>
+                <div class="request-item"><strong>นามสกุล:</strong> ${data.lastName}</div>
+                <div class="request-item"><strong>รหัสนักศึกษา:</strong> ${data.studentID}</div>
+                <div class="request-item"><strong>ชั้นปี:</strong> ${data.year}</div>
+                <div class="request-item"><strong>ภาคเรียนที่:</strong> ${data.semester}</div>
+                <div class="request-item"><strong>สถานะ:</strong> ${status}</div>
+                <div class="request-item"><strong>เหตุผล:</strong> ${data.purpose}</div>
+            </div>`;
+            
 
             // ตรวจสอบสถานะคำร้องและซ่อนปุ่มหากคำร้องได้รับการอนุมัติหรือปฏิเสธแล้ว
             if (data.advisor_approved == 1 || data.advisor_approved == 0) {
                 document.getElementById('commentSection').style.display = 'none';
                 document.getElementById('buttonsContainer').style.display = 'none';
             } else {
-                // แสดงส่วนความคิดเห็นและปุ่มหากยังไม่มีการอนุมัติหรือปฏิเสธ
+            // แสดงส่วนความคิดเห็นและปุ่มหากยังไม่มีการอนุมัติหรือปฏิเสธ
                 document.getElementById('commentSection').style.display = 'block';
                 document.getElementById('buttonsContainer').style.display = 'flex';
             }
-
+            
             document.getElementById('noRequestsMessage').style.display = 'none';
-
+            
         } else {
-            // ไม่พบคำร้อง
             document.getElementById('requestDetails').textContent = '';
             document.getElementById('noRequestsMessage').style.display = 'block';
-            document.getElementById('commentSection').style.display = 'none';
-            document.getElementById('buttonsContainer').style.display = 'none';
         }
-
     } catch (error) {
-        // เกิดข้อผิดพลาดในการโหลดรายละเอียดคำร้อง
-        document.getElementById('requestDetails').textContent = 'เกิดข้อผิดพลาดในการโหลดรายละเอียดคำร้อง';
-        document.getElementById('noRequestsMessage').style.display = 'none';
-        document.getElementById('commentSection').style.display = 'none';
-        document.getElementById('buttonsContainer').style.display = 'none';
         console.error(error);
     }
 }
@@ -111,6 +79,9 @@ async function handleRequest(action) {
         if (response.status === 200) {
             alert(`คำร้องถูก${action}สำเร็จ!`);
 
+            document.getElementById('commentSection').style.display = 'none';
+            document.getElementById('buttonsContainer').style.display = 'none';
+
             // โหลดรายละเอียดคำร้องใหม่เพื่ออัปเดตสถานะ
             await loadRequestDetails();
             
@@ -124,3 +95,4 @@ async function handleRequest(action) {
         alert(`เกิดข้อผิดพลาดในการ${action}คำร้อง`);
     }
 }
+document.addEventListener('DOMContentLoaded', loadRequestDetails);

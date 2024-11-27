@@ -242,7 +242,7 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
   const { comments, email } = req.body;
 
   try {
-    const [result] = await executeQuery('UPDATE forms SET approved = ?, comments = ? WHERE id = ?', [action === 'approve' ? 1 : 0, comments, requestId]);
+    const [result] = await executeQuery('UPDATE forms SET advisor_approved = ?, comments = ? WHERE id = ?', [action === 'approve' ? 1 : 0, comments, requestId]);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Request not found' });
     }
@@ -311,5 +311,64 @@ app.put('/forms/teacher/update/:id/:action', async (req, res) => {
   } catch (error) {
       console.error('Error updating request:', error);
       res.status(500).json({ message: 'Failed to update request', error: error.message });
+  }
+});
+app.get('/forms/dean/:name', async (req, res) => {
+  try {
+    const [rows] = await executeQuery(`SELECT * FROM forms WHERE (subject = ? AND advisor_approved = ?)
+      OR (subject != ? AND advisor_approved = ? AND teacher_approved = ?)`, ['ลาออก', 1, 'ลาออก', 1, 1]);
+
+    if (rows.length > 0) {
+      return res.json(rows);
+    }
+
+    throw new Error("Not Found");
+  } catch (error) {
+    if (error.message === 'Not Found') {
+      console.error('Error:', error);
+      return res.status(404).json({
+        message: error.message,
+        status: 404
+      });
+    }
+    return res.status(500).json({
+      message: "Something went wrong!",
+      errorMessage: error.message
+    });
+  }
+});
+
+
+app.put('/forms/dean/update/:requestId/:action', async (req, res) => {
+  const { requestId, action } = req.params;
+  const { comments, email } = req.body;
+
+  try {
+    const deanApprovedStatus = action === 'approve' ? 1 : 0;
+
+    const [result] = await executeQuery(
+      'UPDATE forms SET dean_approved = ?, comments = ? WHERE id = ?', 
+      [deanApprovedStatus, comments, requestId]
+    );
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+
+    const emailStatus = action === 'approve' ? 'approved' : 'rejected';
+    const mailOptions = {
+      from: 'andasecondary@gmail.com',
+      to: email,
+      subject: `Your request has been ${emailStatus}`,
+      text: `Dear user,\n\nYour request has been ${emailStatus} by dean. Comments: ${comments}\n\nBest regards,\nYour Team`
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).json({ message: 'Failed to send email', error: error.message });
+      }
+      res.status(200).json({ message: 'Request processed and email sent' });
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error processing request', error: error.message });
   }
 });
