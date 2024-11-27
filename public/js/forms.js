@@ -652,6 +652,15 @@ async function loadRequestDetail() {
                             <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
                             <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
                             ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
+                            <div class="advisor-action-container">
+                                <p>นักศึกษาต้องการนัดหมายวันที่ ${date}</p>
+                                <div>
+                                    <!-- Check if decision already made (either approved or rejected) -->
+
+                                        <button class="approved-btn" data-id="${form.id}" data-action="1">ยอมรับ</button>
+                                        <button class="reject-btn" data-id="${form.id}" data-action="0">ปฏิเสธ</button>
+                                </div>
+                            </div>
                         </div>
                     `;
                     }
