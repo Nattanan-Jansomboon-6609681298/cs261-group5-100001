@@ -114,8 +114,8 @@ body{
 .cancel-button {
     display: none; /* ซ่อนปุ่มเริ่มต้น */
     position: absolute; /* ตั้งตำแหน่งแบบ absolute */
-    bottom: 5px; /* ระยะห่างจากด้านล่าง */
-    left: 40px; /* ระยะห่างจากด้านซ้าย */
+    top: 45px;
+    right: 40px; /* ระยะห่างจากด้านซ้าย */
     padding: 10px 20px;
     background-color: #ff4d4d;
     color: white;
