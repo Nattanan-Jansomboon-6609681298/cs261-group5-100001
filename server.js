@@ -43,6 +43,7 @@ const connectMySQL = async (retries = 5) => {
           contactNumber VARCHAR(10) NOT NULL,
           parentContactNumber VARCHAR(10) NOT NULL,
           advisor VARCHAR(255) NOT NULL,
+          teacher VARCHAR(255),
           semester TINYINT,
           courseCode VARCHAR(10),
           courseName VARCHAR(70),
@@ -50,6 +51,9 @@ const connectMySQL = async (retries = 5) => {
           purpose TEXT NOT NULL,
           date DATETIME DEFAULT CURRENT_TIMESTAMP,
           approved TINYINT(1),
+          advisor_approved TINYINT(1),
+          teacher_approved TINYINT(1),
+          dean_approved TINYINT(1),
           comments TEXT,
           email VARCHAR(80)
         )
@@ -162,29 +166,53 @@ app.get('/forms', async (req, res) => {
   }
 });
 
+
 // คืนค่าข้อมูลตามที่ปรึกษา
 app.get('/forms/advisor/:name', async (req, res) => {
   try {
     const name = req.params.name;
     const [rows] = await executeQuery('SELECT * FROM forms WHERE advisor = ?', [name]);
     
-    if(rows.length > 0) {
+    if (rows.length > 0) {
       return res.json(rows);
     }
     throw new Error("Not Found");
   } catch (error) {
-    if(error.message === 'Not Found') {
-      res.status(404).json({
-        message : error.message,
-        status : 404
+    if (error.message === 'Not Found') {
+      return res.status(404).json({
+        message: error.message,
+        status: 404
       });
     }
-    res.status(500).json({
-      message: "something went wrong!",
+    return res.status(500).json({
+      message: "Something went wrong!",
       errorMessage: error.message
     });
   }
 });
+
+// app.get('/forms/advisor/:name', async (req, res) => {
+//   try {
+//     const name = req.params.name;
+//     const [rows] = await executeQuery('SELECT * FROM forms WHERE advisor = ?', [name]);
+    
+//     if(rows.length > 0) {
+//       return res.json(rows);
+//     }
+//     throw new Error("Not Found");
+//   } catch (error) {
+//     if(error.message === 'Not Found') {
+//       res.status(404).json({
+//         message : error.message,
+//         status : 404
+//       });
+//     }
+//     res.status(500).json({
+//       message: "something went wrong!",
+//       errorMessage: error.message
+//     });
+//   }
+// }); 
 
 // insert ข้อมูลใหม่ลง database
 app.post('/forms', async (req, res) => {
@@ -232,7 +260,7 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
   const { comments, email } = req.body;
 
   try {
-    const [result] = await executeQuery('UPDATE forms SET approved = ?, comments = ? WHERE id = ?', [action === 'approve' ? 1 : 0, comments, requestId]);
+    const [result] = await executeQuery('UPDATE forms SET advisor_approved = ?, comments = ? WHERE id = ?', [action === 'approve' ? 1 : 0, comments, requestId]);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Request not found' });
     }
@@ -258,7 +286,7 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
 
 app.patch('/forms/student/edit/:id', async (req, res) => {
   const { id } = req.params;
-  const { studentID, subject, firstName, lastName, year, addressNumber, subdistrict, district, province, contactNumber, parentContactNumber, advisor, semester, courseCode, courseName, section, purpose, approved, comments, email } = req.body;
+  const { studentID, subject, firstName, lastName, year, addressNumber, subdistrict, district, province, contactNumber, parentContactNumber, advisor, semester, courseCode, courseName, section, purpose, approved, comments, email,teacher } = req.body;
 
   const updatedFields = [];
   const values = [];
@@ -344,6 +372,10 @@ app.patch('/forms/student/edit/:id', async (req, res) => {
     updatedFields.push('email = ?');
     values.push(email);
   }
+  if (teacher) {
+    updatedFields.push('teacher = ?');
+    values.push(teacher);
+  }
 
   // Append the form ID to the values for the WHERE clause
   values.push(id);
@@ -375,6 +407,77 @@ app.patch('/forms/student/edit/:id', async (req, res) => {
     });
   } catch (error) {
     if (error.message === 'Not Found') {
+      return res.status(404).json({
+        message: error.message,
+        status: 404
+      });
+    }
+    return res.status(500).json({
+      message: error.message,
+      status: 500
+    });
+  }
+});
+// API teacher
+app.get('/forms/teacher/:name', async (req, res) => {
+  const name = req.params.name;
+  try {
+      const [rows] = await executeQuery('SELECT * FROM forms WHERE teacher = ?', [name]);
+      if (rows.length > 0) {
+        return res.json(rows);
+      }
+      throw new Error("Not Found");
+  } catch (error) {
+    if(error.message === 'Not Found') {
+      return res.status(404).json({
+        message : error.message,
+        status : 404
+      });
+    }
+    console.log(error.message);
+    return res.status(500).json({ errorMessage: error.message });
+  }
+});
+
+app.put('/forms/teacher/update/:id/:action', async (req, res) => {
+  const { id, action } = req.params;
+  const { comments } = req.body;
+
+  try {
+      // กำหนดค่า approved ตาม action
+      const teacherApprovedStatus = action === 'approve' ? 1 : 0;
+
+      // อัปเดตฐานข้อมูล
+      const [result] = await executeQuery(
+          `UPDATE forms SET teacher_approved = ?, comments = ? WHERE id = ?`,
+          [teacherApprovedStatus, comments, id]
+      );
+
+      // ตรวจสอบว่าอัปเดตสำเร็จหรือไม่
+      if (result.affectedRows === 0) {
+          return res.status(404).json({ message: 'Request not found' });
+      }
+
+      // ส่งคำตอบกลับ
+      res.status(200).json({ message: 'Request updated successfully' });
+  } catch (error) {
+      console.error('Error updating request:', error);
+      res.status(500).json({ message: 'Failed to update request', error: error.message });
+  }
+});
+app.get('/forms/dean/:name', async (req, res) => {
+  try {
+    const [rows] = await executeQuery(`SELECT * FROM forms WHERE (subject = ? AND advisor_approved = ?)
+      OR (subject != ? AND advisor_approved = ? AND teacher_approved = ?)`, ['ลาออก', 1, 'ลาออก', 1, 1]);
+
+    if (rows.length > 0) {
+      return res.json(rows);
+    }
+
+    throw new Error("Not Found");
+  } catch (error) {
+    if (error.message === 'Not Found') {
+      console.error('Error:', error);
       return res.status(404).json({
         message: error.message,
         status: 404

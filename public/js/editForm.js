@@ -63,6 +63,7 @@ window.onload = async () => {
                     document.getElementById('section').value = selectedForm.section || '';
                     document.getElementById('course_section').value = selectedForm.semester || '';
                     document.getElementById('reason').value = selectedForm.purpose || '';
+                    document.getElementById('teacher_name').value = selectedForm.teacher || '';
                 }
             } else {
                 console.error("Form not found!");
@@ -106,6 +107,7 @@ document.getElementById('submit').addEventListener('click', async () => {
         courseName: document.getElementById('course_name').value,
         section: document.getElementById('section').value,
         purpose: document.getElementById('reason').value,
+        teacher: document.getElementById('teacher_name').value
         // comments: "", // Optional: Add a field for comments if needed
         // email: "", // Optional: Add a field for email if needed
     };
