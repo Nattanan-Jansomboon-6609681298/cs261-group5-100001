@@ -59,6 +59,22 @@ const connectMySQL = async (retries = 5) => {
         )
       `);
       console.log("Table 'forms' checked/created");
+      await conn.query(`
+        CREATE TABLE IF NOT EXISTS appointment (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          formID TINYINT(3) NOT NULL UNIQUE,
+          studentID VARCHAR(11) NOT NULL,
+          firstName VARCHAR(255) NOT NULL,
+          lastName VARCHAR(255) NOT NULL,
+          advisor VARCHAR(255),
+          advisor_date DATETIME,
+          teacher VARCHAR(255),
+          teacher_date DATETIME,
+          advisor_approved TINYINT(1),
+          teacher_approved TINYINT(1)
+        )
+      `);
+      console.log("Table 'appointment' checked/created");
       break;
     } catch (error) {
       console.error("Database connection failed:", error.message);
@@ -313,7 +329,125 @@ app.put('/forms/teacher/update/:id/:action', async (req, res) => {
       res.status(500).json({ message: 'Failed to update request', error: error.message });
   }
 });
-app.get('/forms/dean/:name', async (req, res) => {
+
+app.get('/appointment', async (req, res) => {
+  const formID = req.params.formID;
+  try {
+    const [rows] = await executeQuery('SELECT * FROM appointment');
+    res.json(rows.length > 0 ? rows : []);
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      ErrorMessage: error.message
+    });
+  }
+});
+
+app.post('/appointment', async(req, res) => {
+  let data = req.body;
+  try {
+    await executeQuery('INSERT INTO appointment SET ?', data);
+    res.status(200).json({
+      message : "Insert Success",
+      status : 200
+    });
+  } catch(error) {
+    res.status(500).json({
+      errorMessage : "Something went wrong.",
+      status : 500,
+      error 
+    });
+  }
+});
+
+app.get('/appointment/:formID', async (req, res) => {
+  const formID = req.params.formID;
+  try {
+    const [rows] = await executeQuery('SELECT * FROM appointment WHERE formID = ?', [formID]);
+    res.json(rows.length > 0 ? rows : []);
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      ErrorMessage: error.message
+    });
+  }
+});
+
+app.get('/appointment/advisor/:formID/:name', async (req, res) => {
+  const name = req.params.name;
+  const formID = req.params.formID;
+  try {
+    const [rows] = await executeQuery('SELECT * FROM appointment WHERE advisor = ? AND formID = ?', [name, formID]);
+    res.json(rows.length > 0 ? rows : []);
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      ErrorMessage: error.message
+    });
+  }
+});
+
+app.put('/appointment/advisor/update/:formID/:action', async (req, res) => {
+  const formID = req.params.formID;
+  const action = req.params.action;
+
+  try {
+      const [result] = await executeQuery(
+          `UPDATE appointment SET advisor_approved = ? WHERE formID = ?`,
+          [action, formID]
+      );
+
+      if (result.affectedRows === 0) {
+          return res.status(404).json({ error: 'Form not found or no changes made' });
+      }
+
+      res.status(200).json({ message: 'Update successful' });
+  } catch (error) {
+      console.error('Error updating advisor_approved:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+app.get('/appointment/teacher/:formID/:name', async (req, res) => {
+  const name = req.params.name;
+  const formID = req.params.formID;
+  try {
+    const [rows] = await executeQuery('SELECT * FROM appointment WHERE teacher = ? AND formID = ?', [name, formID]);
+    res.json(rows.length > 0 ? rows : []);
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      ErrorMessage: error.message
+    });
+  }
+});
+
+
+app.put('/appointment/teacher/update/:formID/:action', async (req, res) => {
+  const formID = req.params.formID;
+  const action = req.params.action;
+
+  try {
+      const [result] = await executeQuery(
+          `UPDATE appointment SET teacher_approved = ? WHERE formID = ?`,
+          [action, formID]
+      );
+
+      if (result.affectedRows === 0) {
+          return res.status(404).json({ error: 'Form not found or no changes made' });
+      }
+
+      res.status(200).json({ message: 'Update successful' });
+  } catch (error) {
+      console.error('Error updating advisor_approved:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+//
+app.get('/forms/request/dean', async (req, res) => {
   try {
     const [rows] = await executeQuery(`SELECT * FROM forms WHERE (subject = ? AND advisor_approved = ?)
       OR (subject != ? AND advisor_approved = ? AND teacher_approved = ?)`, ['ลาออก', 1, 'ลาออก', 1, 1]);
@@ -372,3 +506,6 @@ app.put('/forms/dean/update/:requestId/:action', async (req, res) => {
     res.status(500).json({ message: 'Error processing request', error: error.message });
   }
 });
+
+
+

@@ -6,6 +6,7 @@ let userEmail;
 
 // โหลดรายละเอียดคำร้องนักศึกษา
 async function loadRequestDetails() {
+    console.log(searchKey);
     try {
         const response = await axios.get(`${BASE_URL}/forms/edit/${searchKey}`);
         
@@ -39,7 +40,7 @@ async function loadRequestDetails() {
             
 
             // ตรวจสอบสถานะคำร้องและซ่อนปุ่มหากคำร้องได้รับการอนุมัติหรือปฏิเสธแล้ว
-            if (data.advisor_approved == 1 || data.advisor_approved == 0) {
+            if (data.advisor_approved !== null) {
                 document.getElementById('commentSection').style.display = 'none';
                 document.getElementById('buttonsContainer').style.display = 'none';
             } else {
