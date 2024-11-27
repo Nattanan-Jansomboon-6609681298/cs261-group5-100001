@@ -48,7 +48,6 @@ window.onload = async () => {
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
                     <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
                     <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
-                    <div class="editBox"><button class="editBtn" onclick="editForm(${form.id})">แก้ไขคำร้อง</button></div>
                 </div>`;
                 }
 
