@@ -14,20 +14,58 @@ app.use(express.static(path.join(__dirname, 'public')));
 let conn = null;
 
 // เชื่อม database
-const connectMySQL = async () => {
-  try {
-    conn = await mysql.createConnection({
-      host: process.env.DB_HOST || 'localhost', 
-      user: 'root',
-      password: 'root',
-      database: 'mydb',
-      port: 3306
-    });
-    console.log("Database connected successfully");
-  } catch (error) {
-    console.error("Database connection failed:", error.message);
+const connectMySQL = async (retries = 5) => {
+  while (retries) {
+    try {
+      conn = await mysql.createConnection({
+        host: process.env.DB_HOST || 'localhost',
+        user: process.env.DB_USER || 'root',
+        password: process.env.DB_PASSWORD || 'root',
+        database: process.env.DB_NAME || 'mydb',
+        port: process.env.DB_PORT || 3306
+      });
+      console.log("Connected to MySQL server");
+      await conn.query(`CREATE DATABASE IF NOT EXISTS mydb`);
+      console.log("Database 'mydb' checked/created");
+      await conn.query(`USE mydb`);
+      await conn.query(`
+        CREATE TABLE IF NOT EXISTS forms (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          studentID VARCHAR(11) NOT NULL,
+          subject TEXT NOT NULL,
+          firstName VARCHAR(255) NOT NULL,
+          lastName VARCHAR(255) NOT NULL,
+          year TINYINT NOT NULL,
+          addressNumber VARCHAR(50) NOT NULL,
+          subdistrict VARCHAR(65) NOT NULL,
+          district VARCHAR(60) NOT NULL,
+          province VARCHAR(50) NOT NULL,
+          contactNumber VARCHAR(10) NOT NULL,
+          parentContactNumber VARCHAR(10) NOT NULL,
+          advisor VARCHAR(255) NOT NULL,
+          semester TINYINT,
+          courseCode VARCHAR(10),
+          courseName VARCHAR(70),
+          section BIGINT,
+          purpose TEXT NOT NULL,
+          date DATETIME DEFAULT CURRENT_TIMESTAMP,
+          approved TINYINT(1),
+          comments TEXT,
+          email VARCHAR(80)
+        )
+      `);
+      console.log("Table 'forms' checked/created");
+      break;
+    } catch (error) {
+      console.error("Database connection failed:", error.message);
+      retries -= 1;
+      console.log(`Retries left: ${retries}`);
+      await new Promise(res => setTimeout(res, 5000)); // รอ 5 วินาทีแล้วลองใหม่
+    }
   }
+  if (!retries) throw new Error('Unable to connect to MySQL');
 };
+
 
 
 app.listen(PORT, async () => {
@@ -93,6 +131,24 @@ app.get('/forms/:studentID', async (req, res) => {
   }
 });
 
+app.get('/editforms/:id', async (req, res) => {
+  try {
+    const id = req.params.studentID;
+    const [rows] = await executeQuery('SELECT * FROM forms WHERE id = ?', [id]);
+    if (rows.length > 0) {
+      res.json(rows);
+      console.log(rows)
+    } else {
+      throw new Error("Not Found");
+    }
+  } catch (error) {
+    res.status(error.message === "Not Found" ? 404 : 500).json({
+      status: error.message === "Not Found" ? 404 : 500,
+      ErrorMessage: error.message
+    });
+  }
+});
+
 // คืนค่าข้อมูลทั้งหมดใน database
 app.get('/forms', async (req, res) => {
   try {
@@ -111,8 +167,18 @@ app.get('/forms/advisor/:name', async (req, res) => {
   try {
     const name = req.params.name;
     const [rows] = await executeQuery('SELECT * FROM forms WHERE advisor = ?', [name]);
-    res.json(rows.length > 0 ? rows : []);
+    
+    if(rows.length > 0) {
+      return res.json(rows);
+    }
+    throw new Error("Not Found");
   } catch (error) {
+    if(error.message === 'Not Found') {
+      res.status(404).json({
+        message : error.message,
+        status : 404
+      });
+    }
     res.status(500).json({
       message: "something went wrong!",
       errorMessage: error.message
@@ -187,5 +253,136 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: 'Error processing request', error: error.message });
+  }
+});
+
+app.patch('/forms/student/edit/:id', async (req, res) => {
+  const { id } = req.params;
+  const { studentID, subject, firstName, lastName, year, addressNumber, subdistrict, district, province, contactNumber, parentContactNumber, advisor, semester, courseCode, courseName, section, purpose, approved, comments, email } = req.body;
+
+  const updatedFields = [];
+  const values = [];
+
+  // Collect the fields that need to be updated
+  if (studentID) {
+    updatedFields.push('studentID = ?');
+    values.push(studentID);
+  }
+  if (subject) {
+    updatedFields.push('subject = ?');
+    values.push(subject);
+  }
+  if (firstName) {
+    updatedFields.push('firstName = ?');
+    values.push(firstName);
+  }
+  if (lastName) {
+    updatedFields.push('lastName = ?');
+    values.push(lastName);
+  }
+  if (year) {
+    updatedFields.push('year = ?');
+    values.push(year);
+  }
+  if (addressNumber) {
+    updatedFields.push('addressNumber = ?');
+    values.push(addressNumber);
+  }
+  if (subdistrict) {
+    updatedFields.push('subdistrict = ?');
+    values.push(subdistrict);
+  }
+  if (district) {
+    updatedFields.push('district = ?');
+    values.push(district);
+  }
+  if (province) {
+    updatedFields.push('province = ?');
+    values.push(province);
+  }
+  if (contactNumber) {
+    updatedFields.push('contactNumber = ?');
+    values.push(contactNumber);
+  }
+  if (parentContactNumber) {
+    updatedFields.push('parentContactNumber = ?');
+    values.push(parentContactNumber);
+  }
+  if (advisor) {
+    updatedFields.push('advisor = ?');
+    values.push(advisor);
+  }
+  if (semester) {
+    updatedFields.push('semester = ?');
+    values.push(semester);
+  }
+  if (courseCode) {
+    updatedFields.push('courseCode = ?');
+    values.push(courseCode);
+  }
+  if (courseName) {
+    updatedFields.push('courseName = ?');
+    values.push(courseName);
+  }
+  if (section) {
+    updatedFields.push('section = ?');
+    values.push(section);
+  }
+  if (purpose) {
+    updatedFields.push('purpose = ?');
+    values.push(purpose);
+  }
+  if (approved !== undefined) {
+    updatedFields.push('approved = ?');
+    values.push(approved);
+  }
+  if (comments) {
+    updatedFields.push('comments = ?');
+    values.push(comments);
+  }
+  if (email) {
+    updatedFields.push('email = ?');
+    values.push(email);
+  }
+
+  // Append the form ID to the values for the WHERE clause
+  values.push(id);
+
+  if (updatedFields.length === 0) {
+    return res.status(400).json({
+      message: "No valid fields to update",
+      status: 400
+    });
+  }
+
+  try {
+    // Build the dynamic query for updating only provided fields
+    const query = `
+      UPDATE forms SET 
+        ${updatedFields.join(', ')} 
+      WHERE id = ?
+    `;
+    
+    const [result] = await executeQuery(query, values);
+
+    if (result.affectedRows === 0) {
+      throw new Error("Not Found");
+    }
+
+    res.status(200).json({
+      message: "Update successful",
+      status: 200
+    });
+  } catch (error) {
+    if (error.message === 'Not Found') {
+      return res.status(404).json({
+        message: error.message,
+        status: 404
+      });
+    }
+    return res.status(500).json({
+      message: error.message,
+      status: 500
+    });
   }
 });

@@ -2,6 +2,7 @@ const BASE_URL = 'http://localhost:3000';
 const params = new URLSearchParams(window.location.search);
 const searchKey = params.get('searchKey');
 const type = params.get('type');
+// const { loadRequestDetails } = require('./request');    
 let mode = type === "student" ? "WATCH" : "EDIT";
 
 window.onload = async () => {
@@ -33,6 +34,7 @@ window.onload = async () => {
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                     <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                    <div class="editBox"><button class="editBtn" onclick="editForm(${form.id})">แก้ไขคำร้อง</button></div>
                 </div>`;
                 }
 
@@ -118,7 +120,7 @@ window.onload = async () => {
                     status.style.color = 'purple';
                 }
             });
-        //formDOM.classList.toggle('active');
+        formDOM.classList.toggle('active');
 
         } catch (error) {
             console.error("Error fetching forms:", error);
@@ -131,3 +133,7 @@ window.onload = async () => {
         }
     }
 };
+
+function editForm(formId) {
+    window.location.href = `editForm.html?formId=${formId}`;
+}

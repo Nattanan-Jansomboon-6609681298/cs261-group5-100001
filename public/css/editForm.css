@@ -1,0 +1,116 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+#subject b {
+    margin-left: 10px;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #D9D9D9;
+}
+.body_container {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    height: 100%;
+    background-color: white;
+}
+.tu_logo {
+    margin-top: 5vh;
+    margin-bottom: 10vh;
+    display: flex;
+    flex-direction: row;
+}
+.text_logo {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 20px;
+    color: #C3002F;
+}
+.container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.main_box {
+    width: 80%;
+}
+label {
+    margin-right: 10px;
+}
+.show_form {
+    margin-bottom: 7.5vh;
+    display: none;
+}
+#submitRequestForm {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+}
+#fname, #lname, #id {
+    width: 150px;
+}
+input {
+    margin: 10px 10px 10px 0;
+}
+#year {
+    width: 50px;
+}
+#address_number {
+    width: 100px;
+}
+#district, #country {
+    width: 202px;
+}
+#province, #phone_number {
+    width: 217px;
+}
+#phone_parent {
+    width: 250px;
+}
+#teacher {
+    width: 412px;
+}
+#course_section, #course_code, #semester_year, #academic_semester {
+    width: 75px;
+}
+textarea {
+    margin: 20px 0 10px 0;
+    width: 440px;
+}
+.show_more_form {
+    display: none;
+}
+.end_move {
+    width: 100%;
+    display: flex;
+    align-items: end;
+    justify-content: end;
+}
+.submit_block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 7.5vh;
+    background-color: #5866FF;
+    border-radius: 7px;
+    width: 150px;
+    height: 50px;
+}
+.submit {
+    color: white;
+}
+.active {
+    display: block;
+}
+.none {
+    display: none;
+}
