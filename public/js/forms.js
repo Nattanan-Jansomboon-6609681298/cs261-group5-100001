@@ -178,7 +178,7 @@ window.onload = async () => {
                         <p><strong>ชื่อ-นามสุกล:</strong> ${form.firstName + ' ' + form.lastName}</p>
                         <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                         <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                        <p><strong>สถานะ:</strong> <span class="status">${form.approved ?? 'รอการอนุมัติ'}</span></p>
+                        <p><strong>สถานะ:</strong> <span class="status"></span></p>
                         <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
                         <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
                         <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
