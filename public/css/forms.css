@@ -115,22 +115,69 @@ body{
     display: none; /* ซ่อนปุ่มเริ่มต้น */
     position: absolute; /* ตั้งตำแหน่งแบบ absolute */
     bottom: 45px;
-    right: 40px; /* ระยะห่างจากด้านซ้าย */
-    padding: 10px 20px;
+    right: 200px; /* ระยะห่างจากด้านซ้าย */
+    width: 150px;
+    height: 50px;
     background-color: #ff4d4d;
     color: white;
     border: none;
     cursor: pointer;
-    font-size: 14px;
-    border-radius: 5px;
+    border-radius: 7px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 1; /* ให้อยู่เหนือข้อความ */
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-
-
 .form:hover .cancel-button {
     display: block; /* แสดงปุ่มเมื่อเมาส์ชี้ */
-    transform: scale(1.1); /* ขยายเล็กน้อยเมื่อแสดง */
+}
+
+.appointment_btn {
+    margin-top: 1rem;
+    width: 150px;
+    height: 50px;
+    color: white;
+    border: none;
+}
+
+.appointment_btn:hover {
+    cursor: pointer;
+}
+
+.btn-container {
+    display: flex;
+    justify-content: flex-end; /* ให้ทุกอย่างชิดขวา */
+}
+
+.advisor-action-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.approved-btn {
+    width: 100px;
+    height: 40px;
+    background-color: green;
+    border:none;
+    color: white;
+    border-radius: 7px;
+}
+
+.reject-btn {
+    width: 100px;
+    height: 40px;
+    background-color: red;
+    border:none;
+    color: white;
+    border-radius: 7px;
+}
+
+.reject-btn:hover {
+    cursor: pointer;
+}
+
+.approved-btn:hover {
+    cursor: pointer;
 }
