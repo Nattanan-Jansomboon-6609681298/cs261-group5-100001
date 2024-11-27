@@ -120,7 +120,7 @@ async function loadRequestDetail() {
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
                     <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
                     <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
-                    <p><strong>ข้อเสนอแนะ:</strong>${form.comments}</p>
+                    <p><strong>ข้อเสนอแนะ:</strong>${form.comments ?? ' -'}</p>
                     
                     <p id="advisor" data-advisor="${form.advisor}"><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${form.advisor_approved ?? 'รอการอนุมัติ'}</span></p>
                     <form>
@@ -235,8 +235,8 @@ async function loadRequestDetail() {
                 const advisorDateInput = formElement.querySelector('.appointment_advisor');
                 const teacherDateInput = formElement.querySelector('.appointment_teacher');
 
-                console.log(advisorDateInput.value);
-                console.log(teacherDateInput.value);
+                const advisor_date = advisorDateInput?.value || null;
+                const teacher_date = teacherDateInput?.value || null;
                 
 
                     // ตรวจสอบเมื่อมีการเปลี่ยนแปลงวันที่ 
@@ -270,9 +270,6 @@ async function loadRequestDetail() {
                     //     selectedDate.setHours(0, 0, 0, 0); // ตั้งเป็นเวลา 00:00 ของวันที่เลือก
                     //     return selectedDate < currentDate; 
                     // }
-
-                const advisor_date = advisorDateInput?.value || null;
-                const teacher_date = teacherDateInput?.value || null;
 
                 if(advisor_date === null && teacher_date === null) {
                     alert("กรุณาระบุวันที่นัดหมาย");
