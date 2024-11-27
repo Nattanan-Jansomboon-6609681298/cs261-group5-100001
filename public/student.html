@@ -67,6 +67,8 @@
                                         <input type="text" id="course_name" name="course_name">
                                         <label for="section">section</label>
                                         <input type="text" id="section" name="section"><br>
+                                        <label for="course_name">อาจารย์ผู้สอน</label>
+                                        <input type="text" id="teacher_name" name="teacher_name"><br>
                                     </div>    
 
                                     <div class="show_more_form"id = "show_more_form">
@@ -89,6 +91,9 @@
 
                                 </form>
                                 <div class="end_move">
+                                    <div class="example_block">
+                                        <div class="example_btn" id="showExampleBtn">ดูตัวอย่างการกรอก</div>
+                                    </div>
                                     <div class="submit_block">
                                         <div class="submit"id = "submit">ยื่นคำร้อง</div>
                                     </div>
@@ -99,11 +104,21 @@
                         </form>
                     </div>
                 </div>
+                <div class="edit_request">
+                    <div class="option"id = "redirectEdit">แก้ไขคำร้อง</div>
+                </div>
                 <div class="outer_option">
                     <div class="option"id = "redirectBtn">ดูสถานะคำร้อง</div>
                 </div>
             </div>
         </div>  
+    </div>
+    <div id="exampleModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>ตัวอย่างการกรอกคำร้อง</h2>
+            <div id="exampleContent"></div>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
     <script src="js/student.js"></script>

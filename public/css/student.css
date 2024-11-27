@@ -79,6 +79,16 @@ body{
     display: none;
 }
 
+.edit_request {
+    font-size: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5vh;
+    box-shadow: 0px 4px 8px 0 rgba(0, 0, 0, 0.2),
+               0px 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
 .outer_option{
     font-size: 20px;
     width: 100%;
@@ -175,4 +185,73 @@ textarea{
 }
 .none{
     display: none;
+}
+.example_block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #28a745;
+    border-radius: 7px;
+    width: 150px;
+    height: 50px;
+    cursor: pointer;
+    margin-right: 20px;
+}
+
+.example_btn {
+    color: white;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 800px;
+    border-radius: 8px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.example-form {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.example-form p {
+    margin: 10px 0;
+    line-height: 1.5;
+}
+
+.example-label {
+    font-weight: bold;
+    color: #666;
 }
