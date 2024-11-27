@@ -17,14 +17,15 @@ body{
 }
 
 .form {
+    position: relative; /* เพิ่มตำแหน่ง relative เพื่อให้ปุ่มอ้างอิงตำแหน่ง */
     border: 1px solid #d9d9d9;
     padding: 45px 30px 45px 50px;
     word-wrap: break-word;
     border-radius: 2px;
     font-size: 16px;
     line-height: 30px;
+    background-color: #fff; /* เพิ่มพื้นหลังเพื่อความชัดเจน */
 }
-
 
 .edit:hover {
     cursor: pointer;
@@ -97,4 +98,39 @@ body{
 }
 .active{
     display: block;
+}
+.request-container {
+    position: relative;
+    display: inline-block;
+    transition: opacity 0.3s ease; /* เพิ่มการเปลี่ยนแปลงเมื่อเปลี่ยนความทึบ */
+}
+
+/* ปรับความทึบของข้อความเมื่อเมาส์ไปชี้ */
+.request-container:hover {
+    opacity: 1; /* ลดความทึบของข้อความ */
+}
+
+/* สไตล์ปุ่มยกเลิก */
+.cancel-button {
+    display: none; /* ซ่อนปุ่มเริ่มต้น */
+    position: absolute; /* ตั้งตำแหน่งแบบ absolute */
+    bottom: 45px;
+    right: 40px; /* ระยะห่างจากด้านซ้าย */
+    padding: 10px 20px;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1; /* ให้อยู่เหนือข้อความ */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+
+
+.form:hover .cancel-button {
+    display: block; /* แสดงปุ่มเมื่อเมาส์ชี้ */
+    transform: scale(1.1); /* ขยายเล็กน้อยเมื่อแสดง */
 }
