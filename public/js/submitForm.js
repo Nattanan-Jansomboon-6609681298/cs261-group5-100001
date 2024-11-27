@@ -148,6 +148,9 @@ document.getElementById('submit').addEventListener('click', async (e) => {
     }
 });
 
+document.getElementById('redirectEdit').addEventListener('click',function(){
+    window.location.href = `editFormLobby.html?searchKey=${studentID}&type=${type}`;
+});
 
 document.getElementById('redirectBtn').addEventListener('click',function(){
     window.location.href = `forms.html?searchKey=${studentID}&type=${type}`; 

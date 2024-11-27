@@ -117,18 +117,14 @@ async function loadRequestDetail() {
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                     <p><strong>สถานะ:</strong></p>
-                    <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                    <p id="advisor" data-advisor="${form.advisor}"><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${form.advisor_approved ?? 'รอการอนุมัติ'}</span></p>
                     <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
                     <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
-                    <p><strong>ข้อเสนอแนะ:</strong>${form.comments ?? ' -'}</p>
-                    
-                    <p id="advisor" data-advisor="${form.advisor}"><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${form.advisor_approved ?? 'รอการอนุมัติ'}</span></p>
                     <form>
                         <label for="appointment_date"><strong>ขอนัดหมายอาจารย์ที่ปรึกษา:</strong></label>
                         <input type="date" class="appointment_advisor" name="date">
                     </form>
-                    
-                    <p><strong>คณบดี:</strong> <span class="status">${form.dean_approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>ข้อเสนอแนะ:</strong>${form.comments ?? ''}</p>
                     <div class="btn-container">
                         <button class="appointment_btn">นัดหมาย<button>
                     </div>
@@ -143,21 +139,18 @@ async function loadRequestDetail() {
                     <p><strong>เหตุผลที่ยื่นคําร้อง:</strong> ${form.purpose}</p>
                     <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
                     <p><strong>สถานะ:</strong></p>
-                    <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
-                    <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
-                    <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
-                    
                     <p id="advisor" data-advisor="${form.advisor}"><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${form.advisor_approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p id="teacher" data-teacher="${form.teacher}"><strong>อาจารย์ผู้สอน:</strong> <span class="status">${form.teacher_approved ?? 'รอการอนุมัติ'}</span></p>
+                    <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
                     <form>
                         <label for="appointment_date"><strong>ขอนัดหมายอาจารย์ที่ปรึกษา:</strong></label>
                         <input type="date" class="appointment_advisor" name="date">
                     </form>
-                    <p id="teacher" data-teacher="${form.teacher}"><strong>อาจารย์ผู้สอน:</strong> <span class="status">${form.teacher_approved ?? 'รอการอนุมัติ'}</span></p>
                     <form>
                         <label for="appointment_date"><strong>ขอนัดหมายอาจารย์ผู้สอน:</strong></label>
                         <input type="date" class="appointment_teacher" name="date">
-                    </form>
-                    <p><strong>คณบดี:</strong> <span class="status">${form.dean_approved ?? 'รอการอนุมัติ'}</span></p>
+                    </form>                    
+                    <p><strong>ข้อเสนอแนะ:</strong>${form.comments ?? ''}</p>
                     <div class="btn-container">
                         <button class="appointment_btn">นัดหมาย<button>
                     </div>
@@ -420,6 +413,7 @@ async function loadRequestDetail() {
     
                 // Build the HTML structure
                 if(apm == null) {
+                    console.log("apm == null")
                     htmlData += `
                     <div class="form edit" data-id="${form.id}">
                         <p><strong>เรื่อง:</strong> ${form.subject}</p>
@@ -432,12 +426,14 @@ async function loadRequestDetail() {
                         <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
                         <p><strong>วันที่นัดหมาย:</strong>ไม่ได้นัดหมาย</p>
                     </div>`;
-                    continue;
+                continue;
                 }
                 if (apmResponse.data.length === 0 || apm.advisor_approved != null) {
+                    console.log("apmResponse.data.length == 0 || apm.advisor_approved != null")
                     // No appointment or decision already made (approved/rejected)
                     console.log("apm", apm);
                     if(apm.advisor_approved == 0) {
+                        console.log("apmResponse.advisor_approved ==0")
                         console.log("")
                         htmlData += `
                         <div class="form edit" data-id="${form.id}">
@@ -452,6 +448,7 @@ async function loadRequestDetail() {
                             <p><strong>วันที่นัดหมาย:</strong> ไม่ได้นัดหมาย</p>
                         </div>`;
                     } else {
+                        console.log("apmResponse.advisor_approved != 0")
                         htmlData += `
                         <div class="form edit" data-id="${form.id}">
                             <p><strong>เรื่อง:</strong> ${form.subject}</p>
@@ -467,6 +464,7 @@ async function loadRequestDetail() {
                     }
 
                 } else {
+                    console.log("ตรงกันข้าม apmResponse.data.length === 0 || apm.advisor_approved != null")
                     htmlData += `
                         <div class="form edit" data-id="${form.id}">
                             <p><strong>เรื่อง:</strong> ${form.subject}</p>
@@ -477,6 +475,7 @@ async function loadRequestDetail() {
                             <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
                             <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
                             <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+                            <p><strong>วันนัดหมาย:</strong>${date}</span></p>
                             <div class="advisor-action-container">
                                 <p>นักศึกษาต้องการนัดหมายวันที่ ${date}</p>
                                 <div>
@@ -879,3 +878,7 @@ document.addEventListener('click', async function(event) {
     //     }
     // }
 
+
+function editForm(formId) {
+    window.location.href = `editForm.html?formId=${formId}`;
+}

@@ -96,4 +96,6 @@ async function handleRequest(action) {
         alert(`เกิดข้อผิดพลาดในการ${action}คำร้อง`);
     }
 }
+
+module.exports = { loadRequestDetails };
 document.addEventListener('DOMContentLoaded', loadRequestDetails);

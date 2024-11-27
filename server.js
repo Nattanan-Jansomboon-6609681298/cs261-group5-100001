@@ -151,6 +151,24 @@ app.get('/forms/:studentID', async (req, res) => {
   }
 });
 
+app.get('/editforms/:id', async (req, res) => {
+  try {
+    const id = req.params.studentID;
+    const [rows] = await executeQuery('SELECT * FROM forms WHERE id = ?', [id]);
+    if (rows.length > 0) {
+      res.json(rows);
+      console.log(rows)
+    } else {
+      throw new Error("Not Found");
+    }
+  } catch (error) {
+    res.status(error.message === "Not Found" ? 404 : 500).json({
+      status: error.message === "Not Found" ? 404 : 500,
+      ErrorMessage: error.message
+    });
+  }
+});
+
 // คืนค่าข้อมูลทั้งหมดใน database
 app.get('/forms', async (req, res) => {
   try {
@@ -282,6 +300,140 @@ app.put('/api/requests/:requestId/:action', async (req, res) => {
   }
 });
 
+app.patch('/forms/student/edit/:id', async (req, res) => {
+  const { id } = req.params;
+  const { studentID, subject, firstName, lastName, year, addressNumber, subdistrict, district, province, contactNumber, parentContactNumber, advisor, semester, courseCode, courseName, section, purpose, approved, comments, email,teacher } = req.body;
+
+  const updatedFields = [];
+  const values = [];
+
+  // Collect the fields that need to be updated
+  if (studentID) {
+    updatedFields.push('studentID = ?');
+    values.push(studentID);
+  }
+  if (subject) {
+    updatedFields.push('subject = ?');
+    values.push(subject);
+  }
+  if (firstName) {
+    updatedFields.push('firstName = ?');
+    values.push(firstName);
+  }
+  if (lastName) {
+    updatedFields.push('lastName = ?');
+    values.push(lastName);
+  }
+  if (year) {
+    updatedFields.push('year = ?');
+    values.push(year);
+  }
+  if (addressNumber) {
+    updatedFields.push('addressNumber = ?');
+    values.push(addressNumber);
+  }
+  if (subdistrict) {
+    updatedFields.push('subdistrict = ?');
+    values.push(subdistrict);
+  }
+  if (district) {
+    updatedFields.push('district = ?');
+    values.push(district);
+  }
+  if (province) {
+    updatedFields.push('province = ?');
+    values.push(province);
+  }
+  if (contactNumber) {
+    updatedFields.push('contactNumber = ?');
+    values.push(contactNumber);
+  }
+  if (parentContactNumber) {
+    updatedFields.push('parentContactNumber = ?');
+    values.push(parentContactNumber);
+  }
+  if (advisor) {
+    updatedFields.push('advisor = ?');
+    values.push(advisor);
+  }
+  if (semester) {
+    updatedFields.push('semester = ?');
+    values.push(semester);
+  }
+  if (courseCode) {
+    updatedFields.push('courseCode = ?');
+    values.push(courseCode);
+  }
+  if (courseName) {
+    updatedFields.push('courseName = ?');
+    values.push(courseName);
+  }
+  if (section) {
+    updatedFields.push('section = ?');
+    values.push(section);
+  }
+  if (purpose) {
+    updatedFields.push('purpose = ?');
+    values.push(purpose);
+  }
+  if (approved !== undefined) {
+    updatedFields.push('approved = ?');
+    values.push(approved);
+  }
+  if (comments) {
+    updatedFields.push('comments = ?');
+    values.push(comments);
+  }
+  if (email) {
+    updatedFields.push('email = ?');
+    values.push(email);
+  }
+  if (teacher) {
+    updatedFields.push('teacher = ?');
+    values.push(teacher);
+  }
+
+  // Append the form ID to the values for the WHERE clause
+  values.push(id);
+
+  if (updatedFields.length === 0) {
+    return res.status(400).json({
+      message: "No valid fields to update",
+      status: 400
+    });
+  }
+
+  try {
+    // Build the dynamic query for updating only provided fields
+    const query = `
+      UPDATE forms SET 
+        ${updatedFields.join(', ')} 
+      WHERE id = ?
+    `;
+    
+    const [result] = await executeQuery(query, values);
+
+    if (result.affectedRows === 0) {
+      throw new Error("Not Found");
+    }
+
+    res.status(200).json({
+      message: "Update successful",
+      status: 200
+    });
+  } catch (error) {
+    if (error.message === 'Not Found') {
+      return res.status(404).json({
+        message: error.message,
+        status: 404
+      });
+    }
+    return res.status(500).json({
+      message: error.message,
+      status: 500
+    });
+  }
+});
 // API teacher
 app.get('/forms/teacher/:name', async (req, res) => {
   const name = req.params.name;
@@ -466,8 +618,8 @@ app.get('/forms/request/dean', async (req, res) => {
       });
     }
     return res.status(500).json({
-      message: "Something went wrong!",
-      errorMessage: error.message
+      message: error.message,
+      status: 500
     });
   }
 });
