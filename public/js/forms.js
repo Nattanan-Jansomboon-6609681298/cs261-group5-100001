@@ -465,7 +465,23 @@ async function loadRequestDetail() {
 
                 } else {
                     console.log("ตรงกันข้าม apmResponse.data.length === 0 || apm.advisor_approved != null")
-                    htmlData += `
+                    if(apm.advisor_date === null) {
+                        console.log('apm.advisor_date === null')
+                        htmlData += `
+                        <div class="form edit" data-id="${form.id}">
+                            <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                            <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
+                            <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName + ' ' + form.lastName}</p>
+                            <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
+                            <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                            <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                            <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                            <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+                            <p><strong>วันนัดหมาย:</strong>${date}</span></p>
+                        </div>`;
+                    } else {
+                        console.log('apm.advisor_date !== null')
+                        htmlData += `
                         <div class="form edit" data-id="${form.id}">
                             <p><strong>เรื่อง:</strong> ${form.subject}</p>
                             <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
@@ -486,6 +502,8 @@ async function loadRequestDetail() {
                                 </div>
                             </div>
                         </div>`;
+                    }
+
                 }
             }
     
@@ -635,7 +653,7 @@ async function loadRequestDetail() {
                         `;
                         }
                         else {
-                            console.log("apm.teacher_approved == 2");
+                            console.log("apm.teacher_approved == 0");
                             htmlData += `
                             <div class="form edit" data-id='${form.id}'>
                                 <p><strong>เรื่อง:</strong> ${form.subject}</p>
@@ -653,29 +671,49 @@ async function loadRequestDetail() {
                         }
 
                     } else {
-                        console.log("apm.teacher_approved == null");
-                        htmlData += `
-                        <div class="form edit" data-id='${form.id}'>
-                            <p><strong>เรื่อง:</strong> ${form.subject}</p>
-                            <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
-                            <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
-                            <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
-                            <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
-                            <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
-                            <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
-                            <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
-                            ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
-                            <div class="advisor-action-container">
-                                <p>นักศึกษาต้องการนัดหมายวันที่ ${date}</p>
-                                <div>
-                                    <!-- Check if decision already made (either approved or rejected) -->
-
-                                        <button class="approved-btn" data-id="${form.id}" data-action="1">ยอมรับ</button>
-                                        <button class="reject-btn" data-id="${form.id}" data-action="0">ปฏิเสธ</button>
+                        if(apm.teacher_date === null) {
+                            console.log(apm.tacher_date)
+                            console.log("teacher_date == null")
+                            htmlData += `
+                            <div class="form edit" data-id='${form.id}'>
+                                <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                                <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
+                                <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
+                                <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
+                                <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                                <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                                <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                                <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+                                ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
+                                <p><strong>วันที่นัดหมาย:</strong> ${date}</p>
+                            </div>
+                        `;
+                        } else {
+                            console.log(apm.teacher_date)
+                            console.log('tahcer_date != null')
+                            htmlData += `
+                            <div class="form edit" data-id='${form.id}'>
+                                <p><strong>เรื่อง:</strong> ${form.subject}</p>
+                                <p><strong>รหัสนักศึกษา:</strong> ${form.studentID}</p>
+                                <p><strong>ชื่อ-นามสกุล:</strong> ${form.firstName} ${form.lastName}</p>
+                                <p><strong>เหตุผลที่ยื่นคำร้อง:</strong> ${form.purpose}</p>
+                                <p><strong>อาจารย์ที่ปรึกษา:</strong> ${form.advisor}</p>
+                                <p><strong>อาจารย์ที่ปรึกษา:</strong> <span class="status">${getStatus(form.advisor_approved)}</span></p>
+                                <p><strong>อาจารย์ผู้สอน:</strong> <span class="status">${getStatus(form.teacher_approved)}</span></p>
+                                <p><strong>คณบดี:</strong> <span class="status">${getStatus(form.dean_approved)}</span></p>
+                                ${form.comments ? `<p><strong>ข้อเสนอแนะ:</strong> ${form.comments}</p>` : ''}
+                                <div class="advisor-action-container">
+                                    <p>นักศึกษาต้องการนัดหมายวันที่ ${date}</p>
+                                    <div>
+                                        <!-- Check if decision already made (either approved or rejected) -->
+    
+                                            <button class="approved-btn" data-id="${form.id}" data-action="1">ยอมรับ</button>
+                                            <button class="reject-btn" data-id="${form.id}" data-action="0">ปฏิเสธ</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        `;
+                        }
                     }
 
                 } else {
